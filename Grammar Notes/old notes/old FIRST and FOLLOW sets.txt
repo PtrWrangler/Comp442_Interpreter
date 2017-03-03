@@ -1,0 +1,189 @@
+prog           -> classDecl progBody 
+	first: {class, program}
+	
+classDecl      -> class Id { varDecl funcDef } ; classDecl 
+                  | EPSILON 
+	first: {class, EPSILON}
+	follow: {program}
+				  
+progBody       -> program funcBody ; funcDef 
+	first: {program}
+
+funcHead       -> type Id ( fParams ) 
+	first: {0, ., 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+
+funcDef        -> funcHead funcBody ; funcDef 
+                  | EPSILON 
+	first: {0, ., 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, EPSILON}
+	follow: {}, $}
+				  
+funcBody       -> { varDecl gen_statements } 
+	first: {{}
+
+varDecl        -> type Id arraySize ; varDecl 
+                  | EPSILON 
+	first: {0, ., 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, EPSILON}
+	follow: {0, ., 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, }, for, if, get, put, return} 
+				  
+statement      -> for ( type Id assignOp expr ; relExpr ; assignStat ) statBlock ; 
+                  | if ( expr ) then statBlock else statBlock ; 
+                  | get ( variable ) ; 
+                  | put ( expr ) ; 
+                  | return ( expr ) ; 
+                  | assignStat ;
+	first: {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z} 
+	first: {return}
+	first: {put}
+	first: {get}
+	first: {if}
+	first: {for}
+
+				  
+gen_statements -> statement gen_statements 
+                  | EPSILON 
+	first: {for, if, get, put, return, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, EPSILON}
+	follow: {}}
+				  
+assignStat     -> variable assignOp expr 
+	first: {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+
+statBlock      -> { gen_statements } 
+                  | statement 
+                  | EPSILON 
+	first: {{}
+	first: {for, if, get, put, return, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, EPSILON}
+	follow: {;, else}
+				  
+expr           -> arithExpr gen_relArithExpr
+	first: {(, not, 0, ., EPSILON, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, +, -, *, /, and, or, <, <=, <>, ==, >, >=}
+	follow: {;, ), ,}
+
+gen_relArithExpr -> relOp arithExpr | EPSILON
+	first: {<, <=, <>, ==, >, >=, EPSILON}
+	follow: {;, ), ,}
+
+arithExpr      -> term gen_addArithExpr
+	first: {(, not, 0, ., EPSILON, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, +, -, *, /, and, or}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ]}
+
+gen_addArithExpr  -> addOp arithExpr | EPSILON
+	first: {+, -, or, EPSILON}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ]}
+
+sign           -> + | - 
+	first: {+, -}
+
+term           -> factor gen_Term
+	first: {(, not, 0, ., EPSILON, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, +, -, *, /, and}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or}
+
+gen_Term       -> multOp term | EPSILON
+	first: {*, /, and, EPSILON}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or}
+
+factor         -> Id paramsOrIndice
+                  | ( arithExpr ) 
+                  | not factor 
+                  | Number
+                  | sign factor 
+	first: {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+	first: {(}
+	first: {not} 
+	first: {0, ., EPSILON, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	first: {+, -}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and}
+				  
+paramsOrIndice -> ( aParams ) | indice
+	first: {[, EPSILON}
+	first: {(}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and}
+
+variable       -> Id indice 
+	first: {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+	
+indice         -> [ arithExpr ] indice 
+                  | EPSILON 
+	first: {[, EPSILON}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and, =}
+	
+arraySize      -> [ int ] | EPSILON 
+	first: {[, EPSILON}
+	follow: {;, ), ,}
+	
+type           -> Id | Number
+	first: {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+	first: {0, ., EPSILON, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	follow: {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+	
+fParams        -> type Id arraySize fParamsTail 
+                  | EPSILON 
+	first: {0, ., 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, EPSILON}
+	follow: {)}
+	
+aParams        -> expr aParamsTail
+	first: {(, not, 0, ., EPSILON, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, +, -, *, /, and, or, <, <=, <>, ==, >, >=, \,}
+	follow: {)}
+	
+fParamsTail    -> , type Id arraySize fParamsTail 
+                  | EPSILON 
+	first: {\,, EPSILON}
+	follow: {)}
+	
+aParamsTail    -> , expr aParamsTail 
+                  | EPSILON 
+	first: {\,, EPSILON}
+	follow: {)}
+	
+assignOp       -> = 
+	first: {=}
+	
+relOp          -> < | <= | <> | == | > | >= 
+	first: {>=, >, ==, <>, <=, <}
+	
+addOp          -> + | - | or 
+	first: {+, -, or}
+	
+multOp         -> * | / | and 
+	first: {*, /, and}
+	
+Id               -> Letter Alphanum 
+	first: {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+	
+Alphanum         -> _ Alphanum | Letter Alphanum 
+                  | Digit Alphanum | EPSILON 
+	first: {_}
+	first: {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+	first: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, EPSILON}
+	follow: {{, (, [, ;, =, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+	
+Letter           -> A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z | a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z 
+	first: {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+
+Number -> Non-Zero gen_Number is_float | 0 is_float | is_float
+	first: {1, 2, 3, 4, 5, 6, 7, 8, 9}
+	first: {0}
+	first: {., EPSILON}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	
+is_float -> . float | EPSILON
+	first: {., EPSILON}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+float -> 0 nextDecimalPlace | Non-Zero nextDecimalPlace
+	first: {0}
+	first: {1, 2, 3, 4, 5, 6, 7, 8, 9}
+	
+nextDecimalPlace -> Number Non-Zero | EPSILON
+	first: {0, ., 1, 2, 3, 4, 5, 6, 7, 8, 9, EPSILON}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+gen_Number -> Digit gen_Number | EPSILON 
+	first: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, EPSILON}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, 1, 2, 3, 4, 5, 6, 7, 8, 9, .}
+	
+Digit            -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 
+	first: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	
+Non_Zero         -> 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+	first: {1, 2, 3, 4, 5, 6, 7, 8, 9}
+	

@@ -1,0 +1,6 @@
+program{
+get(e);
+put(t);
+return(u);
+put(5-5);
+};

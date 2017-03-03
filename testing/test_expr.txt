@@ -1,0 +1,10 @@
+program{
+
+get(e);
+put(int t);
+
+return (u);
+
+put (5-5);
+
+};
