@@ -1,4 +1,8 @@
 todo:
+	finish reading the the slides 5, 6
+	apply a new table driven parser
+
+look over:
     in factor it is figuratively a int/float
     in arithExpr it is figuratively a int/float
 
