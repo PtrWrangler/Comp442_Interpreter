@@ -68,7 +68,7 @@ def main():
                 if 'follow: ' in l:
 
                     ff = current_func + '_FOLLOW = ' + l
-                    o.write(ff)
+                    o.write('#' + ff)
                     print ff
 
 
