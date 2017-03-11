@@ -12,8 +12,8 @@ comments = ['//', '/*', '*/']
 # Token types
 # EOF (end-of-file) token is used to indicate that
 # there is no more input left for lexical analysis
-IDENTIFIER, KEYWORD = 'Id', 'KEYWORD'
-INTEGER, FLOAT = 'int', 'float'
+IDENTIFIER, KEYWORD = 'ID', 'KEYWORD'
+INTEGER, FLOAT = 'INT', 'FLOAT'
 COMPARE_OP, MATH_OP, ASSIGN_OP = 'COMPARE_OP', 'MATH_OP', 'ASSIGN_OP'
 #PUNCTUATION = 'PUNCTUATION'
 
@@ -25,6 +25,8 @@ INLINE_COMMENT, BLOCK_COMMENT_OPEN, BLOCK_COMMENT_CLOSE = 'INLINE_COMMENT', 'BLO
 COMMENT = 'COMMENT'
 EOF = '$'
 SCAN_ERROR = 'SCAN_ERROR'
+
+all_registered_terminals = [reserved_words, compare_operators, math_operators, assign_operators, punctuations, comments, [IDENTIFIER, INTEGER, FLOAT]]
 
 
 class Token(object):
