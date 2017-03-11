@@ -1,8 +1,15 @@
 todo:
 	finish reading the the slides 5, 6
 	apply a new table driven parser
+	
+	script to parse PPT_Grammar into object
+	create parsing table from object
+	implement the parser
 
-look over:
+A3 look over:
+	for parsing the PPT_grammar into object, need to check if EPSILON in the production line, if not then in the first set because it may be in there resulting in it having both a first and follow set.
+	
+A2 look over:
     in factor it is figuratively a int/float
     in arithExpr it is figuratively a int/float
 

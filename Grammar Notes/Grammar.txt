@@ -1,60 +1,83 @@
-prog           -> classDecl progBody 
-classDecl      -> class ID { classBody } ; classDecl 
-                  | EPSILON 
-classBody      -> type ID varOrFunc | EPSILON
-varOrFunc      -> indice ; classBody | ( fParams ) funcBody ; classBody
-
-progBody       -> program funcBody ; funcDef 
-funcHead       -> type ID ( fParams ) 
-funcDef        -> funcHead funcBody ; funcDef 
-                  | EPSILON 
-funcBody       -> { gen_statements } 
-varDecl        -> P_Type ID varDeclTail | UD_Type createOrAssign varDeclTail
-createOrAssign -> ID | EPSILON
-varDeclTail    -> indice is_Assign ;
-is_Assign      -> assignOp expr | EPSILON
-statement      -> for ( type ID assignOp expr ; relExpr ; assignStat ) statBlock ; 
-                  | if ( expr ) then statBlock else statBlock ; 
-                  | get ( variable ) ; 
-                  | put ( expr ) ; 
-                  | return ( expr ) ; 
-                  | varDecl 
-gen_statements -> statement gen_statements | EPSILON
-assignStat     -> variable assignOp expr 
-statBlock      -> { gen_statements } 
-                  | statement
-                  | EPSILON
-expr           -> arithExpr gen_relArithExpr
-relExpr        -> arithExpr relOp arithExpr
-gen_relArithExpr -> relOp arithExpr | EPSILON
-arithExpr      -> term gen_addArithExpr
-gen_addArithExpr  -> addOp arithExpr | EPSILON
-sign           -> + | - 
-term           -> factor gen_Term
-gen_Term       -> multOp term | EPSILON
-factor         -> ID paramsOrIndice
-                  | ( arithExpr ) 
-                  | not factor 
-                  | int
-                  | float
-                  | sign factor 
-paramsOrIndice -> ( aParams ) | indice
-variable       -> ID indice 
-indice         -> [ arithExpr ] indice 
-                  | EPSILON 
-arraySize      -> [ int ] | EPSILON 
-type           -> ID | int | float
-P_Type         -> int | float
-UD_Type        -> ID
-fParams        -> type ID arraySize fParamsTail 
-                  | EPSILON 
-aParams        -> expr aParamsTail
-fParamsTail    -> , type ID arraySize fParamsTail 
-                  | EPSILON 
-aParamsTail    -> , expr aParamsTail 
-                  | EPSILON 
-assignOp       -> = 
-relOp          -> < | <= | <> | == | > | >= 
-addOp          -> + | - | or 
-multOp         -> * | / | and 
+prog             -> classDecl progBody 
+classDecl        -> class ID { classBody } ; classDecl 
+classDecl        -> EPSILON 
+classBody        -> type ID varOrFunc 
+classBody        -> EPSILON 
+varOrFunc        -> ( fParams ) funcBody ; classBody 
+varOrFunc        -> indice ; classBody 
+progBody         -> program funcBody ; funcDef 
+funcHead         -> type ID ( fParams ) 
+funcDef          -> funcHead funcBody ; funcDef 
+funcDef          -> EPSILON 
+funcBody         -> { gen_statements } 
+varDecl          -> P_Type ID varDeclTail 
+varDecl          -> UD_Type createOrAssign varDeclTail 
+createOrAssign   -> ID 
+createOrAssign   -> EPSILON 
+varDeclTail      -> indice is_Assign ; 
+is_Assign        -> assignOp expr 
+is_Assign        -> EPSILON 
+statement        -> for ( type ID assignOp expr ; relExpr ; assignStat ) statBlock ; 
+statement        -> if ( expr ) then statBlock else statBlock ; 
+statement        -> get ( variable ) ; 
+statement        -> put ( expr ) ; 
+statement        -> return ( expr ) ; 
+statement        -> varDecl 
+gen_statements   -> statement gen_statements 
+gen_statements   -> EPSILON 
+assignStat       -> variable assignOp expr 
+statBlock        -> { gen_statements } 
+statBlock        -> statement 
+statBlock        -> EPSILON 
+expr             -> arithExpr gen_relArithExpr 
+relExpr          -> arithExpr relOp arithExpr 
+gen_relArithExpr -> relOp arithExpr 
+gen_relArithExpr -> EPSILON 
+arithExpr        -> term gen_addArithExpr 
+gen_addArithExpr -> addOp arithExpr 
+gen_addArithExpr -> EPSILON 
+sign             -> + 
+sign             -> - 
+term             -> factor gen_Term 
+gen_Term         -> multOp term 
+gen_Term         -> EPSILON 
+factor           -> ( arithExpr ) 
+factor           -> FLOAT 
+factor           -> ID paramsOrIndice 
+factor           -> INT 
+factor           -> not factor 
+factor           -> sign factor 
+paramsOrIndice   -> ( aParams ) 
+paramsOrIndice   -> indice 
+variable         -> ID indice 
+indice           -> [ arithExpr ] indice 
+indice           -> EPSILON 
+arraySize        -> [ int ] 
+arraySize        -> EPSILON 
+type             -> ID 
+type             -> float 
+type             -> int 
+P_Type           -> float 
+P_Type           -> int 
+UD_Type          -> ID 
+fParams          -> type ID arraySize fParamsTail 
+fParams          -> EPSILON 
+aParams          -> expr aParamsTail 
+fParamsTail      -> , type ID arraySize fParamsTail 
+fParamsTail      -> EPSILON 
+aParamsTail      -> , expr aParamsTail 
+aParamsTail      -> EPSILON 
+assignOp         -> = 
+relOp            -> < 
+relOp            -> <= 
+relOp            -> <> 
+relOp            -> == 
+relOp            -> > 
+relOp            -> >= 
+addOp            -> + 
+addOp            -> - 
+addOp            -> or 
+multOp           -> * 
+multOp           -> / 
+multOp           -> and 
 
