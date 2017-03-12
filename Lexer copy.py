@@ -31,11 +31,9 @@ all_registered_terminals = [reserved_words, compare_operators, math_operators, a
 
 
 class Token(object):
-    def __init__(self, termtype, type, value, line, pos):
+    def __init__(self, type, value, line, pos):
         # token type: INTEGER, PLUS, MINUS, or EOF
         self.type = type
-        # need one variable to do comparsons in parsing, type and value cant both be used. mainly for ID.
-        self.termtype = termtype
         # token value: non-negative integer value, '+', '-', or None
         self.value = value
         # location(position) in the source code
@@ -45,9 +43,8 @@ class Token(object):
     def __str__(self):
         """String representation of the class instance."""
 
-        return 'Token({type}, {termtype}, {value}, Line:Pos=({line}, {pos}))'.format(
+        return 'Token({type}, {value}, Line:Pos=({line}, {pos}))'.format(
             type=self.type,
-            termtype=self.termtype,
             value=repr(self.value),
             line=self.line,
             pos=self.pos
@@ -117,10 +114,10 @@ class Lexical_Analyzer(object):
         token = token.lower()
         if token in reserved_words:
             print "reserved word: ", token
-            return Token(KEYWORD, token, token, self.line_number, self.line_pos)
+            return Token(KEYWORD, token, self.line_number, self.line_pos)
         else:
             print "identifier: ", token
-            return Token(IDENTIFIER, IDENTIFIER, token, self.line_number, self.line_pos)
+            return Token(IDENTIFIER, token, self.line_number, self.line_pos)
 
     def integer_or_float(self):
         """Return a integer or float consumed from the input."""
@@ -136,18 +133,18 @@ class Lexical_Analyzer(object):
         if match:
             result = match.group()
             self.jump_cursor(match.span()[1])
-            return Token(FLOAT, FLOAT, result, self.line_number, self.line_pos)
+            return Token(FLOAT, result, self.line_number, self.line_pos)
 
         """Will match any integer string that doesnt start in 0, or matches a simple 0 int"""
         match = re.search("^[1-9]+\d*|^0", text)
         if match:
             result = match.group()
             self.jump_cursor(match.span()[1])
-            return Token(INTEGER, INTEGER, result, self.line_number, self.line_pos)
+            return Token(INTEGER, result, self.line_number, self.line_pos)
 
         result = '.'
         self.advance()
-        return Token(PERIOD, result, result, self.line_number, self.line_pos)
+        return Token(PERIOD, result, self.line_number, self.line_pos)
 
         """Matches a period (not decimal / failed float test)"""
         '''match = re.search('^\.', text)
@@ -183,48 +180,48 @@ class Lexical_Analyzer(object):
 
             if token in compare_operators:
                 self.advance()
-                return Token(COMPARE_OP, token, token, self.line_number, self.line_pos)
+                return Token(COMPARE_OP, token, self.line_number, self.line_pos)
             if token in math_operators:
                 self.advance()
-                return Token(MATH_OP, token, token, self.line_number, self.line_pos)
+                return Token(MATH_OP, token, self.line_number, self.line_pos)
             if token in assign_operators:
                 self.advance()
-                return Token(ASSIGN_OP, token, token, self.line_number, self.line_pos)
+                return Token(ASSIGN_OP, token, self.line_number, self.line_pos)
             if token in comments:
                 self.advance()
-                return Token(COMMENT, token, token, self.line_number, self.line_pos)
+                return Token(COMMENT, token, self.line_number, self.line_pos)
 
         # if all double puncts or ops have failed try only single char ones
         # print "1char op or punct?:", token[0]
         if token[0] in compare_operators:
-            return Token(COMPARE_OP, token[0], token[0], self.line_number, self.line_pos)
+            return Token(COMPARE_OP, token[0], self.line_number, self.line_pos)
         if token[0] in math_operators:
-            return Token(MATH_OP, token[0], token[0], self.line_number, self.line_pos)
+            return Token(MATH_OP, token[0], self.line_number, self.line_pos)
         if token[0] in assign_operators:
-            return Token(ASSIGN_OP, token[0], token[0], self.line_number, self.line_pos)
+            return Token(ASSIGN_OP, token[0], self.line_number, self.line_pos)
 
         '''if token[0] in punctuations:
             return Token(PUNCTUATION, token[0], self.line_number, self.line_pos)'''
         if token[0] == ';':
-            return Token(SEMI_COLON, token[0], token[0], self.line_number, self.line_pos)
+            return Token(SEMI_COLON, token[0], self.line_number, self.line_pos)
         if token[0] == ',':
-            return Token(COMMA, token[0], token[0], self.line_number, self.line_pos)
+            return Token(COMMA, token[0], self.line_number, self.line_pos)
         if token[0] == '(':
-            return Token(BRACKET_OPEN, token[0], token[0], self.line_number, self.line_pos)
+            return Token(BRACKET_OPEN, token[0], self.line_number, self.line_pos)
         if token[0] == ')':
-            return Token(BRACKET_CLOSE, token[0], token[0], self.line_number, self.line_pos)
+            return Token(BRACKET_CLOSE, token[0], self.line_number, self.line_pos)
         if token[0] == '{':
-            return Token(CURLY_OPEN, token[0], token[0], self.line_number, self.line_pos)
+            return Token(CURLY_OPEN, token[0], self.line_number, self.line_pos)
         if token[0] == '}':
-            return Token(CURLY_CLOSE, token[0], token[0], self.line_number, self.line_pos)
+            return Token(CURLY_CLOSE, token[0], self.line_number, self.line_pos)
         if token[0] == '[':
-            return Token(SQUARE_OPEN, token[0], token[0], self.line_number, self.line_pos)
+            return Token(SQUARE_OPEN, token[0], self.line_number, self.line_pos)
         if token[0] == ']':
-            return Token(SQUARE_CLOSE, token[0], token[0], self.line_number, self.line_pos)
+            return Token(SQUARE_CLOSE, token[0], self.line_number, self.line_pos)
 
         # all registered punctuations and operators have been tried, unrecognized character
         print "SCAN_ERROR: Unregistered punctuation: " + token[0]
-        return Token(SCAN_ERROR, SCAN_ERROR, "Unregistered punctuation: " + token[0], self.line_number, self.line_pos)
+        return Token(SCAN_ERROR, "Unregistered punctuation: " + token[0], self.line_number, self.line_pos)
 
     def scanner(self):
         """Lexical analyzer (also known as scanner or tokenizer)
@@ -252,7 +249,7 @@ class Lexical_Analyzer(object):
                 char = self.current_char
                 self.advance()
                 print "SCAN_ERROR: Unregistered Character: " + str(char)
-                return Token(SCAN_ERROR, SCAN_ERROR, "Unregistered Character: " + str(char), self.line_number, self.line_pos)
+                return Token(SCAN_ERROR, "Unregistered Character: " + str(char), self.line_number, self.line_pos)
 
-        return Token(EOF, EOF, None, self.line_number, self.line_pos)
+        return Token(EOF, None, self.line_number, self.line_pos)
 

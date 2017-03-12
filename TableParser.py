@@ -1,7 +1,7 @@
 from Lexer import Lexical_Analyzer, Token
 from Lexer import SCAN_ERROR, EOF
 from Lexer import all_registered_terminals
-from Productions import Grammar
+from Productions import Grammar, Production
 import ff_sets
 from ff_sets import *
 import string
@@ -42,50 +42,53 @@ class Syntactic_Parser(object):
             for terminal in terminal_set:
                 self.terminal_list.append(terminal)
 
+        # initialize all table to -1
+        self.table = [[-1 for x in range(len(self.terminal_list))] for y in range(len(self.g.productions))]
         # stack to be used for the table predictive parsing method
         self.stack = []
 
         # initialize the Lexical analyser for token scanning
         self.interpreter = Lexical_Analyzer(self.f.read())
-        self.lookahead = Token(SCAN_ERROR, '', 0, 0)
+        self.lookahead = Token(EOF, '$', 0, 0)
 
         self.initialize_parsing_table()
 
     def parse(self):
         print "Syntactical_Parser: in parse"
 
-        self.stack.append(EOF)
+        self.stack.append(Token(EOF, '$', 0, 0))
         self.stack.append(self.g.productions[0])
-        token = self.interpreter.scanner()
+        self.lookahead = self.interpreter.scanner()
 
+        error = False
         while self.stack[-1] is not EOF:
             top = self.stack[-1]
 
+            if type(top) is Token and top.termtype in self.terminal_list:
+                if top.value == self.lookahead.value:
+                    self.stack.pop()
+                    self.lookahead = self.interpreter.scanner()
+                else:
+                    print "error"
+                    error = True
+                    break
 
-            self.lookahead = self.interpreter.scanner()
-            print(self.lookahead)
+            elif type(top) is Production:
+                if self.table[top.r_id][self.terminal_list.index(self.lookahead.termtype)] is not -1:
+                    self.stack.pop()
 
-            '''if self.lookahead.type == SCAN_ERROR:
-                self.err.write(self.lookahead.__str__() + "\n")
             else:
-                self.output += (self.lookahead.__str__() + "\n")
-            '''
+                print "error, top symbol was not a production or token"
+                error = True
 
-            if self.prog():
-                self.err.write("\nmain parse() returning True")
 
-            else:
-                self.err.write("\nmain parse() returning False")
-
-        self.prettify_output()
+        #self.prettify_output()
         #self.o.write(self.output)
 
         self.o.close()
         self.err.close()
 
     def initialize_parsing_table(self):
-        # initialize all table to -1
-        table = [[-1 for x in range(len(self.terminal_list))] for y in range(len(self.g.productions))]
 
         # create predictive parsing table
         for prod_idx in self.g.productions:
@@ -93,13 +96,13 @@ class Syntactic_Parser(object):
                 terminal_idx = self.terminal_list.index(prod_first)
 
                 # print str(prod_idx) + " " + str(prod_first)
-                table[prod_idx][terminal_idx] = self.g.productions[prod_idx]
+                self.table[prod_idx][terminal_idx] = self.g.productions[prod_idx]
 
             for prod_follow in self.g.productions[prod_idx].follow:
                 terminal_idx = self.terminal_list.index(prod_follow)
                 table[prod_idx][terminal_idx] = self.g.productions[prod_idx]
 
-        print_table(table)
+        print_table(self.table)
 
     def match(self, token):
         if self.lookahead.value is not None:
@@ -156,4 +159,3 @@ def print_table(table):
 if __name__ == '__main__':
     parser = Syntactic_Parser()
     parser.parse()
-
