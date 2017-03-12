@@ -31,7 +31,7 @@ all_registered_terminals = [reserved_words, compare_operators, math_operators, a
 
 
 class Token(object):
-    def __init__(self, termtype, type, value, line, pos):
+    def __init__(self, type, termtype, value, line, pos):
         # token type: INTEGER, PLUS, MINUS, or EOF
         self.type = type
         # need one variable to do comparsons in parsing, type and value cant both be used. mainly for ID.

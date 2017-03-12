@@ -49,14 +49,15 @@ class Syntactic_Parser(object):
 
         # initialize the Lexical analyser for token scanning
         self.interpreter = Lexical_Analyzer(self.f.read())
-        self.lookahead = Token(EOF, '$', 0, 0)
+        self.lookahead = Token(EOF, EOF, '$', 0, 0)
 
+        print self.g
         self.initialize_parsing_table()
 
     def parse(self):
         print "Syntactical_Parser: in parse"
 
-        self.stack.append(Token(EOF, '$', 0, 0))
+        self.stack.append(self.lookahead)
         self.stack.append(self.g.productions[0])
         self.lookahead = self.interpreter.scanner()
 
@@ -74,6 +75,7 @@ class Syntactic_Parser(object):
                     break
 
             elif type(top) is Production:
+                print self.lookahead
                 if self.table[top.r_id][self.terminal_list.index(self.lookahead.termtype)] is not -1:
                     self.stack.pop()
 
@@ -96,11 +98,16 @@ class Syntactic_Parser(object):
                 terminal_idx = self.terminal_list.index(prod_first)
 
                 # print str(prod_idx) + " " + str(prod_first)
-                self.table[prod_idx][terminal_idx] = self.g.productions[prod_idx]
+                self.table[self.g.productions[prod_idx].r_id][terminal_idx] = self.g.productions[prod_idx]
 
             for prod_follow in self.g.productions[prod_idx].follow:
                 terminal_idx = self.terminal_list.index(prod_follow)
-                table[prod_idx][terminal_idx] = self.g.productions[prod_idx]
+                print_table(self.table)
+                print len(self.g.productions)
+                print len(self.terminal_list)
+                print self.g.productions[prod_idx].r_id
+                print self.g.productions[prod_idx]
+                self.table[self.g.productions[prod_idx].r_id][terminal_idx] = self.g.productions[prod_idx]
 
         print_table(self.table)
 

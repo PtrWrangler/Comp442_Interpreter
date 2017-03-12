@@ -41,30 +41,20 @@ class Grammar(object):
 
     def parse_grammar_file(self, grammar_specs_file):
 
-        production_id = 0
-        prev_name = ""
+        rule_id = 0
         follow_set = False
+        prod = Production(0, "null", "null")
 
         with open(grammar_specs_file, 'r') as f:
             for l in f.readlines():
                 if '->' in l:
 
-                    # remove trailing \n, multi spaces. extract name, RHS terminals/non-terminals
                     prod_str = l.replace(' \n', '').replace('\n', '')
                     prod_str = re.sub(' {2,}', ' ', prod_str)
+
                     name = prod_str.split('->')[0].replace(' ', '')
-
-                    rhs_str = prod_str.split('-> ')[1]
-                    rhs = rhs_str.split(' ')
-                    rhs_str = " | " + rhs_str
-
-                    if name != prev_name:
-                        prev_name = name
-                        self.productions[name] = Production(production_id, name, prod_str)
-                        production_id += 1
-                        rhs_str = ""
-
-                    self.productions[name].add_RHS(Right_hand_side(rhs), rhs_str)
+                    self.productions[name + str(rule_id)] = Production(rule_id, name, prod_str)
+                    rule_id += 1
 
                     if 'EPSILON' in l:
                         follow_set = True
@@ -73,55 +63,33 @@ class Grammar(object):
                     if 'EPSILON' in l:
                         follow_set = True
 
-                    self.productions[name].RHSs[-1].first = get_list_from_line(l)
+                    self.productions[rule_id-1].first = get_list_from_line(l)
 
                 elif follow_set is True:
-                    self.productions[name].RHSs[-1].follow = get_list_from_line(l)
+                    self.productions[rule_id-1].follow = get_list_from_line(l)
                     follow_set = False
 
 
 class Production(object):
-    def __init__(self, p_id, name, production_str):
+    def __init__(self, r_id, name, production):
         # unique rule identifier
-        self.p_id = p_id
+        self.r_id = r_id
 
         self.name = name
-        self.str_production = production_str
 
-        self.RHSs = []
-
-    def __str__(self):
-        """String representation of the class instance."""
-
-        return 'Production({id}, {prod}, {RHS}\n'.format(
-            id=self.p_id,
-            prod=repr(self.str_production),
-            RHS=repr(self.RHSs)
-        )
-
-    def __repr__(self):
-        return self.str_production
-
-    def add_RHS(self, rhs, rhs_str):
-        self.RHSs.append(rhs)
-        self.str_production += rhs_str
-
-
-class Right_hand_side(object):
-    def __init__(self, rhs):
-
-        self.RHS = rhs
+        self.str_production = production
         self.first = []
         self.follow = []
 
     def __str__(self):
         """String representation of the class instance."""
 
-        return '\n\tRHS({RHS}\n\t\tfirst={first}\n\t\tfollow={follow}\t'.format(
-            RHS=self.RHS,
+        return 'Production({id}, {prod}, \n\tfirst={first}\n\tfollow={follow}\n'.format(
+            id=self.r_id,
+            prod=repr(self.str_production),
             first=self.first,
             follow=self.follow
         )
 
     def __repr__(self):
-        return self.__str__()
+        return self.str_production
