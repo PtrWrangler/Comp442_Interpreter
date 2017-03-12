@@ -25,8 +25,9 @@ INLINE_COMMENT, BLOCK_COMMENT_OPEN, BLOCK_COMMENT_CLOSE = 'INLINE_COMMENT', 'BLO
 COMMENT = 'COMMENT'
 EOF = '$'
 SCAN_ERROR = 'SCAN_ERROR'
+EPSILON = 'EPSILON'
 
-all_registered_terminals = [reserved_words, compare_operators, math_operators, assign_operators, punctuations, comments, [IDENTIFIER, INTEGER, FLOAT]]
+all_registered_terminals = [reserved_words, compare_operators, math_operators, assign_operators, punctuations, comments, [IDENTIFIER, INTEGER, FLOAT, EPSILON, EOF]]
 
 
 class Token(object):
