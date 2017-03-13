@@ -1,7 +1,7 @@
 from Lexer import Lexical_Analyzer, Token
-from Lexer import SCAN_ERROR, EOF
+from Lexer import SCAN_ERROR, EOF, EPSILON
 from Lexer import all_registered_terminals
-from Productions import Grammar, Production
+from Productions import Grammar, Production, Right_hand_side
 import ff_sets
 from ff_sets import *
 import string
@@ -51,37 +51,64 @@ class Syntactic_Parser(object):
         self.interpreter = Lexical_Analyzer(self.f.read())
         self.lookahead = Token(EOF, EOF, '$', 0, 0)
 
-        print self.g
+        # print self.g
         self.initialize_parsing_table()
 
     def parse(self):
         print "Syntactical_Parser: in parse"
 
-        self.stack.append(self.lookahead)
-        self.stack.append(self.g.productions[0])
+        self.stack.append(EOF)
+        self.stack.append('prog')
         self.lookahead = self.interpreter.scanner()
 
         error = False
         while self.stack[-1] is not EOF:
             top = self.stack[-1]
+            print "top = " + top
 
-            if type(top) is Token and top.termtype in self.terminal_list:
-                if top.value == self.lookahead.value:
+            if top in self.terminal_list and top != EPSILON:
+                if top == self.lookahead.termtype:
                     self.stack.pop()
                     self.lookahead = self.interpreter.scanner()
                 else:
-                    print "error"
+                    print "error, wrong token"
                     error = True
-                    break
+                    self.lookahead = self.interpreter.scanner()
 
-            elif type(top) is Production:
-                print self.lookahead
-                if self.table[top.r_id][self.terminal_list.index(self.lookahead.termtype)] is not -1:
+            elif top in self.g.productions and type(self.g.productions[top]) is Production:
+                # top is now the actual production of the string representation
+                top = self.g.productions[top]
+                #print self.lookahead
+
+                if self.table[top.p_id][self.terminal_list.index(self.lookahead.termtype)] is not -1:
+                    # top is not the corresponding correct RHS from table
+                    top = self.table[top.p_id][self.terminal_list.index(self.lookahead.termtype)]
+
                     self.stack.pop()
+                    self.stack.extend(top.inverse_RHS_multiple_push())
+                    print self.stack
+                else:
+                    print "error, table position is -1"
+                    error = True
+                    self.lookahead = self.interpreter.scanner()
+
+            elif top == EPSILON:
+                self.stack.pop()
 
             else:
-                print "error, top symbol was not a production or token"
+                print "error, top symbol was not a production/token/EPSILON"
                 error = True
+                break
+
+        if self.lookahead is not EOF:
+            print "not EOF"
+        else:
+            print "reached EOF"
+
+        if error is True:
+            print "error is True"
+        else:
+            print "error is False"
 
 
         #self.prettify_output()
@@ -90,24 +117,31 @@ class Syntactic_Parser(object):
         self.o.close()
         self.err.close()
 
+    # create predictive parsing table
     def initialize_parsing_table(self):
 
-        # create predictive parsing table
+        # for each production rule in the grammar
         for prod_idx in self.g.productions:
-            for prod_first in self.g.productions[prod_idx].first:
-                terminal_idx = self.terminal_list.index(prod_first)
+            # process each possible right-hand-side 'handle'?
+            for prod_RHS in self.g.productions[prod_idx].RHSs:
+                # for each terminal in the first set of this RHS
+                for RHS_first in prod_RHS.first:
+                    # gets its corresponding index in the terminal_list for table referencing
+                    terminal_idx = self.terminal_list.index(RHS_first)
 
-                # print str(prod_idx) + " " + str(prod_first)
-                self.table[self.g.productions[prod_idx].r_id][terminal_idx] = self.g.productions[prod_idx]
+                    # store the RHS to be evaluated should you encounter this terminal with this production sitting on top of the stack.
+                    self.table[self.g.productions[prod_idx].p_id][terminal_idx] = prod_RHS
 
-            for prod_follow in self.g.productions[prod_idx].follow:
-                terminal_idx = self.terminal_list.index(prod_follow)
-                print_table(self.table)
-                print len(self.g.productions)
-                print len(self.terminal_list)
-                print self.g.productions[prod_idx].r_id
-                print self.g.productions[prod_idx]
-                self.table[self.g.productions[prod_idx].r_id][terminal_idx] = self.g.productions[prod_idx]
+                    # for prod_first in self.g.productions[prod_idx].first:
+                    #     terminal_idx = self.terminal_list.index(prod_first)
+                    #
+                    #     # print str(prod_idx) + " " + str(prod_first)
+                    #     self.table[self.g.productions[prod_idx].r_id][terminal_idx] = self.g.productions[prod_idx]
+
+                for RHS_follow in prod_RHS.follow:
+                    terminal_idx = self.terminal_list.index(RHS_follow)
+
+                    self.table[self.g.productions[prod_idx].p_id][terminal_idx] = prod_RHS
 
         print_table(self.table)
 

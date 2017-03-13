@@ -64,7 +64,7 @@ class Grammar(object):
                         production_id += 1
                         rhs_str = ""
 
-                    self.productions[name].add_RHS(Right_hand_side(rhs), rhs_str)
+                    self.productions[name].add_RHS(Right_hand_side(production_id, name, rhs), rhs_str)
 
                     if 'EPSILON' in l:
                         follow_set = True
@@ -108,20 +108,30 @@ class Production(object):
 
 
 class Right_hand_side(object):
-    def __init__(self, rhs):
+    def __init__(self, p_id, name, rhs):
+
+        self.p_id = p_id
+        self.name = name
 
         self.RHS = rhs
         self.first = []
         self.follow = []
+        # self.rhs_str = ' '.join(self.RHS)
 
     def __str__(self):
         """String representation of the class instance."""
-
-        return '\n\tRHS({RHS}\n\t\tfirst={first}\n\t\tfollow={follow}\t'.format(
-            RHS=self.RHS,
-            first=self.first,
-            follow=self.follow
-        )
+        return ' '.join(self.RHS)
 
     def __repr__(self):
-        return self.__str__()
+        return ' '.join(self.RHS)
+        # return '\n\tRHS({RHS}\n\t\tfirst={first}\n\t\tfollow={follow}\t'.format(
+        #     RHS=self.RHS,
+        #     first=self.first,
+        #     follow=self.follow
+        # )
+
+    def inverse_RHS_multiple_push(self):
+        rev_rhs = []
+        for i in reversed(self.RHS):
+            rev_rhs.append(i)
+        return rev_rhs

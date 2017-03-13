@@ -45,13 +45,14 @@ class Token(object):
     def __str__(self):
         """String representation of the class instance."""
 
-        return 'Token({type}, {termtype}, {value}, Line:Pos=({line}, {pos}))'.format(
-            type=self.type,
-            termtype=self.termtype,
-            value=repr(self.value),
-            line=self.line,
-            pos=self.pos
-        )
+        return self.value
+        # return 'Token({type}, {termtype}, {value}, Line:Pos=({line}, {pos}))'.format(
+        #     type=self.type,
+        #     termtype=self.termtype,
+        #     value=repr(self.value),
+        #     line=self.line,
+        #     pos=self.pos
+        # )
 
     def __repr__(self):
         return self.__str__()
