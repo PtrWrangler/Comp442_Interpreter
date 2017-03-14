@@ -52,7 +52,7 @@ paramsOrIndice   -> indice
 variable         -> ID indice 
 indice           -> [ arithExpr ] indice 
 indice           -> EPSILON 
-arraySize        -> [ int ] 
+arraySize        -> [ INT ]
 arraySize        -> EPSILON 
 type             -> ID 
 type             -> float 

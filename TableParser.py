@@ -13,8 +13,8 @@ import string
 #testFile = "test_classANDprog.txt"
 #testFile = "test_loopsANDifs.txt"
 #testFile = "test_Arith.txt"
-#testFile = "test_funcParams.txt"
-testFile = "test_expr.txt"
+testFile = "test_funcParams.txt"
+#testFile = "test_expr.txt"
 
 test_dir = "testing/"
 infile = test_dir + testFile

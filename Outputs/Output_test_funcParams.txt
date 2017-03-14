@@ -1,8 +1,0 @@
-classfunctesting{
-voidfunc(objsample[1],objsample[2]){
-};
-inti;
-};
-program{
-maxvalue=utility.findmax(sample);
-};

@@ -7,6 +7,10 @@ todo:
 	implement the parser
 
 A3 look over:
+    todo:
+    arraySize changed int to INT
+
+    done:
 	for parsing the PPT_grammar into object, need to check if EPSILON in the production line, if not then in the first set because it may be in there resulting in it having both a first and follow set.
 	
 A2 look over:
