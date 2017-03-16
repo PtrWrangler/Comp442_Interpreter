@@ -1,9 +1,0 @@
-classgg{
-testtest[1];
-}classbook{
-inti;
-floatt;
-floatggggggg;
-}classs{
-intt;
-}

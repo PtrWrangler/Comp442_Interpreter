@@ -9,6 +9,7 @@ todo:
 A3 look over:
     todo:
     arraySize changed int to INT
+    nicely display 2d table for debug?
 
     done:
 	for parsing the PPT_grammar into object, need to check if EPSILON in the production line, if not then in the first set because it may be in there resulting in it having both a first and follow set.

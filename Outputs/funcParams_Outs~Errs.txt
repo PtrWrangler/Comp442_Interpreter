@@ -1,0 +1,19 @@
+OUTPUT OF test_funcParams.txt: 
+
+class functesting {
+    void func ( obj sample [ 1 ] , obj sample [ 2 ] ) {
+        
+    };
+    int i ;
+    
+};
+program {
+    maxvalue = utility ( sample ) ;
+    
+};
+
+
+ERRORS OF test_funcParams.txt:
+
+table error, Expected {paramsOrIndice -> ( aParams ) | indice} found Token(., '.', Line:Pos=(12, 20))
+table error, Expected {paramsOrIndice -> ( aParams ) | indice} found Token(ID, 'findmax', Line:Pos=(12, 27))

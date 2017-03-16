@@ -1,4 +1,0 @@
-
-~err in: term(): Token(KEYWORD, 'not', Line:Pos=(7, 32))
-
-main parse() returning True

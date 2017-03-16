@@ -1,8 +1,0 @@
-
-~err in: progBody(): Token(CURLY_CLOSE, '}', Line:Pos=(12, 2))
-
-~err in: progBody(): Token(SEMI_COLON, ';', Line:Pos=(12, 3))
-
-~err in: prog(): Token($, None, Line:Pos=(12, 3))
-
-main parse() returning False

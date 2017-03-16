@@ -19,19 +19,21 @@ testFile = "test_funcParams.txt"
 test_dir = "testing/"
 infile = test_dir + testFile
 
+outfile_name = testFile.split("_", 1)[1].split('.')[0] + "_Outs~Errs.txt"
+
 
 class Syntactic_Parser(object):
     def __init__(self):
         print "Syntactical_Parser: in __init__"
 
         # Initialize logs and log messages
-        self.outfile = "Outputs/Output_" + testFile
-        self.error_log = "Outputs/ErrorLog_" + testFile
+        self.outfile = "Outputs/" + outfile_name
         self.f = open(infile)
         self.o = open(self.outfile, 'w+')
-        self.err = open(self.error_log, 'w+')
-        self.err_token = ''
-        self.output = ''
+        self.output = 'OUTPUT OF ' + testFile + ": \n\n"
+        self.errs = '\n\nERRORS OF ' + testFile + ":\n\n"
+        # just keeps measure of tabbng for nice output
+        self.tabbed_scope = ''
 
         # generate grammar object from the specs file
         self.g = Grammar()
@@ -68,10 +70,13 @@ class Syntactic_Parser(object):
 
             if top in self.terminal_list and top != EPSILON:
                 if top == self.lookahead.termtype:
+                    self.format_output()
+
                     self.stack.pop()
                     self.lookahead = self.interpreter.scanner()
                 else:
                     print "error, wrong token"
+                    self.errs += "error, wrong token. Expected: " + top + " found " + self.lookahead.__str__() + "\n"
                     error = True
                     self.lookahead = self.interpreter.scanner()
 
@@ -81,7 +86,7 @@ class Syntactic_Parser(object):
                 #print self.lookahead
 
                 if self.table[top.p_id][self.terminal_list.index(self.lookahead.termtype)] is not -1:
-                    # top is not the corresponding correct RHS from table
+                    # top is now the corresponding correct RHS from table
                     top = self.table[top.p_id][self.terminal_list.index(self.lookahead.termtype)]
 
                     self.stack.pop()
@@ -89,6 +94,7 @@ class Syntactic_Parser(object):
                     print self.stack
                 else:
                     print "error, table position is -1"
+                    self.errs += "table error, Expected {" + top.str_production + "} found " + self.lookahead.__str__() + '\n'
                     error = True
                     self.lookahead = self.interpreter.scanner()
 
@@ -112,10 +118,26 @@ class Syntactic_Parser(object):
 
 
         #self.prettify_output()
-        #self.o.write(self.output)
+        self.o.write(self.output)
+        self.o.write(self.errs)
 
         self.o.close()
-        self.err.close()
+        #self.err.close()
+
+    def format_output(self):
+        if self.lookahead.value == ';':
+            self.output += self.lookahead.value + "\n" + self.tabbed_scope
+
+        # handle curly braces
+        elif self.lookahead.value == '{':
+            self.tabbed_scope += '    '
+            self.output += self.lookahead.value + "\n" + self.tabbed_scope
+        elif self.lookahead.value == '}':
+            self.tabbed_scope = self.tabbed_scope[:-4]
+            self.output += "\n" + self.tabbed_scope + self.lookahead.value
+
+        else:
+            self.output += self.lookahead.value + " "
 
     # create predictive parsing table
     def initialize_parsing_table(self):
