@@ -1,0 +1,160 @@
+OUTPUT OF test_Utility.txt: 
+
+class utility {
+    int var1 [ 4 ] [ 5 ] [ 7 ] [ 8 ] [ 9 ] [ 1 ] [ 0 ] ;
+    float var2 ;
+    int findmax ( int array [ 100 ] ) {
+        int maxvalue ;
+        int idx ;
+        maxvalue = array [ 100 ] ;
+        for ( int idx = 99 ;
+        idx > 0 ;
+        idx = idx - 1 ) {
+            if ( array [ idx ] > maxvalue ) then {
+                maxvalue = array [ idx ] ;
+                
+            }else {
+                
+            };
+            
+        };
+        return ( maxvalue ) ;
+        
+    };
+    int findmin ( int array [ 100 ] ) {
+        int minvalue ;
+        int idx ;
+        minvalue = array [ 100 ] ;
+        for ( int idx = 1 ;
+        idx <= 99 ;
+        idx = ( idx ) + 1 ) {
+            if ( array [ idx ] < maxvalue ) then {
+                maxvalue = array [ idx ] ;
+                
+            }else {
+                
+            };
+            
+        };
+        return ( minvalue ) ;
+        
+    };
+    
+};
+program {
+    int sample [ 100 ] ;
+    int idx ;
+    int maxvalue ;
+    int minvalue ;
+    utility utility ;
+    utility arrayutility [ 2 ] [ 3 ] [ 6 ] [ 7 ] ;
+    for ( int t = 0 ;
+    t <= 100 ;
+    t = t + 1 ) {
+        get ( sample [ t ] ) ;
+        sample [ t ] = ( sample [ t ] * randomize ( maxvalue ( sample ) ) ) ;
+        put ( minvalue ) ;
+        
+    };
+    float randomize ;
+    value = 100 * ( 2 + 3.0 / 7.0006 ) ;
+    value = 1.05 + ( ( 2.04 * 2.47 ) - 3.0 ) + 7.0006 ;
+    return ( value ) ;
+    
+};
+
+
+ERRORS OF test_Utility.txt:
+
+table error, Expected {aParams -> expr aParamsTail} found Token(), ')', Line:Pos=(44, 45))
+table error, Expected {aParams -> expr aParamsTail} found Token(), ')', Line:Pos=(44, 46))
+table error, Expected {aParams -> expr aParamsTail} found Token(;, ';', Line:Pos=(44, 47))
+table error, Expected {aParams -> expr aParamsTail} found Token(}, '}', Line:Pos=(45, 6))
+table error, Expected {aParams -> expr aParamsTail} found Token(;, ';', Line:Pos=(45, 7))
+table error, Expected {paramsOrIndice -> ( aParams ) | indice} found Token(=, '=', Line:Pos=(46, 15))
+table error, Expected {paramsOrIndice -> ( aParams ) | indice} found Token(ID, 'utility', Line:Pos=(46, 23))
+table error, Expected {paramsOrIndice -> ( aParams ) | indice} found Token(., '.', Line:Pos=(46, 24))
+table error, Expected {paramsOrIndice -> ( aParams ) | indice} found Token(ID, 'findmax', Line:Pos=(46, 31))
+table error, Expected {aParamsTail -> , expr aParamsTail | EPSILON} found Token(;, ';', Line:Pos=(46, 40))
+table error, Expected {aParamsTail -> , expr aParamsTail | EPSILON} found Token(ID, 'minvalue', Line:Pos=(47, 13))
+table error, Expected {aParamsTail -> , expr aParamsTail | EPSILON} found Token(=, '=', Line:Pos=(47, 15))
+table error, Expected {aParamsTail -> , expr aParamsTail | EPSILON} found Token(ID, 'utility', Line:Pos=(47, 23))
+table error, Expected {aParamsTail -> , expr aParamsTail | EPSILON} found Token(., '.', Line:Pos=(47, 24))
+table error, Expected {aParamsTail -> , expr aParamsTail | EPSILON} found Token(ID, 'findmin', Line:Pos=(47, 31))
+table error, Expected {aParamsTail -> , expr aParamsTail | EPSILON} found Token((, '(', Line:Pos=(47, 32))
+table error, Expected {aParamsTail -> , expr aParamsTail | EPSILON} found Token(ID, 'sample', Line:Pos=(47, 38))
+error, wrong token. Expected: ) found Token(;, ';', Line:Pos=(47, 40))
+error, wrong token. Expected: ) found Token(ID, 'utility', Line:Pos=(48, 12))
+error, wrong token. Expected: ) found Token(., '.', Line:Pos=(48, 13))
+error, wrong token. Expected: ) found Token(ID, 'var1', Line:Pos=(48, 18))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(48, 19))
+error, wrong token. Expected: ) found Token(INT, '4', Line:Pos=(48, 20))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(48, 21))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(48, 22))
+error, wrong token. Expected: ) found Token(INT, '1', Line:Pos=(48, 23))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(48, 24))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(48, 25))
+error, wrong token. Expected: ) found Token(INT, '0', Line:Pos=(48, 26))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(48, 27))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(48, 28))
+error, wrong token. Expected: ) found Token(INT, '0', Line:Pos=(48, 29))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(48, 30))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(48, 31))
+error, wrong token. Expected: ) found Token(INT, '0', Line:Pos=(48, 32))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(48, 33))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(48, 34))
+error, wrong token. Expected: ) found Token(INT, '0', Line:Pos=(48, 35))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(48, 36))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(48, 37))
+error, wrong token. Expected: ) found Token(INT, '0', Line:Pos=(48, 38))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(48, 39))
+error, wrong token. Expected: ) found Token(=, '=', Line:Pos=(48, 41))
+error, wrong token. Expected: ) found Token(INT, '10', Line:Pos=(48, 44))
+error, wrong token. Expected: ) found Token(;, ';', Line:Pos=(48, 45))
+error, wrong token. Expected: ) found Token(ID, 'arrayutility', Line:Pos=(49, 17))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(49, 18))
+error, wrong token. Expected: ) found Token(INT, '1', Line:Pos=(49, 19))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(49, 20))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(49, 21))
+error, wrong token. Expected: ) found Token(INT, '1', Line:Pos=(49, 22))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(49, 23))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(49, 24))
+error, wrong token. Expected: ) found Token(INT, '1', Line:Pos=(49, 25))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(49, 26))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(49, 27))
+error, wrong token. Expected: ) found Token(INT, '1', Line:Pos=(49, 28))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(49, 29))
+error, wrong token. Expected: ) found Token(., '.', Line:Pos=(49, 30))
+error, wrong token. Expected: ) found Token(ID, 'var1', Line:Pos=(49, 34))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(49, 35))
+error, wrong token. Expected: ) found Token(INT, '4', Line:Pos=(49, 36))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(49, 37))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(49, 38))
+error, wrong token. Expected: ) found Token(INT, '1', Line:Pos=(49, 39))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(49, 40))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(49, 41))
+error, wrong token. Expected: ) found Token(INT, '0', Line:Pos=(49, 42))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(49, 43))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(49, 44))
+error, wrong token. Expected: ) found Token(INT, '0', Line:Pos=(49, 45))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(49, 46))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(49, 47))
+error, wrong token. Expected: ) found Token(INT, '0', Line:Pos=(49, 48))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(49, 49))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(49, 50))
+error, wrong token. Expected: ) found Token(INT, '0', Line:Pos=(49, 51))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(49, 52))
+error, wrong token. Expected: ) found Token([, '[', Line:Pos=(49, 53))
+error, wrong token. Expected: ) found Token(INT, '0', Line:Pos=(49, 54))
+error, wrong token. Expected: ) found Token(], ']', Line:Pos=(49, 55))
+error, wrong token. Expected: ) found Token(=, '=', Line:Pos=(49, 57))
+error, wrong token. Expected: ) found Token(INT, '2', Line:Pos=(49, 59))
+error, wrong token. Expected: ) found Token(;, ';', Line:Pos=(49, 60))
+error, wrong token. Expected: ) found Token(put, 'put', Line:Pos=(50, 8))
+error, wrong token. Expected: ) found Token((, '(', Line:Pos=(50, 9))
+error, wrong token. Expected: ) found Token(ID, 'maxvalue', Line:Pos=(50, 17))
+table error, Expected {varDeclTail -> indice is_Assign ;} found Token((, '(', Line:Pos=(53, 17))
+table error, Expected {varDeclTail -> indice is_Assign ;} found Token(), ')', Line:Pos=(53, 18))
+table error, Expected {varDeclTail -> indice is_Assign ;} found Token({, '{', Line:Pos=(54, 2))
+table error, Expected {varDeclTail -> indice is_Assign ;} found Token(float, 'float', Line:Pos=(55, 10))
+table error, Expected {varDeclTail -> indice is_Assign ;} found Token(ID, 'value', Line:Pos=(55, 16))

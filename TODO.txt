@@ -8,6 +8,15 @@ todo:
 
 A3 look over:
     todo:
+    I think I will force program function to be the last function in the code
+        all classes and free functions must be declared before it.
+
+    a class can only declare variables and functions
+
+    a function can declare/assign variables, use (class/free) functions, use expressions
+
+    program behaves like a function but there is only one (like a main) and it must be at the end.
+
     arraySize changed int to INT
     nicely display 2d table for debug?
 

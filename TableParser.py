@@ -8,12 +8,12 @@ import string
 
 """     test input files    """
 # testFile = "test_MEGA_reutersFile.sgm"
-#testFile = "test_Utility.txt"
+testFile = "test_Utility.txt"
 #testFile = "test_errRecover.txt"
 #testFile = "test_classANDprog.txt"
 #testFile = "test_loopsANDifs.txt"
 #testFile = "test_Arith.txt"
-testFile = "test_funcParams.txt"
+#testFile = "test_funcParams.txt"
 #testFile = "test_expr.txt"
 
 test_dir = "testing/"

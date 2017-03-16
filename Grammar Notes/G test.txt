@@ -1,4 +1,4 @@
-prog             -> classDecl progBody 
+prog             -> classDecl funcDef progBody
 classDecl        -> class ID { classBody } ; classDecl 
 classDecl        -> EPSILON 
 classBody        -> type ID varOrFunc 
@@ -7,7 +7,7 @@ classBody        -> EPSILON
 varOrFunc        -> ( fParams ) funcBody ; classBody 
 varOrFunc        -> indice ; classBody
 
-progBody         -> program funcBody ; funcDef 
+progBody         -> program funcBody ;
 funcHead         -> type ID ( fParams ) 
 funcDef          -> funcHead funcBody ; funcDef 
 funcDef          -> EPSILON 
@@ -47,12 +47,15 @@ gen_Term         -> multOp term
 gen_Term         -> EPSILON 
 factor           -> ( arithExpr ) 
 factor           -> FLOAT 
-factor           -> ID paramsOrIndice 
+factor           -> objectVarOrFunc
 factor           -> INT 
 factor           -> not factor 
-factor           -> sign factor 
+factor           -> sign factor
+objectVarOrFunc  -> ID paramsOrIndice
 paramsOrIndice   -> ( aParams ) 
-paramsOrIndice   -> indice 
+paramsOrIndice   -> indice is_nest
+is_nest          -> . objectVarOrFunc
+is_nest          -> EPSILON
 variable         -> ID indice 
 indice           -> [ arithExpr ] indice 
 indice           -> EPSILON 
