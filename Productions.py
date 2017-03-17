@@ -47,6 +47,7 @@ class Grammar(object):
 
         with open(grammar_specs_file, 'r') as f:
             for l in f.readlines():
+                l = l.replace(' \r\n', '\n')
                 if '->' in l:
 
                     # remove trailing \n, multi spaces. extract name, RHS terminals/non-terminals

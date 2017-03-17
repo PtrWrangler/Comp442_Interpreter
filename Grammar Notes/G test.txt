@@ -13,13 +13,12 @@ funcDef          -> funcHead funcBody ; funcDef
 funcDef          -> EPSILON 
 funcBody         -> { gen_statements }
 
-varDecl          -> P_Type ID indice varDeclTail
+varDecl          -> P_Type ID indice is_Assign ;
 varDecl          -> UD_Type createOrAssign
 createOrAssign   -> ID indice ;
-createOrAssign   -> indice gen_nest assign
+createOrAssign   -> indice gen_nest assign ;
 gen_nest         -> . ID indice gen_nest
 gen_nest         -> EPSILON
-varDeclTail      -> is_Assign ;
 is_Assign        -> assign
 is_Assign        -> EPSILON
 assign           -> assignOp expr

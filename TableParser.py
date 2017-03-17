@@ -66,7 +66,8 @@ class Syntactic_Parser(object):
         error = False
         while self.stack[-1] is not EOF:
             top = self.stack[-1]
-            print "top = " + top
+            print "top       = " + top
+            print "lookahead = " + self.lookahead.value
 
             if top in self.terminal_list and top != EPSILON:
                 if top == self.lookahead.termtype:
@@ -105,6 +106,10 @@ class Syntactic_Parser(object):
                 print "error, top symbol was not a production/token/EPSILON"
                 error = True
                 break
+
+            self.o.write(self.output)
+            self.o.flush()
+            self.output = ''
 
         if self.lookahead is not EOF:
             print "not EOF"

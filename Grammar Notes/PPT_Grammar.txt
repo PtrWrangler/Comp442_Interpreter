@@ -22,9 +22,9 @@ funcDef          -> EPSILON
 [program]
 funcBody         -> { gen_statements } 
 [{]
-varDecl          -> P_Type ID indice varDeclTail 
+varDecl          -> P_Type ID indice varDeclTail
 [float, int]
-varDecl          -> UD_Type createOrAssign varDeclTail 
+varDecl          -> UD_Type createOrAssign
 [ID]
 createOrAssign   -> ID indice ; 
 [ID]
