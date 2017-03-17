@@ -13,13 +13,16 @@ funcDef          -> funcHead funcBody ; funcDef
 funcDef          -> EPSILON 
 funcBody         -> { gen_statements }
 
-varDecl          -> P_Type ID varDeclTail 
-varDecl          -> UD_Type createOrAssign varDeclTail 
-createOrAssign   -> ID 
-createOrAssign   -> EPSILON 
-varDeclTail      -> indice is_Assign ; 
-is_Assign        -> assignOp expr 
+varDecl          -> P_Type ID indice varDeclTail
+varDecl          -> UD_Type createOrAssign
+createOrAssign   -> ID indice ;
+createOrAssign   -> indice gen_nest assign
+gen_nest         -> . ID indice gen_nest
+gen_nest         -> EPSILON
+varDeclTail      -> is_Assign ;
+is_Assign        -> assign
 is_Assign        -> EPSILON
+assign           -> assignOp expr
 
 statement        -> for ( type ID assignOp expr ; relExpr ; assignStat ) statBlock ; 
 statement        -> if ( expr ) then statBlock else statBlock ; 
