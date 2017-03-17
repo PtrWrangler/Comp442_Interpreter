@@ -22,20 +22,18 @@ funcDef          -> EPSILON
 [program]
 funcBody         -> { gen_statements } 
 [{]
-varDecl          -> P_Type ID indice varDeclTail
+varDecl          -> P_Type ID indice is_Assign ;
 [float, int]
 varDecl          -> UD_Type createOrAssign
 [ID]
 createOrAssign   -> ID indice ; 
 [ID]
-createOrAssign   -> indice gen_nest assign 
+createOrAssign   -> indice gen_nest assign ; 
 [[, ., =]
 gen_nest         -> . ID indice gen_nest 
 [.]
 gen_nest         -> EPSILON 
 [=]
-varDeclTail      -> is_Assign ; 
-[=, ;]
 is_Assign        -> assign 
 [=]
 is_Assign        -> EPSILON 
@@ -73,13 +71,13 @@ relExpr          -> arithExpr relOp arithExpr
 gen_relArithExpr -> relOp arithExpr 
 [<, <=, <>, ==, >, >=]
 gen_relArithExpr -> EPSILON 
-[}, for, if, get, put, return, float, int, ID, ;, else, ), ,]
+[;, ), ,]
 arithExpr        -> term gen_addArithExpr 
 [(, FLOAT, ID, INT, not, +, -]
 gen_addArithExpr -> addOp arithExpr 
 [+, -, or]
 gen_addArithExpr -> EPSILON 
-[}, for, if, get, put, return, float, int, ID, ;, else, ), ,, <, <=, <>, ==, >, >=, ]]
+[;, ), ,, <, <=, <>, ==, >, >=, ]]
 sign             -> + 
 [+]
 sign             -> - 
@@ -89,7 +87,7 @@ term             -> factor gen_Term
 gen_Term         -> multOp term 
 [*, /, and]
 gen_Term         -> EPSILON 
-[}, for, if, get, put, return, float, int, ID, ;, else, ), ,, <, <=, <>, ==, >, >=, ], +, -, or]
+[;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or]
 factor           -> ( arithExpr ) 
 [(]
 factor           -> objectVarOrFunc 
@@ -108,17 +106,17 @@ paramsOrIndice   -> ( aParams )
 [(]
 paramsOrIndice   -> indice is_nest
 [[, EPSILON, .]
-[}, for, if, get, put, return, float, int, ID, ;, else, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
+[;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
 is_nest          -> . objectVarOrFunc 
 [.]
 is_nest          -> EPSILON 
-[}, for, if, get, put, return, float, int, ID, ;, else, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
+[;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
 variable         -> ID indice 
 [ID]
 indice           -> [ arithExpr ] indice 
 [[]
 indice           -> EPSILON 
-[;, =, ., }, for, if, get, put, return, float, int, ID, else, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
+[;, =, ., ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
 arraySize        -> [ INT ]
 [[]
 arraySize        -> EPSILON 
