@@ -72,6 +72,7 @@ UD_Type          -> ID
 fParams          -> type ID arraySize fParamsTail 
 fParams          -> EPSILON 
 aParams          -> expr aParamsTail 
+aParams          -> EPSILON 
 fParamsTail      -> , type ID arraySize fParamsTail 
 fParamsTail      -> EPSILON 
 aParamsTail      -> , expr aParamsTail 

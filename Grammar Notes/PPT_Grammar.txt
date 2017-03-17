@@ -139,6 +139,8 @@ fParams          -> EPSILON
 [)]
 aParams          -> expr aParamsTail 
 [(, FLOAT, ID, INT, not, +, -]
+aParams          -> EPSILON 
+[)]
 fParamsTail      -> , type ID arraySize fParamsTail 
 [,]
 fParamsTail      -> EPSILON 
