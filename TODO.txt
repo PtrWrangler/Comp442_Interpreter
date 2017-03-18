@@ -8,21 +8,30 @@ todo:
 
 A3 look over:
     todo:
-    I think I will force program function to be the last function in the code
-        all classes and free functions must be declared before it.
+    - do not tolower all incoming tokens in scanner
+    - implement errors
+    - nicely display 2d table for debug?
 
-    a class can only declare variables and functions
+    semantic errors to be caught:
+    - circular dependancy of class variables
+    - using a variable before it is defined.
+    - duplicate variable definition (in same scope)
 
-    a function can declare/assign variables, use (class/free) functions, use expressions
-
-    program behaves like a function but there is only one (like a main) and it must be at the end.
 
     arraySize changed int to INT
-    nicely display 2d table for debug?
+
 
     done:
 	for parsing the PPT_grammar into object, need to check if EPSILON in the production line, if not then in the first set because it may be in there resulting in it having both a first and follow set.
-	
+
+	I think I will force program function to be the last function in the code
+        all classes and free functions must be declared before it.
+    a class can only declare variables and functions
+    a function can declare/assign variables, use (class/free) functions, use expressions
+    program behaves like a function but there is only one (main program) and it must be at the end.
+
+
+
 A2 look over:
     in factor it is figuratively a int/float
     in arithExpr it is figuratively a int/float

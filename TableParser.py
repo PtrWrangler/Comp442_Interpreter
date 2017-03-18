@@ -1,9 +1,8 @@
 from Lexer import Lexical_Analyzer, Token
 from Lexer import SCAN_ERROR, EOF, EPSILON
 from Lexer import all_registered_terminals
-from Productions import Grammar, Production, Right_hand_side
-import ff_sets
-from ff_sets import *
+from Grammar import Grammar, Production, Right_hand_side
+
 import string
 
 """     test input files    """
@@ -111,10 +110,11 @@ class Syntactic_Parser(object):
             self.o.flush()
             self.output = ''
 
-        if self.lookahead is not EOF:
-            print "not EOF"
-        else:
+        if self.lookahead is EOF or self.stack[-1] is EOF:
+            # if lookeahead i not EOF than should throw a scan error
             print "reached EOF"
+        else:
+            print "not EOF"
 
         if error is True:
             print "error is True"
@@ -171,52 +171,6 @@ class Syntactic_Parser(object):
                     self.table[self.g.productions[prod_idx].p_id][terminal_idx] = prod_RHS
 
         print_table(self.table)
-
-    def match(self, token):
-        if self.lookahead.value is not None:
-            print "Syntactical_Parser: match(" + self.lookahead.value + ", " + token + ")"
-        if self.lookahead.value == token:
-            self.output += self.lookahead.value
-            self.lookahead = self.interpreter.scanner()
-            return True
-        else:
-            # self.lookahead = self.interpreter.scanner()
-            return False
-
-    def match_type(self, type):
-        if self.lookahead.value is not None:
-            print "Syntactical_Parser: match_type(" + self.lookahead.type + ", " + type + ")"
-        if self.lookahead.type == type:
-            self.output += self.lookahead.value
-            self.lookahead = self.interpreter.scanner()
-            return True
-        else:
-            # self.lookahead = self.interpreter.scanner()
-            return False
-
-    def is_type_Id(self):
-        if self.lookahead.type == 'Id':
-            return True
-        else:
-            return False
-
-    def prettify_output(self):
-        # self.o = open(self.outfile, 'rw+')
-        scope = 0
-        tabs = ''
-        newline = False
-        for c in self.output:
-            if c == '}':
-                tabs = tabs[:-4]
-
-            elif c == '{':
-                tabs += '    '
-                c = '{\n'
-
-            elif c == ';':
-                c = ';\n'
-
-            self.o.write(c)
 
 
 def print_table(table):
