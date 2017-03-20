@@ -115,7 +115,7 @@ class Lexical_Analyzer(object):
             token += self.current_char
             self.advance()
 
-        token = token.lower()
+        # token = token.lower()
         if token in reserved_words:
             print "reserved word: ", token
             return Token(KEYWORD, token, token, self.line_number, self.line_pos)

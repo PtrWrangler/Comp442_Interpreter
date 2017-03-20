@@ -1,22 +1,44 @@
-prog             -> classDecl funcDef progBody
-classDecl        -> class ID { classBody } ; classDecl 
+GLOBAL_TABLE, CLASS_ENTRY_TABLE, CLASS_FUNC_ENTRY_TABLE, CLASS_VAR_ENTRY, ENTRY_TYPE, ENTRY_NAME, END_CLASS
+[A-Z]*_[A-Z]*
+
+CLASS_ENTRY():
+    entry.level = current_level
+    entry.kind = class
+    entry.name = pop last ID
+    level++
+    entry.link = Symbol_Table(level, name)
+    symbol_table_stack.append(entry)
+
+CLASS_TABLE():
+    level--
+    link all level+1 entries to last entry?
+    ...
+
+ENTRY_TYPE():
+    var_stack.push(last token(type))
+
+ENTRY_NAME():
+    var_stack.push(last token(ID))
+
+prog             -> GLOBAL_TABLE classDecl funcDef progBody
+classDecl        -> class ID CLASS_ENTRY_TABLE { classBody } ; END_CLASS classDecl
 classDecl        -> EPSILON 
-classBody        -> type ID varOrFunc 
+classBody        -> type ENTRY_TYPE ID ENTRY_NAME varOrFunc
 classBody        -> EPSILON
 
-varOrFunc        -> ( fParams ) funcBody ; classBody 
-varOrFunc        -> indice ; classBody
+varOrFunc        -> ( fParams ) CLASS_FUNC_ENTRY_TABLE funcBody ; classBody
+varOrFunc        -> indice ; CLASS_VAR_ENTRY classBody
 
-progBody         -> program funcBody ;
-funcHead         -> type ID ( fParams ) 
-funcDef          -> funcHead funcBody ; funcDef 
-funcDef          -> EPSILON 
+progBody         -> program funcBody ; GLOBAL_TABLE
+funcHead         -> type ID ( fParams ) FUNC_ENTRY
+funcDef          -> funcHead funcBody ; FUNC_TABLE funcDef
+funcDef          -> EPSILON
 funcBody         -> { gen_statements }
 
-varDecl          -> P_Type ID indice is_Assign ;
+varDecl          -> P_Type ID indice is_Assign ; VAR_ENTRY
 varDecl          -> UD_Type createOrAssign
-createOrAssign   -> ID indice ;
-createOrAssign   -> indice gen_nest assign ;
+createOrAssign   -> ID indice ; VAR_ENTRY
+createOrAssign   -> indice gen_nest assign ; VAR_ENTRY
 gen_nest         -> . ID indice gen_nest
 gen_nest         -> EPSILON
 is_Assign        -> assign

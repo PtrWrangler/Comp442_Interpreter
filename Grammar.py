@@ -18,7 +18,7 @@ class Grammar(object):
 
         self.productions = {}
 
-        grammar_specs_file = "Grammar Notes/PPT_Grammar.txt"
+        grammar_specs_file = "Grammar Notes/PPT_Grammar+.txt"
         # initialize list of productions from input file
         self.parse_grammar_file(grammar_specs_file)
 
