@@ -1,48 +1,24 @@
-GLOBAL_TABLE, CLASS_ENTRY_TABLE, CLASS_FUNC_ENTRY_TABLE, CLASS_VAR_ENTRY, ENTRY_TYPE, ENTRY_NAME, END_CLASS
-[A-Z]*_[A-Z]*
-
-CLASS_ENTRY():
-    entry.level = current_level
-    entry.kind = class
-    entry.name = pop last ID
-    level++
-    entry.link = Symbol_Table(level, name)
-    symbol_table_stack.append(entry)
-
-CLASS_TABLE():
-    level--
-    link all level+1 entries to last entry?
-    ...
-
-ENTRY_TYPE():
-    var_stack.push(last token(type))
-
-ENTRY_NAME():
-    var_stack.push(last token(ID))
-
-prog             -> GLOBAL_TABLE classDecl funcDef progBody
-classDecl        -> class ID CLASS_ENTRY_TABLE { classBody } ; END_CLASS classDecl
+prog             -> classDecl funcDef progBody
+classDecl        -> class ID { classBody } ; classDecl 
 classDecl        -> EPSILON 
-classBody        -> type ENTRY_TYPE ID ENTRY_NAME varOrFunc
+classBody        -> type ID varOrFunc 
 classBody        -> EPSILON
 
-varOrFunc        -> ( fParams ) CLASS_FUNC_ENTRY_TABLE funcBody ; classBody
-varOrFunc        -> indice ; CLASS_VAR_ENTRY classBody
+varOrFunc        -> ( fParams ) funcBody ; classBody 
+varOrFunc        -> arraySize ; classBody
 
-progBody         -> program funcBody ; GLOBAL_TABLE
-funcHead         -> type ID ( fParams ) FUNC_ENTRY
-funcDef          -> funcHead funcBody ; FUNC_TABLE funcDef
-funcDef          -> EPSILON
+progBody         -> program funcBody ;
+funcHead         -> type ID ( fParams ) 
+funcDef          -> funcHead funcBody ; funcDef 
+funcDef          -> EPSILON 
 funcBody         -> { gen_statements }
 
-varDecl          -> P_Type ID indice is_Assign ; VAR_ENTRY
-varDecl          -> UD_Type createOrAssign
-createOrAssign   -> ID indice ; VAR_ENTRY
-createOrAssign   -> indice gen_nest assign ; VAR_ENTRY
+varDecl          -> P_Type ID arraySize ;
+varDecl          -> ID createOrAssign
+createOrAssign   -> ID arraySize ;
+createOrAssign   -> indice gen_nest assign ;
 gen_nest         -> . ID indice gen_nest
 gen_nest         -> EPSILON
-is_Assign        -> assign
-is_Assign        -> EPSILON
 assign           -> assignOp expr
 
 statement        -> for ( type ID assignOp expr ; relExpr ; assignStat ) statBlock ; 
@@ -56,23 +32,20 @@ gen_statements   -> EPSILON
 assignStat       -> variable assignOp expr 
 statBlock        -> { gen_statements } 
 statBlock        -> statement 
-statBlock        -> EPSILON
-
+statBlock        -> EPSILON 
 expr             -> arithExpr gen_relArithExpr 
-arithExpr        -> term gen_addArithExpr
-term             -> factor gen_Term
-
-relExpr          -> arithExpr relOp arithExpr
-gen_relArithExpr -> relOp arithExpr
-gen_relArithExpr -> EPSILON
-gen_addArithExpr -> addOp arithExpr
-gen_addArithExpr -> EPSILON
-gen_Term         -> multOp term
-gen_Term         -> EPSILON
-sign             -> +
-sign             -> -
-
-factor           -> ( arithExpr )
+relExpr          -> arithExpr relOp arithExpr 
+gen_relArithExpr -> relOp arithExpr 
+gen_relArithExpr -> EPSILON 
+arithExpr        -> term gen_addArithExpr 
+gen_addArithExpr -> addOp arithExpr 
+gen_addArithExpr -> EPSILON 
+sign             -> + 
+sign             -> - 
+term             -> factor gen_Term 
+gen_Term         -> multOp term 
+gen_Term         -> EPSILON 
+factor           -> ( arithExpr ) 
 factor           -> FLOAT 
 factor           -> objectVarOrFunc
 factor           -> INT 
@@ -84,16 +57,14 @@ paramsOrIndice   -> indice is_nest
 is_nest          -> . objectVarOrFunc
 is_nest          -> EPSILON
 variable         -> ID indice 
-indice           -> [ arithExpr ADD_DECL_INDICE ] indice
+indice           -> [ arithExpr ] indice 
 indice           -> EPSILON 
-arraySize        -> [ INT ]
+arraySize        -> [ INT ] arraySize
 arraySize        -> EPSILON 
 type             -> ID 
-type             -> float 
-type             -> int 
+type             -> P_Type
 P_Type           -> float 
 P_Type           -> int 
-UD_Type          -> ID 
 fParams          -> type ID arraySize fParamsTail 
 fParams          -> EPSILON 
 aParams          -> expr aParamsTail 
@@ -115,3 +86,4 @@ addOp            -> or
 multOp           -> * 
 multOp           -> / 
 multOp           -> and 
+

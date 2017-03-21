@@ -2,8 +2,7 @@
 
 class SemanticProcessor(object):
     def __init__(self):
-
-
+        print ''
 
     def __str__(self):
         """String representation of the class instance."""

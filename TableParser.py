@@ -4,8 +4,6 @@ from Lexer import all_registered_terminals
 from Grammar import Grammar, Production, Right_hand_side
 from Symbol_Table import Symbol_Table, Entry
 from SemanticProcessor import SemanticProcessor
-
-import string
 import copy
 
 """     test input files    """
@@ -22,6 +20,7 @@ test_dir = "testing/"
 infile = test_dir + testFile
 
 outfile_name = testFile.split("_", 1)[1].split('.')[0] + "_Outs~Errs.txt"
+
 
 class Syntactic_Parser(object):
     def __init__(self):
@@ -71,7 +70,7 @@ class Syntactic_Parser(object):
                            'CLASS_VAR_ENTRY': self.create_classVarEntry,
                            'ENTRY_TYPE': self.entryType,
                            'ENTRY_NAME': self.entryName,
-                           'ADD_DECL_INDICE': self.add_declIndice
+                           'ADD_DECL_ARRAY_DIM': self.add_declIndice
                            }
 
         # print self.g
@@ -85,7 +84,7 @@ class Syntactic_Parser(object):
         self.lookahead = self.interpreter.scanner()
 
         error = False
-        while self.parsing_stack[-1] is not EOF:
+        while self.parsing_stack[-1] is not EOF and self.lookahead.type is not EOF:
             top = self.parsing_stack[-1]
             print "top       = " + top
             print "lookahead = " + self.lookahead.value
@@ -108,7 +107,8 @@ class Syntactic_Parser(object):
                     print "error, wrong token"
                     self.errs += "error, wrong token. Expected: " + top + " found " + self.lookahead.__str__() + "\n"
                     error = True
-                    self.lookahead = self.interpreter.scanner()
+                    self.handleError()
+                    # self.lookahead = self.interpreter.scanner()
 
             # if top symbol is a grammar rule
             elif top in self.g.productions and type(self.g.productions[top]) is Production:
@@ -127,7 +127,8 @@ class Syntactic_Parser(object):
                     print "error, table position is -1"
                     self.errs += "table error, Expected {" + top.str_production + "} found " + self.lookahead.__str__() + '\n'
                     error = True
-                    self.lookahead = self.interpreter.scanner()
+                    self.handleError()
+                    # self.lookahead = self.interpreter.scanner()
 
             elif top == EPSILON:
                 self.parsing_stack.pop()
@@ -141,11 +142,17 @@ class Syntactic_Parser(object):
             self.o.flush()
             self.output = ''
 
-        if self.lookahead is EOF or self.parsing_stack[-1] is EOF:
+        # final parse report
+        if self.lookahead.type is EOF:
             # if lookeahead i not EOF than should throw a scan error
             print "reached EOF"
         else:
             print "not EOF"
+
+        if self.parsing_stack != ['$'] or []:
+            print "Grammar did not finish, heres whats left on the stack: \n" + str(self.parsing_stack)
+        else:
+            print "parsing stack is empty, program parsed correctly."
 
         if error is True:
             print "error is True"
@@ -174,20 +181,37 @@ class Syntactic_Parser(object):
         # self.SymbolTable_stack[0].entries.append(copy.deepcopy(self.entry_buffer))
         # print self.SymbolTable_stack[0].entries
 
-    '''
-    Two possible cases:
-    pop the stack if the next token is in the FOLLOW set of our current non-terminal on top of the stack.
-    scan tokens until we get one with which we can resume the parse.'''
-    def skipError(self):    # A is top()
-        print "syntax error at " + self.lookahead
-        if self.lookahead.termtype is '$':  # or in FOLLOW(top())
-            # pop()
-            print ''
+    # This error recovery technique syncronizes the stack and/or the lookahead to the next ;
+    def handleError(self):
+        print 'handling error...'
+        print 'in error, stack: ' + str(self.parsing_stack)
+        print 'in error, looky: ' + str(self.lookahead.value)
 
-        else:
-            while self.lookahead.termtype not in []:  # FIRST( top() ) or EPS in FIRST( top() ) and lookahead not in FOLLOW( top() )
-                print ''
-                # self.lookahead = nextToken()      # scan
+        # syncronizing the parsing stack to the next ;
+        while self.parsing_stack[-1] is not EOF and self.parsing_stack[-1] != ';':
+            top = self.parsing_stack[-1]
+            print 'top: ' + top
+            print 'parsing stack: ' + str(self.parsing_stack)
+
+            # if top is a production
+            if top in self.g.productions and type(self.g.productions[top]) is Production:
+                top = self.g.productions[top]
+
+                if EPSILON not in top.str_production:
+                    # expand it and push it reversed on the stack, as usual..
+                    top = top.RHSs[0]
+                    self.parsing_stack.pop()
+                    self.parsing_stack.extend(top.inverse_RHS_multiple_push())
+                    print 'inside print parsing stack: ' + str(self.parsing_stack)
+                else:
+                    self.parsing_stack.pop()
+            else:
+                self.parsing_stack.pop()
+
+        # syncronizing the lookahead scanner to next ;
+        while self.lookahead.value != ';':
+            self.lookahead = self.interpreter.scanner()
+            print 'scanning for a semi-colon... ' + self.lookahead.value
 
     def format_output(self):
         if self.lookahead.value == ';':
@@ -300,6 +324,5 @@ if __name__ == '__main__':
     parser = Syntactic_Parser()
     parser.parse()
 
-    # for i in all_registered_terminals[0]:
-    #     if i == 'if':
-    #         print all_registered_terminals[i]
+    # for i in parser.g.productions:
+    #     print parser.g.productions[i].str_production
