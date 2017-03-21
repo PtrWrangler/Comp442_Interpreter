@@ -12,6 +12,8 @@ A3 look over:
     - implement errors
     - nicely display 2d table for debug?
 
+    - no need for sub scope (new semantic table) when creating for or if statements
+
     semantic errors to be caught:
     - circular dependancy of class variables
     - using a variable before it is defined.

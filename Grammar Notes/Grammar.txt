@@ -56,20 +56,23 @@ gen_statements   -> EPSILON
 assignStat       -> variable assignOp expr 
 statBlock        -> { gen_statements } 
 statBlock        -> statement 
-statBlock        -> EPSILON 
+statBlock        -> EPSILON
+
 expr             -> arithExpr gen_relArithExpr 
-relExpr          -> arithExpr relOp arithExpr 
-gen_relArithExpr -> relOp arithExpr 
-gen_relArithExpr -> EPSILON 
-arithExpr        -> term gen_addArithExpr 
-gen_addArithExpr -> addOp arithExpr 
-gen_addArithExpr -> EPSILON 
-sign             -> + 
-sign             -> - 
-term             -> factor gen_Term 
-gen_Term         -> multOp term 
-gen_Term         -> EPSILON 
-factor           -> ( arithExpr ) 
+arithExpr        -> term gen_addArithExpr
+term             -> factor gen_Term
+
+relExpr          -> arithExpr relOp arithExpr
+gen_relArithExpr -> relOp arithExpr
+gen_relArithExpr -> EPSILON
+gen_addArithExpr -> addOp arithExpr
+gen_addArithExpr -> EPSILON
+gen_Term         -> multOp term
+gen_Term         -> EPSILON
+sign             -> +
+sign             -> -
+
+factor           -> ( arithExpr )
 factor           -> FLOAT 
 factor           -> objectVarOrFunc
 factor           -> INT 
@@ -81,7 +84,7 @@ paramsOrIndice   -> indice is_nest
 is_nest          -> . objectVarOrFunc
 is_nest          -> EPSILON
 variable         -> ID indice 
-indice           -> [ arithExpr ] indice 
+indice           -> [ arithExpr ADD_DECL_INDICE ] indice
 indice           -> EPSILON 
 arraySize        -> [ INT ]
 arraySize        -> EPSILON 

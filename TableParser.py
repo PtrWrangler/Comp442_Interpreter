@@ -3,14 +3,15 @@ from Lexer import SCAN_ERROR, EOF, EPSILON
 from Lexer import all_registered_terminals
 from Grammar import Grammar, Production, Right_hand_side
 from Symbol_Table import Symbol_Table, Entry
+from SemanticProcessor import SemanticProcessor
 
 import string
 import copy
 
 """     test input files    """
 # testFile = "test_MEGA_reutersFile.sgm"
-testFile = "test_Utility.txt"
-#testFile = "test_errRecover.txt"
+#testFile = "test_Utility.txt"
+testFile = "test_errRecover.txt"
 #testFile = "test_classANDprog.txt"
 #testFile = "test_loopsANDifs.txt"
 #testFile = "test_Arith.txt"
@@ -21,8 +22,6 @@ test_dir = "testing/"
 infile = test_dir + testFile
 
 outfile_name = testFile.split("_", 1)[1].split('.')[0] + "_Outs~Errs.txt"
-
-Semantic_Symbols = ['GLOBAL_TABLE', 'CLASS_TABLE', 'FUNC_TABLE', 'VAR_ENTRY', 'FUNC_ENTRY']
 
 class Syntactic_Parser(object):
     def __init__(self):
@@ -55,6 +54,8 @@ class Syntactic_Parser(object):
         self.interpreter = Lexical_Analyzer(self.f.read())
         self.lookahead = Token(EOF, EOF, '$', 0, 0)
 
+        self.SemanticProcessor = SemanticProcessor()
+
         # symbol tables,
         self.level = 0
         self.SymbolTable_stack = []
@@ -69,7 +70,8 @@ class Syntactic_Parser(object):
                            'END_CLASS_FUNC': self.end_classFunc,
                            'CLASS_VAR_ENTRY': self.create_classVarEntry,
                            'ENTRY_TYPE': self.entryType,
-                           'ENTRY_NAME': self.entryName
+                           'ENTRY_NAME': self.entryName,
+                           'ADD_DECL_INDICE': self.add_declIndice
                            }
 
         # print self.g
@@ -283,6 +285,10 @@ class Syntactic_Parser(object):
 
     def create_classVarEntry(self):
         print "creating create_varEntry"
+
+    def add_declIndice(self):
+        print 'adding an indice decl'
+
 
 
 def print_table(table):

@@ -113,7 +113,7 @@ is_nest          -> EPSILON
 [;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
 variable         -> ID indice 
 [ID]
-indice           -> [ arithExpr ] indice 
+indice           -> [ arithExpr ADD_DECL_INDICE ] indice
 [[]
 indice           -> EPSILON 
 [;, =, ., ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
