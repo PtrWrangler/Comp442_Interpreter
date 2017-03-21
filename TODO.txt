@@ -31,6 +31,9 @@ A3 look over:
     a class can only declare variables and functions
     a function can declare/assign variables, use (class/free) functions, use expressions
     program behaves like a function but there is only one (main program) and it must be at the end.
+	
+	I realized I had been using indice for variable declaration and assignmnent, but for decl I need to be using arraySize which forces integer index and cannot be an expression inside the [].
+	- arraySize -> [ INT ] arraySize
 
 
 

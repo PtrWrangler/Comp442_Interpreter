@@ -5,7 +5,7 @@ classBody        -> type ID varOrFunc
 classBody        -> EPSILON
 
 varOrFunc        -> ( fParams ) funcBody ; classBody 
-varOrFunc        -> indice ; classBody
+varOrFunc        -> arraySize ; classBody
 
 progBody         -> program funcBody ;
 funcHead         -> type ID ( fParams ) 
@@ -13,14 +13,12 @@ funcDef          -> funcHead funcBody ; funcDef
 funcDef          -> EPSILON 
 funcBody         -> { gen_statements }
 
-varDecl          -> P_Type ID indice is_Assign ;
-varDecl          -> UD_Type createOrAssign
-createOrAssign   -> ID indice ;
+varDecl          -> P_Type ID arraySize ;
+varDecl          -> ID createOrAssign
+createOrAssign   -> ID arraySize ;
 createOrAssign   -> indice gen_nest assign ;
 gen_nest         -> . ID indice gen_nest
 gen_nest         -> EPSILON
-is_Assign        -> assign
-is_Assign        -> EPSILON
 assign           -> assignOp expr
 
 statement        -> for ( type ID assignOp expr ; relExpr ; assignStat ) statBlock ; 
@@ -61,14 +59,12 @@ is_nest          -> EPSILON
 variable         -> ID indice 
 indice           -> [ arithExpr ] indice 
 indice           -> EPSILON 
-arraySize        -> [ INT ]
+arraySize        -> [ INT ] arraySize
 arraySize        -> EPSILON 
 type             -> ID 
-type             -> float 
-type             -> int 
+type             -> P_Type
 P_Type           -> float 
 P_Type           -> int 
-UD_Type          -> ID 
 fParams          -> type ID arraySize fParamsTail 
 fParams          -> EPSILON 
 aParams          -> expr aParamsTail 

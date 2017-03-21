@@ -1,16 +1,16 @@
-prog             -> classDecl funcDef progBody 
+prog             -> CREATE_GLOBAL_TABLE classDecl funcDef progBody
 [class, ID, float, int, program]
-classDecl        -> class ID { classBody } ; classDecl 
+classDecl        -> class ID CLASS_ENTRY_TABLE { classBody } ; END_CLASS classDecl
 [class]
 classDecl        -> EPSILON 
 [ID, float, int, program]
-classBody        -> type ID varOrFunc 
+classBody        -> type ENTRY_TYPE ID ENTRY_NAME varOrFunc
 [ID, float, int]
 classBody        -> EPSILON 
 [}]
-varOrFunc        -> ( fParams ) funcBody ; classBody 
+varOrFunc        -> ( fParams ) CLASS_FUNC_ENTRY_TABLE funcBody ; END_CLASS_FUNC classBody
 [(]
-varOrFunc        -> arraySize ; classBody 
+varOrFunc        -> indice ; CLASS_VAR_ENTRY classBody
 [[, ;]
 progBody         -> program funcBody ; 
 [program]
@@ -22,11 +22,11 @@ funcDef          -> EPSILON
 [program]
 funcBody         -> { gen_statements } 
 [{]
-varDecl          -> P_Type ID arraySize ; 
+varDecl          -> P_Type ID indice is_Assign ;
 [float, int]
-varDecl          -> ID createOrAssign 
+varDecl          -> UD_Type createOrAssign
 [ID]
-createOrAssign   -> ID arraySize ; 
+createOrAssign   -> ID indice ; 
 [ID]
 createOrAssign   -> indice gen_nest assign ; 
 [[, ., =]
@@ -34,6 +34,10 @@ gen_nest         -> . ID indice gen_nest
 [.]
 gen_nest         -> EPSILON 
 [=]
+is_Assign        -> assign 
+[=]
+is_Assign        -> EPSILON 
+[;]
 assign           -> assignOp expr 
 [=]
 statement        -> for ( type ID assignOp expr ; relExpr ; assignStat ) statBlock ; 
@@ -109,22 +113,26 @@ is_nest          -> EPSILON
 [;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
 variable         -> ID indice 
 [ID]
-indice           -> [ arithExpr ] indice 
+indice           -> [ arithExpr ADD_DECL_INDICE ] indice
 [[]
 indice           -> EPSILON 
 [;, =, ., ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
-arraySize        -> [ INT ] arraySize 
+arraySize        -> [ INT ]
 [[]
 arraySize        -> EPSILON 
-[;, ), ,]
+[), ,]
 type             -> ID 
 [ID]
-type             -> P_Type 
-[float, int]
+type             -> float 
+[float]
+type             -> int 
+[int]
 P_Type           -> float 
 [float]
 P_Type           -> int 
 [int]
+UD_Type          -> ID 
+[ID]
 fParams          -> type ID arraySize fParamsTail 
 [ID, float, int]
 fParams          -> EPSILON 
