@@ -16,8 +16,8 @@ class Symbol_Table(object):
         for j in range(self.level):
             tabs += '    '
 
-        return '\n' + tabs + 'Symbol_Table(lvl: {lvl}, name:{name}, entries:{entries})'.format(
-            lvl=self.level,
+        return '\n' + tabs + 'Sym_Tbl(name:{name}, entries:{entries})'.format(
+            # lvl=self.level,
             name=self.name,
             entries=self.entries
         )
@@ -29,17 +29,36 @@ class Symbol_Table(object):
         print "adding entry to: " + self.name + " table."
         self.entries.append(entry)
 
-    def create(self, table_name):
-        print "creating table"
+    def append_param_to_func_entry_type(self, func_name, param_entry):
+        print 'adding parameter to function\'s entry type'
+        function_entry = self.search(func_name)
 
-    def search(self, table_name, i, ptr, found):
-        print "searching table"
+        if function_entry is not None:
 
-    def insert(self, table_name, i, ptr):
-        print "inserting entry"
+            arrSize = ''
+            if param_entry.arraySize:
+                for i in param_entry.arraySize:
+                    arrSize += '[' + str(i) + ']'
 
-    def delete(self, table_name):
+            if ':' in function_entry.type:
+                function_entry.type += ', ' + param_entry.name + arrSize
+            else:
+                function_entry.type += ' : ' + param_entry.name + arrSize
+
+    def search(self, entry_name):
+        print "searching " + self.name + " table"
+        for e in self.entries:
+            if e.name == entry_name:
+                return e
+
+        print 'entry not found'
+        return None
+
+    def delete(self, entry_name):
         print "deleting table"
+        entry = self.search(entry_name)
+        if entry:
+            del self.entries
 
     def Print(self, table_name):
         print "printing table"
@@ -51,7 +70,12 @@ class Entry(object):
         self.name = name
         self.kind = kind
         self.type = typ
+        self.arraySize = []
         self.link = None
+
+        # to be used in code generation
+        self.memory_location = 0
+        self.assembly_code_alias = ''
 
         self.level = level
 
@@ -62,11 +86,17 @@ class Entry(object):
         for j in range(self.level):
             tabs += '    '
 
-        return '\n' + tabs + 'Entry( lvl:{lvl}, {name}, {kind}, {type}, link: {link} )'.format(
-            lvl=self.level,
+        arrSize = ''
+        if self.arraySize:
+            for i in self.arraySize:
+                arrSize += '[' + str(i) + ']'
+
+        return '\n' + tabs + 'Entry  ({name}, {kind}, {type}{arraySize}, link: {link} )'.format(
+            # lvl=self.level,
             name=self.name,
             kind=repr(self.kind),
             type=repr(self.type),
+            arraySize=arrSize,
             link=str(self.link)
         )
 

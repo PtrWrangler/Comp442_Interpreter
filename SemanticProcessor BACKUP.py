@@ -1,4 +1,5 @@
 from Symbol_Table import Symbol_Table, Entry
+import copy
 
 
 class SemanticProcessor(object):
@@ -8,7 +9,8 @@ class SemanticProcessor(object):
         self.SymbolTable_stack = []
         # hold attrs while processing a table entry using the grammar rules
         self.prevToken_buffer = ''
-        self.attr_buffer = []
+        self.fParam_buffer = []
+        self.entry_buffer = Entry(self.level, '', '', '')
         # the semantic functions dictionary to use when a semantic symbol is poped
         self.dispatcher = {'CREATE_GLOBAL_TABLE': self.CREATE_GLOBAL_TABLE,
                            'CLASS_ENTRY_TABLE': self.CLASS_ENTRY_TABLE,
@@ -16,13 +18,15 @@ class SemanticProcessor(object):
 
                            'ENTRY_TYPE': self.ENTRY_TYPE,
                            'ENTRY_NAME': self.ENTRY_NAME,
-
                            'ADD_DECL_ARRAY_DIM': self.ADD_DECL_ARRAY_DIM,
-                           'VAR_ENTRY': self.VAR_ENTRY,
 
+                           'CLASS_VAR_ENTRY': self.CLASS_VAR_ENTRY,
                            'FUNC_ENTRY_TABLE': self.FUNC_ENTRY_TABLE,
+                           # 'PARAM_TYPE': self.PARAM_TYPE,
+                           # 'PARAM_NAME': self.PARAM_NAME,
+                           # 'PARAM_NAME': self.PARAM_NAME,
                            'ADD_FUNC_PARAM_ENTRY': self.ADD_FUNC_PARAM_ENTRY,
-                           'END_FUNC': self.END_FUNC,
+                           'END_CLASS_FUNC': self.END_CLASS_FUNC,
 
                            'PROGRAM_FUNC_ENTRY_TABLE': self.PROGRAM_FUNC_ENTRY_TABLE
 
@@ -31,10 +35,17 @@ class SemanticProcessor(object):
     def __str__(self):
         """String representation of the class instance."""
 
-        return 'Semantic Processor'
+        return 'test'
 
     def __repr__(self):
         return self.__str__()
+
+    def clearEntryBuffer(self):
+        self.entry_buffer.name = ''
+        self.entry_buffer.type = ''
+        self.entry_buffer.kind = ''
+        self.entry_buffer.arraySize = []
+        self.entry_buffer.link = None
 
     ''''''''''''''''''''''''''''''
     '''   SEMANTIC FUNCTIONS   '''
@@ -64,67 +75,67 @@ class SemanticProcessor(object):
 
     def ENTRY_TYPE(self):
         print "buffering entryType"
-        self.attr_buffer = []
-        self.attr_buffer.append(self.prevToken_buffer)
+        self.SymbolTable_stack.append(self.prevToken_buffer)
+        #self.entry_buffer.type = self.prevToken_buffer
 
     def ENTRY_NAME(self):
         print "buffering entryName"
-        self.attr_buffer.append(self.prevToken_buffer)
-
-    def ADD_DECL_ARRAY_DIM(self):
-        print 'adding an array decl dimension size'
-        self.attr_buffer.append(int(self.prevToken_buffer))
+        self.SymbolTable_stack.append(self.prevToken_buffer)
+        #self.entry_buffer.name = self.prevToken_buffer
 
     def FUNC_ENTRY_TABLE(self):
         print "create_funcEntryAndTable."
         # create a new global/local table entry and link it to the new class table
-        entry = Entry(self.level, self.attr_buffer.pop(), 'function', self.attr_buffer.pop())
+        #entry = Entry(self.level, self.SymbolTable_stack.pop(), 'function', self.SymbolTable_stack.pop())
+        self.entry_buffer.level = self.level
+        self.entry_buffer.kind = 'function'
         self.level += 1
-        entry.link = Symbol_Table(self.level, entry.name)
+        self.entry_buffer.link = Symbol_Table(self.level, self.entry_buffer.name)
 
-        # append the new entry to the global/class table and put the reference to the class table on top the stack
-        self.SymbolTable_stack[-1].addEntry(entry)
+        # append the new entry to the global table and put the reference to the class table on top the stack
+        entry = copy.deepcopy(self.entry_buffer)
+        self.SymbolTable_stack[-1].entries.append(entry)
         self.SymbolTable_stack.append(entry.link)
 
-    def ADD_FUNC_PARAM_ENTRY(self):
-        print 'adding a function parameter entry.'
+        self.clearEntryBuffer()
 
-        entry = Entry(self.level, '', 'parameter', '')
-        while isinstance(self.attr_buffer[-1], int):
-            entry.arraySize.append(self.attr_buffer.pop())
-        entry.name = self.attr_buffer.pop()
-        entry.type = self.attr_buffer.pop()
-
-        self.SymbolTable_stack[-1].addEntry(entry)
-
-        # modify the type of the function entry two layers back
-        self.SymbolTable_stack[-2].append_param_to_func_entry_type(self.SymbolTable_stack[-1].name, entry)
-
-    def END_FUNC(self):
+    def END_CLASS_FUNC(self):
         print 'ending class function'
         self.SymbolTable_stack.pop()
         self.level -= 1
 
-    def VAR_ENTRY(self):
-        print "creating create_varEntry."
-        # create a new class table entry for a variable
-        entry = Entry(self.level, '', 'variable', '')
-        while isinstance(self.attr_buffer[-1], int):
-            entry.arraySize.insert(0, self.attr_buffer.pop())
-        entry.name = self.attr_buffer.pop()
-        entry.type = self.attr_buffer.pop()
+    def ADD_DECL_ARRAY_DIM(self):
+        print 'adding an array decl dimension size'
+        self.entry_buffer.arraySize.append(int(self.prevToken_buffer))
 
-        # append the new entry to the class table
-        self.SymbolTable_stack[-1].addEntry(entry)
+    def ADD_FUNC_PARAM_ENTRY(self):
+        print 'adding a function parameter entry.'
+
+    def CLASS_VAR_ENTRY(self):
+        print "creating create_varEntry."
+        # create a new class table entry and link it to the new class table
+        self.entry_buffer.level = self.level
+        self.entry_buffer.kind = 'variable'
+
+        # append the new entry to the global table and put the reference to the class table on top the stack
+        entry = copy.deepcopy(self.entry_buffer)
+        self.SymbolTable_stack[-1].entries.append(entry)
+
+        self.clearEntryBuffer()
 
     def PROGRAM_FUNC_ENTRY_TABLE(self):
         print 'adding the program function entry and symbol_table.'
-        # create a new global table entry and link it to the new main program function table
-        entry = Entry(self.level, 'program', 'function', '')
+        # create a new global/local table entry and link it to the new class table
+        self.entry_buffer.level = self.level
+        self.entry_buffer.name = 'program'
+        self.entry_buffer.kind = 'function'
         self.level += 1
-        entry.link = Symbol_Table(self.level, entry.name)
+        self.entry_buffer.link = Symbol_Table(self.level, self.entry_buffer.name)
 
-        # append the new entry to the global table and put the reference to the program table on top the stack
-        self.SymbolTable_stack[-1].addEntry(entry)
+        # append the new entry to the global table and put the reference to the class table on top the stack
+        entry = copy.deepcopy(self.entry_buffer)
+        self.SymbolTable_stack[-1].entries.append(entry)
         self.SymbolTable_stack.append(entry.link)
+
+        self.clearEntryBuffer()
 

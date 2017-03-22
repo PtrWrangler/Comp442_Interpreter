@@ -1,15 +1,13 @@
 from Lexer import Lexical_Analyzer, Token
 from Lexer import SCAN_ERROR, EOF, EPSILON
 from Lexer import all_registered_terminals
-from Grammar import Grammar, Production, Right_hand_side
-from Symbol_Table import Symbol_Table, Entry
+from Grammar import Grammar, Production
 from SemanticProcessor import SemanticProcessor
-import copy
 
 """     test input files    """
 # testFile = "test_MEGA_reutersFile.sgm"
-#testFile = "test_Utility.txt"
-testFile = "test_errRecover.txt"
+testFile = "test_Utility.txt"
+#testFile = "test_errRecover.txt"
 #testFile = "test_classANDprog.txt"
 #testFile = "test_loopsANDifs.txt"
 #testFile = "test_Arith.txt"
@@ -31,8 +29,8 @@ class Syntactic_Parser(object):
         self.f = open(infile)
         self.o = open(self.outfile, 'w+')
         self.output = 'OUTPUT OF ' + testFile + ": \n\n"
-        self.errs = '\n\nERRORS OF ' + testFile + ":\n\n"
-        # just keeps measure of tabbng for nice output
+        self.errs = '\n\nERRORS OF ' + testFile + ":\n  -- ! Error locations are accurate to the original input file ! --\n\n"
+        # just keeps measure of tabbing for nice output
         self.tabbed_scope = ''
 
         # generate grammar object from the specs file
@@ -53,25 +51,8 @@ class Syntactic_Parser(object):
         self.interpreter = Lexical_Analyzer(self.f.read())
         self.lookahead = Token(EOF, EOF, '$', 0, 0)
 
-        self.SemanticProcessor = SemanticProcessor()
-
-        # symbol tables,
-        self.level = 0
-        self.SymbolTable_stack = []
-        # hold attrs while processing a table entry using the grammar rules
-        self.lastID_buffer = ''
-        self.entry_buffer = Entry(self.level, '', '', '')
-        # the semantic functions dictionary to use when a semantic symbol is poped
-        self.dispatcher = {'CREATE_GLOBAL_TABLE': self.create_globalTable,
-                           'CLASS_ENTRY_TABLE': self.create_classEntryAndTable,
-                           'END_CLASS': self.end_class,
-                           'CLASS_FUNC_ENTRY_TABLE': self.create_FuncEntryAndTable,
-                           'END_CLASS_FUNC': self.end_classFunc,
-                           'CLASS_VAR_ENTRY': self.create_classVarEntry,
-                           'ENTRY_TYPE': self.entryType,
-                           'ENTRY_NAME': self.entryName,
-                           'ADD_DECL_ARRAY_DIM': self.add_declIndice
-                           }
+        # Handles Semantic actions popped from parsing stack
+        self.semantic_processor = SemanticProcessor()
 
         # print self.g
         self.initialize_parsing_table()
@@ -90,9 +71,10 @@ class Syntactic_Parser(object):
             print "lookahead = " + self.lookahead.value
 
             # if top symbol is a semantic action
-            if top in self.dispatcher:
+            if top in self.semantic_processor.dispatcher:
                 print top
-                self.dispatcher[top]()
+                # dispatches the semantic action then moves on to next symbol on stack
+                self.semantic_processor.dispatcher[top]()
                 self.parsing_stack.pop()
 
             # if top symbol is a terminal
@@ -101,7 +83,7 @@ class Syntactic_Parser(object):
                     self.format_output()
 
                     self.parsing_stack.pop()
-                    self.lastID_buffer = self.lookahead.value
+                    self.semantic_processor.prevToken_buffer = self.lookahead.value
                     self.lookahead = self.interpreter.scanner()
                 else:
                     print "error, wrong token"
@@ -134,7 +116,8 @@ class Syntactic_Parser(object):
                 self.parsing_stack.pop()
 
             else:
-                print "error, top symbol was not a production/token/EPSILON"
+                print "error, top symbol was not a SemanticSymbol / Production / token / EPSILON"
+                print 'top symbol is: ' + top
                 error = True
                 break
 
@@ -158,40 +141,35 @@ class Syntactic_Parser(object):
             print "error is True"
         else:
             print "error is False"
+            self.errs += 'Source Program contains no parsing errors.\n'
 
-        #self.prettify_output()
+            #del self.semantic_processor.SymbolTable_stack[0].entries[0].link
+            self.semantic_processor.SymbolTable_stack[0].delete('Utility')
+            print 'SymbolTable_stack length is: ' + \
+                  str(len(self.semantic_processor.SymbolTable_stack))
+            print str(self.semantic_processor.SymbolTable_stack[0])
+
         self.o.write(self.output)
         self.o.write(self.errs)
 
         self.o.close()
-        #self.err.close()
 
-        for i in self.SymbolTable_stack:
-            print str(i) + '\n'
-
-        # print self.currentSymbolTable
-        # print 'changing...'
-        # self.GlobalSymbolTable.entries[0].name = 'test'
-        # print self.GlobalSymbolTable
-        # print self.currentSymbolTable
-
-        # self.entry_buffer.name = 'hello'
-        # self.SymbolTable_stack[0].entries.append(copy.deepcopy(self.entry_buffer))
-        # self.entry_buffer.name = 'world'
-        # self.SymbolTable_stack[0].entries.append(copy.deepcopy(self.entry_buffer))
-        # print self.SymbolTable_stack[0].entries
+        # for i in self.semantic_processor.SymbolTable_stack:
+        #     print str(i) + '\n'
 
     # This error recovery technique syncronizes the stack and/or the lookahead to the next ;
     def handleError(self):
-        print 'handling error...'
-        print 'in error, stack: ' + str(self.parsing_stack)
-        print 'in error, looky: ' + str(self.lookahead.value)
+        print 'handling error... syncronizing to next expected sync_token'
+        # print 'in error, stack: ' + str(self.parsing_stack)
+        # print 'in error, lookahead: ' + str(self.lookahead.value)
+
+        sync_tokens = [EOF, ';', '{', '}']
 
         # syncronizing the parsing stack to the next ;
-        while self.parsing_stack[-1] is not EOF and self.parsing_stack[-1] != ';':
+        while self.parsing_stack[-1] not in sync_tokens:
             top = self.parsing_stack[-1]
-            print 'top: ' + top
-            print 'parsing stack: ' + str(self.parsing_stack)
+            # print 'top: ' + top
+            # print 'parsing stack: ' + str(self.parsing_stack)
 
             # if top is a production
             if top in self.g.productions and type(self.g.productions[top]) is Production:
@@ -202,16 +180,18 @@ class Syntactic_Parser(object):
                     top = top.RHSs[0]
                     self.parsing_stack.pop()
                     self.parsing_stack.extend(top.inverse_RHS_multiple_push())
-                    print 'inside print parsing stack: ' + str(self.parsing_stack)
+                    # print 'inside print parsing stack: ' + str(self.parsing_stack)
                 else:
                     self.parsing_stack.pop()
             else:
                 self.parsing_stack.pop()
 
+        sync_token = self.parsing_stack[-1]
+
         # syncronizing the lookahead scanner to next ;
-        while self.lookahead.value != ';':
+        while self.lookahead.value != sync_token:
             self.lookahead = self.interpreter.scanner()
-            print 'scanning for a semi-colon... ' + self.lookahead.value
+            print 'scanning for a ' + sync_token + '... ' + self.lookahead.value
 
     def format_output(self):
         if self.lookahead.value == ';':
@@ -255,64 +235,6 @@ class Syntactic_Parser(object):
                     self.table[self.g.productions[prod_idx].p_id][terminal_idx] = prod_RHS
 
         print_table(self.table)
-
-    ''''''''''''''''''''''''''''''
-    '''   SEMANTIC FUNCTIONS   '''
-    ''''''''''''''''''''''''''''''
-
-    def create_globalTable(self):
-        self.SymbolTable_stack.append(Symbol_Table(self.level, 'global'))
-
-    def create_classEntryAndTable(self):
-        print "create_classEntryAndTable"
-        # create a table entry and link it to the new class table
-        class_entry = Entry(self.level, self.lastID_buffer, 'class', '')
-        self.level += 1
-        class_entry.link = Symbol_Table(self.level, class_entry.name)
-
-        # append the new entry to the global table and put the reference to the class table on top the stack
-        self.SymbolTable_stack[-1].addEntry(class_entry)
-        self.SymbolTable_stack.append(class_entry.link)
-
-    def end_class(self):
-        print 'ending class'
-        self.SymbolTable_stack.pop()
-        self.level -= 1
-
-    def create_FuncEntryAndTable(self):
-        print "create_funcEntryAndTable"
-        # create a new global table entry and link it to the new class table
-        self.entry_buffer.level = self.level
-        self.entry_buffer.kind = 'function'
-        self.level += 1
-        self.entry_buffer.link = Symbol_Table(self.level, self.entry_buffer.name)
-
-        # append the new entry to the global table and put the reference to the class table on top the stack
-        entry = copy.deepcopy(self.entry_buffer)
-        self.SymbolTable_stack[-1].entries.append(entry)
-        self.SymbolTable_stack.append(entry.link)
-
-        self.entry_buffer = Entry(self.level, '', '', '')
-
-    def end_classFunc(self):
-        print 'ending class function'
-        self.SymbolTable_stack.pop()
-        self.level -= 1
-
-    def entryType(self):
-        print "buffering entryType"
-        self.entry_buffer.type = self.lastID_buffer
-
-    def entryName(self):
-        print "buffering entryName"
-        self.entry_buffer.name = self.lastID_buffer
-
-    def create_classVarEntry(self):
-        print "creating create_varEntry"
-
-    def add_declIndice(self):
-        print 'adding an indice decl'
-
 
 
 def print_table(table):

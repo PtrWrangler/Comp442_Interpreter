@@ -7,3 +7,19 @@ Mar 17th, 2017
     Over the past week I have:
     - fully switched to a Table Predictive Parsing
     - Fixed my grammar
+
+Mar 17th-20th, 2017
+    done:
+	for parsing the PPT_grammar into object, need to check if EPSILON in the production line, if not then in the first set because it may be in there resulting in it having both a first and follow set.
+
+	I think I will force program function to be the last function in the code
+        all classes and free functions must be declared before it.
+    a class can only declare variables and functions
+    a function can declare/assign variables, use (class/free) functions, use expressions
+    program behaves like a function but there is only one (main program) and it must be at the end.
+
+	I realized I had been using indice for variable declaration and assignmnent, but for decl I need to be using arraySize which forces integer index and cannot be an expression inside the [].
+	- arraySize -> [ INT ] arraySize
+
+	error recovery now is done with syncronizing tokens ;, }, {
+	its not enough though maybe if each production had its own set…
