@@ -56,12 +56,51 @@ class Symbol_Table(object):
 
     def delete(self, entry_name):
         print "deleting table"
-        entry = self.search(entry_name)
-        if entry:
-            del self.entries
+        # entry = self.search(entry_name)
+        # if entry:
+        #     del self.entries
+        for i in self.entries:
+            del i
 
     def Print(self, table_name):
         print "printing table"
+
+    def IDUsageErrors(self, IDsDeclared):
+        print '\nchecking typing for: ' + self.name + ' symbol table.'
+
+        errors = ''
+        globalIDs = []
+        classIDs = []
+
+        # grab all function and class names from the global table
+        for i in self.entries:
+            if i.kind == 'class':
+                globalIDs.append(('class', i.name))
+            elif i.kind == 'function' and i.name != 'program':
+                globalIDs.append(('function', i.name))
+
+        print globalIDs
+
+        # go through the funcs and vars of each class and func in global table
+        for i in self.entries:
+            classIDs = []
+            for j in i.link.entries:
+                if j.kind == 'variable':
+                    classIDs.append((j.kind, j.name))
+                elif j.kind == 'function':
+                    if j.name in globalIDs:
+                        errors += '\nerror: function name \'' + j.name + '\' already exists in global table.'
+                    else:
+                        classIDs.append((j.kind, j.name))
+
+            for j in i.link.entries:
+                classFuncIds = []
+                if j.link is not None:
+                    for h in j.link.entries:
+                        if h.name not in globalIDs or h.name not in classIDs:
+                            classIDs.append((h.kind, h.name))
+                        else:
+                            errors += '\nerror: var or param name \'' + j.name + '\' already exists in scope.'
 
 
 class Entry(object):

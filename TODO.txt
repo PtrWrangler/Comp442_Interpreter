@@ -6,8 +6,13 @@ todo:
 	create parsing table from object
 	implement the parser
 
+	[A-Z]+_
+
 A3 look over:
     todo:
+    - the var usage checking should definitly be rethought...
+    - error handling if a generator production, infinitly produces them on parsing stack
+        each production should have a set of recovery tokens?
     - explain all symantic actions and symbols, explanation of organization
     - apply table deletions?
         maybe i should be outputting symboltables and entries to a file as i go.

@@ -1,0 +1,32 @@
+OUTPUT OF test_loopsANDifs.txt: 
+
+program {
+    for ( int t = 0 ;
+    t <= 100 ;
+    t = t + 1 ) {
+        if ( i < 3 ) then {
+            
+        }else {
+            
+        };
+        if ( i < 3 ) then {
+            for ( int i = 0 ;
+            i < 2 ;
+            i = i + 1 ) {
+                
+            };
+            
+        }else {
+            int i ;
+            
+        };
+        
+    };
+    
+};
+
+
+ERRORS OF test_loopsANDifs.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+table error, Expected {arraySize -> [ INT ADD_DECL_ARRAY_DIM ] arraySize | EPSILON} found Token(=, '=', Line:Pos=(8, 22))

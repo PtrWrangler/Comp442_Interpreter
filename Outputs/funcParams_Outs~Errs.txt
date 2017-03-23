@@ -8,12 +8,12 @@ class functesting {
     
 };
 program {
-    maxvalue = utility ( sample ) ;
+    maxValue = utility . findMax ( sample ) ;
     
 };
 
 
 ERRORS OF test_funcParams.txt:
+  -- ! Error locations are accurate to the original input file ! --
 
-table error, Expected {paramsOrIndice -> ( aParams ) | indice} found Token(., '.', Line:Pos=(12, 20))
-table error, Expected {paramsOrIndice -> ( aParams ) | indice} found Token(ID, 'findmax', Line:Pos=(12, 27))
+Source Program contains no parsing errors.

@@ -24,7 +24,9 @@ class SemanticProcessor(object):
                            'ADD_FUNC_PARAM_ENTRY': self.ADD_FUNC_PARAM_ENTRY,
                            'END_FUNC': self.END_FUNC,
 
-                           'PROGRAM_FUNC_ENTRY_TABLE': self.PROGRAM_FUNC_ENTRY_TABLE
+                           'PROGRAM_FUNC_ENTRY_TABLE': self.PROGRAM_FUNC_ENTRY_TABLE,
+
+                           # 'END_GLOBAL_TABLE': self.END_GLOBAL_TABLE
 
                            }
 
@@ -54,12 +56,14 @@ class SemanticProcessor(object):
         class_entry.link = Symbol_Table(self.level, class_entry.name)
 
         # append the new entry to the global table and put the reference to the class table on top the stack
-        self.SymbolTable_stack[-1].addEntry(class_entry)
+        if self.SymbolTable_stack:
+            self.SymbolTable_stack[-1].addEntry(class_entry)
         self.SymbolTable_stack.append(class_entry.link)
 
     def END_CLASS(self):
         print 'ending class.'
-        self.SymbolTable_stack.pop()
+        if self.SymbolTable_stack:
+            self.SymbolTable_stack.pop()
         self.level -= 1
 
     def ENTRY_TYPE(self):
@@ -78,12 +82,14 @@ class SemanticProcessor(object):
     def FUNC_ENTRY_TABLE(self):
         print "create_funcEntryAndTable."
         # create a new global/local table entry and link it to the new class table
-        entry = Entry(self.level, self.attr_buffer.pop(), 'function', self.attr_buffer.pop())
+        if len(self.attr_buffer) > 1:
+            entry = Entry(self.level, self.attr_buffer.pop(), 'function', self.attr_buffer.pop())
         self.level += 1
         entry.link = Symbol_Table(self.level, entry.name)
 
         # append the new entry to the global/class table and put the reference to the class table on top the stack
-        self.SymbolTable_stack[-1].addEntry(entry)
+        if self.SymbolTable_stack:
+            self.SymbolTable_stack[-1].addEntry(entry)
         self.SymbolTable_stack.append(entry.link)
 
     def ADD_FUNC_PARAM_ENTRY(self):
@@ -92,17 +98,21 @@ class SemanticProcessor(object):
         entry = Entry(self.level, '', 'parameter', '')
         while isinstance(self.attr_buffer[-1], int):
             entry.arraySize.append(self.attr_buffer.pop())
-        entry.name = self.attr_buffer.pop()
-        entry.type = self.attr_buffer.pop()
+        if len(self.attr_buffer) > 1:
+            entry.name = self.attr_buffer.pop()
+            entry.type = self.attr_buffer.pop()
 
-        self.SymbolTable_stack[-1].addEntry(entry)
+        if self.SymbolTable_stack:
+            self.SymbolTable_stack[-1].addEntry(entry)
 
         # modify the type of the function entry two layers back
-        self.SymbolTable_stack[-2].append_param_to_func_entry_type(self.SymbolTable_stack[-1].name, entry)
+        if len(self.SymbolTable_stack) > 1:
+            self.SymbolTable_stack[-2].append_param_to_func_entry_type(self.SymbolTable_stack[-1].name, entry)
 
     def END_FUNC(self):
         print 'ending class function'
-        self.SymbolTable_stack.pop()
+        if self.SymbolTable_stack:
+            self.SymbolTable_stack.pop()
         self.level -= 1
 
     def VAR_ENTRY(self):
@@ -111,11 +121,13 @@ class SemanticProcessor(object):
         entry = Entry(self.level, '', 'variable', '')
         while isinstance(self.attr_buffer[-1], int):
             entry.arraySize.insert(0, self.attr_buffer.pop())
-        entry.name = self.attr_buffer.pop()
-        entry.type = self.attr_buffer.pop()
+        if len(self.attr_buffer) > 1:
+            entry.name = self.attr_buffer.pop()
+            entry.type = self.attr_buffer.pop()
 
         # append the new entry to the class table
-        self.SymbolTable_stack[-1].addEntry(entry)
+        if self.SymbolTable_stack:
+            self.SymbolTable_stack[-1].addEntry(entry)
 
     def PROGRAM_FUNC_ENTRY_TABLE(self):
         print 'adding the program function entry and symbol_table.'
@@ -125,6 +137,11 @@ class SemanticProcessor(object):
         entry.link = Symbol_Table(self.level, entry.name)
 
         # append the new entry to the global table and put the reference to the program table on top the stack
-        self.SymbolTable_stack[-1].addEntry(entry)
+        if self.SymbolTable_stack:
+            self.SymbolTable_stack[-1].addEntry(entry)
         self.SymbolTable_stack.append(entry.link)
 
+    # def END_GLOBAL_TABLE(self):
+    #     print 'ending global table'
+    #     self.SymbolTable_stack.pop()
+    #     self.level -= 1

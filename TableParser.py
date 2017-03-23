@@ -65,7 +65,7 @@ class Syntactic_Parser(object):
         self.lookahead = self.interpreter.scanner()
 
         error = False
-        while self.parsing_stack[-1] is not EOF and self.lookahead.type is not EOF:
+        while self.parsing_stack[-1] is not EOF and self.lookahead.value is not None:
             top = self.parsing_stack[-1]
             print "top       = " + top
             print "lookahead = " + self.lookahead.value
@@ -148,9 +148,13 @@ class Syntactic_Parser(object):
             print 'SymbolTable_stack length is: ' + \
                   str(len(self.semantic_processor.SymbolTable_stack))
             print str(self.semantic_processor.SymbolTable_stack[0])
+            self.output = "\nSYMBOL TABLE STRUCTURE:\n" + (str(self.semantic_processor.SymbolTable_stack[0]))
 
-        self.o.write(self.output)
+            # check for all variable and function usage errors starting from the global table
+            self.semantic_processor.SymbolTable_stack[0].IDUsageErrors([])
+
         self.o.write(self.errs)
+        self.o.write(self.output)
 
         self.o.close()
 
