@@ -1,6 +1,6 @@
 # Comp442_Interpreter
 
-COMP 442 Winter 2017 Assignment 3, Symantic Analysis
+COMP 442 Winter 2017 Assignment 4, Symantic Analysis
 By: Mathieu Rauch
 ID: 26777147
 
