@@ -1,0 +1,19 @@
+OUTPUT OF test_funcParams.txt: 
+
+class functesting {
+    void func ( obj sample [ 1 ] , obj sample [ 2 ] ) {
+        
+    };
+    int i ;
+    
+};
+program {
+    maxValue = utility . findMax ( sample ) ;
+    
+};
+
+
+ERRORS OF test_funcParams.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+Source Program contains no parsing errors.

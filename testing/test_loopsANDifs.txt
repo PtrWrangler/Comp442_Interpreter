@@ -1,0 +1,12 @@
+program{
+for(int t = 0; t<=100 ; t = t + 1)
+    {
+        if (i<3)then{}else{};
+        if (i<3)then{
+            for (int i = 0;i<2;i=i+1){};
+
+        }else{int i = 3;};
+        };
+    };
+
+};

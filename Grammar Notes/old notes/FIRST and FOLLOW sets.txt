@@ -1,0 +1,170 @@
+prog           -> classDecl progBody 
+	first: {class, program}
+	
+classDecl      -> class Id { classBody } ; classDecl
+                  | EPSILON
+	first: {class}
+	follow: {program}
+
+classBody      -> type Id varOrFunc | EPSILON
+	first: {Id, float, int}
+	follow: {}}
+
+varOrFunc      -> indice ; classBody | ( fParams ) funcBody classBody
+	first: {[, ;, .}
+	first: {(}
+
+progBody       -> program funcBody ; funcDef
+	first: {program}
+
+funcHead       -> type Id ( fParams )
+	first: {Id, float, int}
+
+funcDef        -> funcHead funcBody ; funcDef
+                  | EPSILON
+	first: {Id, float, int}
+	follow: {$}
+
+funcBody       -> { gen_statements }
+	first: {{}
+
+varDecl        -> UD_Type createOrAssign varDeclTail
+                  | P_Type Id varDeclTail
+	first: {Id}
+	first: {float, int}
+
+createOrAssign -> Id | EPSILON
+	first: {Id}
+	follow: {[, =, ;, .}
+	
+varDeclTail -> indice is_Assign ;
+	first: {[, =, ;, .}
+	
+is_Assign -> assignOp expr | EPSILON
+	first: {=}
+	follow: {;}
+
+statement      -> for ( type Id assignOp expr ; relExpr ; assignStat ) statBlock ;
+                  | if ( expr ) then statBlock else statBlock ;
+                  | get ( variable ) ;
+                  | put ( expr ) ;
+                  | return ( expr ) ;
+                  | varDecl
+	first: {for}
+	first: {if}
+	first: {get}
+	first: {put}
+	first: {return}
+	first: {Id, float, int}
+
+
+gen_statements -> statement gen_statements
+                  | EPSILON
+	first: {for, if, get, put, return, Id, float, int}
+	follow: {}}
+
+assignStat     -> variable assignOp expr
+	first: {Id}
+
+statBlock      -> { gen_statements }
+                  | statement
+                  | EPSILON
+	first: {{}
+	first: {for, if, get, put, return, Id, float, int}
+	follow: {;, else}
+
+expr           -> arithExpr gen_relArithExpr
+	first: {(, Id, float, int, not, +, -}
+
+relExpr        -> arithExpr relOp arithExpr
+	first: {(, Id, float, int, not, +, -}
+
+gen_relArithExpr -> relOp arithExpr | EPSILON
+	first: {<, <=, <>, ==, >, >=}
+	follow: {;, ), ,}
+
+arithExpr      -> term gen_addArithExpr
+	first: {(, Id, float, int, not, +, -}
+
+gen_addArithExpr  -> addOp arithExpr | EPSILON
+	first: {+, -, or}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ]}
+
+sign           -> + | -
+	first: {+, -}
+
+term           -> factor gen_Term
+	first: {(, Id, float, int, not, +, -}
+
+gen_Term       -> multOp term | EPSILON
+	first: {*, /, and}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or}
+
+factor         -> Id paramsOrIndice
+                  | ( arithExpr )
+                  | not factor
+                  | int
+				  | float
+                  | sign factor
+	first: {Id}
+	first: {(}
+	first: {not}
+	first: {int}
+	first: {float}
+	first: {+, -}
+
+paramsOrIndice -> ( aParams ) | indice
+	first: {(}
+	first: {[, .}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and}
+
+variable       -> Id indice
+	first: {Id}
+
+indice         -> [ arithExpr ] indice
+                  | EPSILON
+	first: {[}
+	follow: {;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and, =}
+
+arraySize      -> [ int ] | EPSILON
+	first: {[}
+	follow: {), ,}
+
+type           -> Id | int | float
+	first: {Id, int, float}
+
+P_Type         -> int | float
+	first: {int, float}
+
+UD_Type        -> Id
+	first: {Id}
+
+fParams        -> type Id arraySize fParamsTail
+                  | EPSILON
+	first: {Id, float, int}
+	follow: {)}
+
+aParams        -> expr aParamsTail
+	first: {(, Id, float, int, not, +, -}
+
+fParamsTail    -> , type Id arraySize fParamsTail
+                  | EPSILON 
+	first: {,}
+	follow: {)}
+	
+aParamsTail    -> , expr aParamsTail 
+                  | EPSILON 
+	first: {,}
+	follow: {)}
+	
+assignOp       -> = 
+	first: {=}
+	
+relOp          -> < | <= | <> | == | > | >= 
+	first: {>=, >, ==, <>, <=, <}
+	
+addOp          -> + | - | or 
+	first: {+, -, or}
+	
+multOp         -> * | / | and 
+	first: {*, /, and}

@@ -1,0 +1,13 @@
+class functesting{
+
+    void func(obj sample[1], obj sample[2]){};
+
+    int i;
+
+
+
+};
+program{
+
+maxValue = utility.findMax(sample);
+};

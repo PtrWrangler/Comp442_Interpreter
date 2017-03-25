@@ -1,0 +1,55 @@
+<prog> -> <classDecl> <progBody>
+<classDecl> -> 'class' Id { <varDecl> <funcDef> } ; <classDecl> | EPSILON
+<progBody> -> 'program' <funcBody> ; <funcDef>
+
+<funcHead> -> <type> Id ( <fParams> )
+<funcDef> -> <funcHead> <funcBody> ; <funcDef> | EPSILON
+<funcBody> -> { <varDecl> <gen_statements> }
+
+<varDecl> -> <type> Id <arraySize> ; <varDecl> | EPSILON
+<statement> -> <assignStat> ;
+| 'if' ( <expr> ) 'then' <statBlock> 'else' <statBlock> ;
+| 'for' ( <type> Id <assignOp> <expr> ; <relExpr> ; <assignStat> ) <statBlock> ;
+| 'get' ( <variable> ) ;
+| 'put' ( <expr> ) ;
+| 'return' ( <expr> ) ;
+<gen_statements> -> <statement> <gen_statements> | EPSILON
+
+<assignStat> -> <variable> <assignOp> <expr>
+<statBlock> -> { <gen_statements> } | <statement> | EPSILON
+<expr> -> <arithExpr> | <relExpr>
+<relExpr> -> <arithExpr> <relOp> <arithExpr>
+<arithExpr> -> <arithExpr> <addOp> <term> | <term>
+<sign> -> + | -
+<term> -> <term> <multOp> <factor> | <factor>
+
+<factor> -> <variable>
+| <idnest> Id ( <aParams> )
+| int | float
+| ( <arithExpr> )
+| 'not' <factor>
+| <sign> <factor>
+<variable> -> <idnest> Id <indice>
+<idnest> -> Id <indice> <idnest> | EPSILON
+<indice> -> [ <arithExpr> ] <indice> | EPSILON
+<arraySize> -> [ int ] | EPSILON
+
+<type> -> 'int' | 'float' | Id
+<fParams> -> <type> Id <arraySize> <fParamsTail> | EPSILON
+<aParams> -> <expr> <aParamsTail> | EPSILON
+<fParamsTail> -> , <type> Id <arraySize> <fParamsTail> | EPSILON
+<aParamsTail> -> , <expr> <aParamsTail> | EPSILON
+
+<assignOp> -> =
+<relOp> -> '==' | '<>' | < | > | '<=' | '>='
+<addOp> -> + | - | 'or'
+<multOp> -> * | / | 'and'
+
+Id     -> Letter Alphanum
+Alphanum -> Letter Alphanum | Digit Alphanum | _ Alphanum | EPSILON
+Letter -> a|b|...|z|A|B|...|Z
+int -> Non-Zero Number | 0
+float -> int . Number Non-Zero | int . 0 | . Number Non-Zero | . 0
+Number -> Digit Number | EPSILON 
+Digit  -> 0 | 1 | ... | 9
+Non-Zero -> 1 | 2 | ... | 9

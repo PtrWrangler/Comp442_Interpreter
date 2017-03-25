@@ -1,0 +1,169 @@
+prog             -> CREATE_GLOBAL_TABLE classDecl funcDef progBody
+[class, ID, float, int, program]
+classDecl        -> class ID CLASS_ENTRY_TABLE { classBody } ; END_CLASS classDecl
+[class]
+classDecl        -> EPSILON 
+[ID, float, int, program]
+classBody        -> type ENTRY_TYPE ID ENTRY_NAME varOrFunc
+[ID, float, int]
+classBody        -> EPSILON 
+[}]
+varOrFunc        -> ( FUNC_ENTRY_TABLE fParams )  funcBody ; END_FUNC classBody
+[(]
+varOrFunc        -> arraySize ; VAR_ENTRY classBody
+[[, ;]
+progBody         -> program PROGRAM_FUNC_ENTRY_TABLE funcBody ;
+[program]
+funcHead         -> type ENTRY_TYPE ID ENTRY_NAME ( FUNC_ENTRY_TABLE fParams )
+[ID, float, int]
+funcDef          -> funcHead funcBody ; END_FUNC funcDef
+[ID, float, int]
+funcDef          -> EPSILON 
+[program]
+funcBody         -> { gen_statements } 
+[{]
+varDecl          -> P_Type ENTRY_TYPE ID ENTRY_NAME arraySize VAR_ENTRY ;
+[float, int]
+varDecl          -> ID ENTRY_TYPE createOrAssign
+[ID]
+createOrAssign   -> ID ENTRY_NAME arraySize VAR_ENTRY ;
+[ID]
+createOrAssign   -> indice gen_nest assign ; 
+[[, ., =]
+gen_nest         -> . ID indice gen_nest 
+[.]
+gen_nest         -> EPSILON 
+[=]
+assign           -> assignOp expr 
+[=]
+statement        -> for ( type ENTRY_TYPE ID ENTRY_NAME VAR_ENTRY assignOp expr ; relExpr ; assignStat ) statBlock ;
+[for]
+statement        -> if ( expr ) then statBlock else statBlock ; 
+[if]
+statement        -> get ( variable ) ; 
+[get]
+statement        -> put ( expr ) ; 
+[put]
+statement        -> return ( expr ) ; 
+[return]
+statement        -> varDecl 
+[float, int, ID]
+gen_statements   -> statement gen_statements 
+[for, if, get, put, return, float, int, ID]
+gen_statements   -> EPSILON 
+[}]
+assignStat       -> variable assignOp expr 
+[ID]
+statBlock        -> { gen_statements } 
+[{]
+statBlock        -> statement 
+[for, if, get, put, return, float, int, ID]
+statBlock        -> EPSILON 
+[;, else]
+expr             -> arithExpr gen_relArithExpr 
+[(, FLOAT, ID, INT, not, +, -]
+relExpr          -> arithExpr relOp arithExpr 
+[(, FLOAT, ID, INT, not, +, -]
+gen_relArithExpr -> relOp arithExpr 
+[<, <=, <>, ==, >, >=]
+gen_relArithExpr -> EPSILON 
+[;, ), ,]
+arithExpr        -> term gen_addArithExpr 
+[(, FLOAT, ID, INT, not, +, -]
+gen_addArithExpr -> addOp arithExpr 
+[+, -, or]
+gen_addArithExpr -> EPSILON 
+[;, ), ,, <, <=, <>, ==, >, >=, ]]
+sign             -> + 
+[+]
+sign             -> - 
+[-]
+term             -> factor gen_Term 
+[(, FLOAT, ID, INT, not, +, -]
+gen_Term         -> multOp term 
+[*, /, and]
+gen_Term         -> EPSILON 
+[;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or]
+factor           -> ( arithExpr ) 
+[(]
+factor           -> objectVarOrFunc 
+[ID]
+factor           -> FLOAT 
+[FLOAT]
+factor           -> INT 
+[INT]
+factor           -> not factor 
+[not]
+factor           -> sign factor 
+[+, -]
+objectVarOrFunc  -> ID paramsOrIndice
+[ID]
+paramsOrIndice   -> ( aParams ) 
+[(]
+paramsOrIndice   -> indice is_nest
+[[, EPSILON, .]
+[;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
+is_nest          -> . objectVarOrFunc 
+[.]
+is_nest          -> EPSILON 
+[;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
+variable         -> ID indice 
+[ID]
+indice           -> [ arithExpr ] indice 
+[[]
+indice           -> EPSILON 
+[;, =, ., ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
+arraySize        -> [ INT  ADD_DECL_ARRAY_DIM ] arraySize
+[[]
+arraySize        -> EPSILON 
+[;, ), ,]
+type             -> ID 
+[ID]
+type             -> P_Type 
+[float, int]
+P_Type           -> float 
+[float]
+P_Type           -> int 
+[int]
+fParams          -> type ENTRY_TYPE ID ENTRY_NAME arraySize ADD_FUNC_PARAM_ENTRY fParamsTail
+[ID, float, int]
+fParams          -> EPSILON 
+[)]
+aParams          -> expr aParamsTail 
+[(, FLOAT, ID, INT, not, +, -]
+aParams          -> EPSILON 
+[)]
+fParamsTail      -> , type ENTRY_TYPE ID ENTRY_NAME arraySize ADD_FUNC_PARAM_ENTRY fParamsTail
+[,]
+fParamsTail      -> EPSILON 
+[)]
+aParamsTail      -> , expr aParamsTail 
+[,]
+aParamsTail      -> EPSILON 
+[)]
+assignOp         -> = 
+[=]
+relOp            -> < 
+[<]
+relOp            -> <= 
+[<=]
+relOp            -> <> 
+[<>]
+relOp            -> == 
+[==]
+relOp            -> > 
+[>]
+relOp            -> >= 
+[>=]
+addOp            -> + 
+[+]
+addOp            -> - 
+[-]
+addOp            -> or 
+[or]
+multOp           -> * 
+[*]
+multOp           -> / 
+[/]
+multOp           -> and 
+[and]

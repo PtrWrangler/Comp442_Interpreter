@@ -1,0 +1,97 @@
+
+prog           -> classDecl progBody 
+classDecl      -> class Id { classBody } ; classDecl 
+                  | EPSILON 
+classBody      -> type Id varOrFunc | EPSILON
+varOrFunc      -> indice ; classBody | ( fParams ) funcBody classBody
+%%% classDecl now combines varDecl and funcDef into a class body to remove ambiguities 
+	and give the ability to put them in any order.
+
+progBody       -> program funcBody ; funcDef 
+%%% as many class declarations at the beginning as you want,
+	followed by the program body (void main/script)? %%%
+	
+funcHead       -> type Id ( fParams ) 
+funcDef        -> funcHead funcBody ; funcDef 
+                  | EPSILON 
+funcBody       -> { gen_statements } 
+%%% Adding a <gen_statements> to be because sometimes 
+	you want exactly one statement and others you expect 0-* statements. So gen_statements can give you as many as you need. removed the varDecl from here because now it is part of the statement production. %%%
+
+varDecl          -> P_Type Id varDeclTail 
+                  | UD_Type createOrAssign varDeclTail 
+createOrAssign   -> Id | EPSILON 
+varDeclTail      -> indice is_Assign ; 
+is_Assign        -> assignOp expr | EPSILON 
+
+statement      -> for ( type Id assignOp expr ; relExpr ; assignStat ) statBlock ; 
+                  | if ( expr ) then statBlock else statBlock ; 
+                  | get ( variable ) ; 
+                  | put ( expr ) ; 
+                  | return ( expr ) ; 
+                  | varDecl 
+gen_statements -> statement gen_statements | EPSILON
+%%% varDecl can now support multidimensional arrays and also handle immediate
+	assignment using the new is_Assign production. using the new varDecl, statement now can handle declarations and assignments. Also with the createOrAssign production you can simply be assigning to an already initialized variable %%%
+
+assignStat     -> variable assignOp expr 
+statBlock      -> { gen_statements } 
+                  | statement 
+                  | EPSILON 
+expr           -> arithExpr gen_relArithExpr
+relExpr        -> arithExpr relOp arithExpr
+gen_relArithExpr -> relOp arithExpr | EPSILON
+%%% expr simply implies a arithExpr with potentially a 
+	relative operator to a second arithExpr. added a generator to satisfy LL1 cond:1
+
+arithExpr      -> term gen_addArithExpr
+gen_addArithExpr  -> addOp arithExpr | EPSILON
+sign           -> + | - 
+term           -> factor gen_Term
+gen_Term       -> multOp term | EPSILON
+%%% swapped term/arithExpr in arithExpr production and 
+	term/factor in term production to remove left recusion. added a generator to both to satisfy LL1 cond:1.
+
+factor         -> Id paramsOrIndice
+                  | ( arithExpr ) 
+                  | not factor 
+                  | int 
+				  | float
+                  | sign factor 
+paramsOrIndice -> ( aParams ) | indice
+variable       -> Id indice 
+%%% In factor, I combined variable and (aParams) into a 
+	paramsOrIndice to satisfy LL1 cond:1
+
+indice         -> [ arithExpr ] indice 
+                  | EPSILON 
+%%% after a lot of thought I decided to remove <idnest>. 
+	I did not understand why you would ever be producing 2 variables right next to each other. Or at least the specs test case did not call for it.
+
+arraySize      -> [ int ] | EPSILON 
+%%% <idnest> and <indice> are always 0-*, <arraySize> too 
+ ** In the <idnest> production theres was a '.' and i was not sure what
+	it meant so I just removed it. changed the specified 'integer' terminal to 'int' %%%
+	
+	
+	
+type           -> Id | int | float
+P_Type           -> float | int 
+UD_Type          -> Id 
+%%% primitive type and Userdefined type are there to allow a flexible 
+	variable declaration or assignment
+
+fParams        -> type Id arraySize fParamsTail 
+                  | EPSILON 
+aParams        -> expr aParamsTail
+%%% removed the epsilon from aParams, for LL1 cond:1. EPSILON can be achieved through expr.
+
+fParamsTail    -> , type Id arraySize fParamsTail 
+                  | EPSILON 
+aParamsTail    -> , expr aParamsTail 
+                  | EPSILON 
+				  
+assignOp       -> = 
+relOp          -> < | <= | <> | == | > | >= 
+addOp          -> + | - | or 
+multOp         -> * | / | and 

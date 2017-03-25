@@ -1,0 +1,53 @@
+todo:
+	finish reading the the slides 5, 6
+	apply a new table driven parser
+	
+	script to parse PPT_Grammar into object
+	create parsing table from object
+	implement the parser
+
+	[A-Z]+_
+
+A3 look over:
+    todo:
+    - the var usage checking should definitly be rethought...
+    - error handling if a generator production, infinitly produces them on parsing stack
+        each production should have a set of recovery tokens?
+    - explain all symantic actions and symbols, explanation of organization
+    - apply table deletions?
+        maybe i should be outputting symboltables and entries to a file as i go.
+        maybe deletin an entry with link
+
+
+    - no need for sub scope (new semantic table) when creating for or if statements
+
+    semantic errors to be caught:
+    - circular dependancy of class variables
+    - using a variable before it is defined.
+    - duplicate variable definition (in same scope)
+
+    - error recovery
+    its not enough though maybe if each production had its own set…
+
+    - nicely display 2d table for debug?
+
+    done:
+    - do not tolower() all incoming tokens in scanner
+	- Parsing the PPT_grammar into objects
+    - Force program function to be the last function in the code
+        all classes and free functions must be declared before it, in that order.
+        - a class can only declare variables and functions
+        a function can declare/assign variables, use (class/free) functions, use expressions
+        program behaves like a function but there is only one (main program) and it must be at the end.
+
+	I realized I had been using indice for variable declaration and assignmnent, but for decl I need to be using arraySize which forces integer index and cannot be an expression inside the [].
+	- arraySize -> [ INT ] arraySize
+
+	error recovery now is done with syncronizing tokens ;, }, {
+	its not enough though maybe if each production had its own set…
+
+    Before I was reating a dummy entry as I waited for the attribute migration but I saw that was not working.
+    now I am using the stack method, I had to realise there are not supposed to be any semantic processor errors to catch, if there is a problem it is with the grammar or the coding. you should be popping what you are expecting to pop on the attr_stack.
+
+    - FIXED. in the entry type for a function that passes a array parameter, the indexes are saving backwards.
+    - FIXED. Broken SymbolTable search

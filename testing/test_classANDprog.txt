@@ -1,0 +1,20 @@
+float var2;
+float var2;
+float var2;
+float var2;
+float var2;
+class gg {
+    test test[1];
+}
+float var2;
+
+class book {
+    int i;
+    float t;
+    float ggggggg;
+}
+program{
+int o;
+}
+
+class s { int t;}

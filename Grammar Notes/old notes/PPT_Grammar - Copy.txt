@@ -1,0 +1,165 @@
+prog             -> classDecl progBody 
+[class, program]
+classDecl        -> class ID { classBody } ; classDecl 
+[class]
+classDecl        -> EPSILON 
+[program]
+classBody        -> type ID varOrFunc 
+[ID, float, int]
+classBody        -> EPSILON 
+[}]
+varOrFunc        -> ( fParams ) funcBody ; classBody 
+[(]
+varOrFunc        -> indice ; classBody 
+[[, ;]
+progBody         -> program funcBody ; funcDef 
+[program]
+funcHead         -> type ID ( fParams ) 
+[ID, float, int]
+funcDef          -> funcHead funcBody ; funcDef 
+[ID, float, int]
+funcDef          -> EPSILON 
+[$]
+funcBody         -> { gen_statements } 
+[{]
+varDecl          -> P_Type ID varDeclTail 
+[float, int]
+varDecl          -> UD_Type createOrAssign varDeclTail 
+[ID]
+createOrAssign   -> ID 
+[ID]
+createOrAssign   -> EPSILON 
+[[, =, ;]
+varDeclTail      -> indice is_Assign ; 
+[[, =, ;]
+is_Assign        -> assignOp expr 
+[=]
+is_Assign        -> EPSILON 
+[;]
+statement        -> for ( type ID assignOp expr ; relExpr ; assignStat ) statBlock ; 
+[for]
+statement        -> if ( expr ) then statBlock else statBlock ; 
+[if]
+statement        -> get ( variable ) ; 
+[get]
+statement        -> put ( expr ) ; 
+[put]
+statement        -> return ( expr ) ; 
+[return]
+statement        -> varDecl 
+[float, int, ID]
+gen_statements   -> statement gen_statements 
+[for, if, get, put, return, float, int, ID]
+gen_statements   -> EPSILON 
+[}]
+assignStat       -> variable assignOp expr 
+[ID]
+statBlock        -> { gen_statements } 
+[{]
+statBlock        -> statement 
+[for, if, get, put, return, float, int, ID]
+statBlock        -> EPSILON 
+[;, else]
+expr             -> arithExpr gen_relArithExpr 
+[(, FLOAT, ID, INT, not, +, -]
+relExpr          -> arithExpr relOp arithExpr 
+[(, FLOAT, ID, INT, not, +, -]
+gen_relArithExpr -> relOp arithExpr 
+[<, <=, <>, ==, >, >=]
+gen_relArithExpr -> EPSILON 
+[;, ), ,]
+arithExpr        -> term gen_addArithExpr 
+[(, FLOAT, ID, INT, not, +, -]
+gen_addArithExpr -> addOp arithExpr 
+[+, -, or]
+gen_addArithExpr -> EPSILON 
+[;, ), ,, <, <=, <>, ==, >, >=, ]]
+sign             -> + 
+[+]
+sign             -> - 
+[-]
+term             -> factor gen_Term 
+[(, FLOAT, ID, INT, not, +, -]
+gen_Term         -> multOp term 
+[*, /, and]
+gen_Term         -> EPSILON 
+[;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or]
+factor           -> ( arithExpr ) 
+[(]
+factor           -> ID paramsOrIndice 
+[ID]
+factor           -> FLOAT 
+[FLOAT]
+factor           -> INT 
+[INT]
+factor           -> not factor 
+[not]
+factor           -> sign factor 
+[+, -]
+paramsOrIndice   -> ( aParams ) 
+[(]
+paramsOrIndice   -> indice 
+[[, EPSILON]
+[;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
+variable         -> ID indice 
+[ID]
+indice           -> [ arithExpr ] indice 
+[[]
+indice           -> EPSILON 
+[;, =, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
+arraySize        -> [ INT ]
+[[]
+arraySize        -> EPSILON 
+[), ,]
+type             -> ID 
+[ID]
+type             -> float 
+[float]
+type             -> int 
+[int]
+P_Type           -> float 
+[float]
+P_Type           -> int 
+[int]
+UD_Type          -> ID 
+[ID]
+fParams          -> type ID arraySize fParamsTail 
+[ID, float, int]
+fParams          -> EPSILON 
+[)]
+aParams          -> expr aParamsTail 
+[(, FLOAT, ID, INT, not, +, -]
+fParamsTail      -> , type ID arraySize fParamsTail 
+[,]
+fParamsTail      -> EPSILON 
+[)]
+aParamsTail      -> , expr aParamsTail 
+[,]
+aParamsTail      -> EPSILON 
+[)]
+assignOp         -> = 
+[=]
+relOp            -> < 
+[<]
+relOp            -> <= 
+[<=]
+relOp            -> <> 
+[<>]
+relOp            -> == 
+[==]
+relOp            -> > 
+[>]
+relOp            -> >= 
+[>=]
+addOp            -> + 
+[+]
+addOp            -> - 
+[-]
+addOp            -> or 
+[or]
+multOp           -> * 
+[*]
+multOp           -> / 
+[/]
+multOp           -> and 
+[and]
