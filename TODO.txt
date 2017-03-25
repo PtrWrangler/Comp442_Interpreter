@@ -1,5 +1,6 @@
 todo:
 	testing.
+	new testing
 	finish reading the the slides 5, 6
 	apply a new table driven parser
 	
