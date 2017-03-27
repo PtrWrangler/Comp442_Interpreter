@@ -6,7 +6,7 @@ class SemanticProcessor(object):
         # symbol tables,
         self.level = 0
         self.SymbolTable_stack = []
-        self.SymbolTables = ''
+        # self.SymbolTables = ''
         # hold attrs while processing a table entry using the grammar rules
         self.prevToken_buffer = ''
         self.attr_buffer = []
@@ -18,7 +18,7 @@ class SemanticProcessor(object):
                            'ENTRY_TYPE': self.ENTRY_TYPE,
                            'ENTRY_NAME': self.ENTRY_NAME,
 
-                           'ADD_DECL_ARRAY_DIM': self.ADD_DECL_ARRAY_DIM,
+                           'ADD_DECL_ARRAY_or_INDICE_DIM': self.ADD_DECL_ARRAY_or_INDICE_DIM,
                            'VAR_ENTRY': self.VAR_ENTRY,
 
                            'FUNC_ENTRY_TABLE': self.FUNC_ENTRY_TABLE,
@@ -29,7 +29,6 @@ class SemanticProcessor(object):
 
                            # 'END_GLOBAL_TABLE': self.END_GLOBAL_TABLE
 
-                           'ENTRY_INDICE': self.ENTRY_INDICE,
                            'ENTRY_NEST': self.ENTRY_NEST,
                            'CHECK_VAR_EXIST': self.CHECK_VAR_EXIST
 
@@ -51,7 +50,7 @@ class SemanticProcessor(object):
 
     def CREATE_GLOBAL_TABLE(self):
         self.SymbolTable_stack.append(Symbol_Table(self.level, 'global'))
-        self.SymbolTables = Symbol_Table(self.level, 'global')
+        # self.SymbolTables = Symbol_Table(self.level, 'global')
 
     ##################################################################
     #                     CLASS SEMANTIC ACTIONS                     #
@@ -92,7 +91,7 @@ class SemanticProcessor(object):
         print "buffering entryName"
         self.attr_buffer.append(self.prevToken_buffer)
 
-    def ADD_DECL_ARRAY_DIM(self):
+    def ADD_DECL_ARRAY_or_INDICE_DIM(self):
         print 'adding an array decl dimension size'
         self.attr_buffer.append(int(self.prevToken_buffer.value))
 
@@ -183,12 +182,15 @@ class SemanticProcessor(object):
     #     self.SymbolTable_stack.pop()
     #     self.level -= 1
 
-    def ENTRY_INDICE(self):
-        print "specifying var index."
-
-
     def ENTRY_NEST(self):
         print "specifying object nested variable"
+        entry = Entry(self.level, '', 'variable', '')
+        while isinstance(self.attr_buffer[-1], int):
+            entry.arraySize.insert(0, self.attr_buffer.pop())
+        if len(self.attr_buffer) > 1:
+            nameToken = self.attr_buffer.pop()
+            entry.name = nameToken.value
+            entry.type = self.attr_buffer.pop().value
 
     def CHECK_VAR_EXIST(self):
         print "Checking if Variable has been declared for use"
@@ -200,4 +202,4 @@ class SemanticProcessor(object):
         for table in self.SymbolTable_stack:
             foundEntry = table.search(entry)
             if isinstance(foundEntry, Entry):
-                self.warnings += "\nWarning: Variabble or Parameter already exists in scope: " + str(nameToken)
+                self.warnings += "\nWarning: Variable or Parameter already exists in scope: " + str(nameToken)

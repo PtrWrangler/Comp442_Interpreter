@@ -10,6 +10,10 @@ Main objectives & notes:
         maybe deletin an entry with link
 
 
+    - I tried to change my symbol table implementation to a sort of doubly linked list...
+        but am putting this plan/idea aside for now...
+
+
     # regex to highlight all semantic symbols in grammar
 	[A-Z]+_
 
