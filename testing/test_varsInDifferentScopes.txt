@@ -7,7 +7,7 @@ class Utility
         int maxValue;
         int idx;
         maxValue = array[100];
-        for( int idx = 99; idx > 0; idx = idx - 1 )
+        for( int idex = 99; idx > 0; idx = idx - 1 )
         {
             if(array[idx] > maxValue) then {
             maxValue = array[idx];
@@ -21,9 +21,8 @@ class Utility
     {
         int minValue;
         int idx;
-        float var2;
         minValue = array[100];
-        for( int idx = 1; idx <= 99; idx = ( idx ) + 1)
+        for( int idex = 1; idx <= 99; idx = ( idx ) + 1)
         {
             if(array[idx] < maxValue) then {
             maxValue = array[idx];

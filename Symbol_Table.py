@@ -4,6 +4,9 @@ import re
 class Symbol_Table(object):
     def __init__(self, level, name):
 
+        # self.prev = prev
+        # self.next = next
+
         self.name = name
         self.entries = []
 
@@ -45,10 +48,10 @@ class Symbol_Table(object):
             else:
                 function_entry.type += ' : ' + param_entry.name + arrSize
 
-    def search(self, entry_name):
+    def search(self, entry):
         print "searching " + self.name + " table"
         for e in self.entries:
-            if e.name == entry_name:
+            if e.name == entry.name:
                 return e
 
         print 'entry not found'
@@ -142,3 +145,42 @@ class Entry(object):
     def __repr__(self):
         return self.__str__()
 
+
+# class Symbol_Tables(object):
+#     head = None
+#     tail = None
+#
+#     def append(self, level, name):
+#         new_table = Symbol_Table(level, name, None, None)
+#         if self.head is None:
+#             self.head = self.tail = new_table
+#         else:
+#             new_table.prev = self.tail
+#             new_table.next = None
+#             self.tail.next = new_table
+#             self.tail = new_table
+#
+#     def remove(self, table_name):
+#         current_table = self.head
+#
+#         while current_table is not None:
+#             if current_table.name == table_name:
+#                 # if it's not the first element
+#                 if current_table.prev is not None:
+#                     current_table.prev.next = current_table.next
+#                     current_table.next.prev = current_table.prev
+#                 else:
+#                     # otherwise we have no prev (it's None), head is the next one, and prev becomes None
+#                     self.head = current_table.next
+#                     current_table.next.prev = None
+#
+#             current_table = current_table.next
+#
+#     def show(self):
+#         print "Show list data:"
+#         current_table = self.head
+#         while current_table is not None:
+#             print str(current_table)
+#             current_table = current_table.next
+#
+#         print "*" * 50

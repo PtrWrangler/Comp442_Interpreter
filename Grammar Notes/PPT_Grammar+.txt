@@ -28,9 +28,9 @@ varDecl          -> ID ENTRY_TYPE createOrAssign
 [ID]
 createOrAssign   -> ID ENTRY_NAME arraySize VAR_ENTRY ;
 [ID]
-createOrAssign   -> indice gen_nest assign ; 
+createOrAssign   -> indice gen_nest CHECK_VAR_EXIST assign ;
 [[, ., =]
-gen_nest         -> . ID indice gen_nest 
+gen_nest         -> . ID indice ENTRY_NEST gen_nest
 [.]
 gen_nest         -> EPSILON 
 [=]
@@ -109,11 +109,11 @@ is_nest          -> EPSILON
 [;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
 variable         -> ID indice 
 [ID]
-indice           -> [ arithExpr ] indice 
+indice           -> [ arithExpr ] indice
 [[]
 indice           -> EPSILON 
 [;, =, ., ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
-arraySize        -> [ INT  ADD_DECL_ARRAY_DIM ] arraySize
+arraySize        -> [ INT  ADD_DECL_ARRAY_or_INDICE_DIM ] arraySize
 [[]
 arraySize        -> EPSILON 
 [;, ), ,]

@@ -6,6 +6,7 @@ class SemanticProcessor(object):
         # symbol tables,
         self.level = 0
         self.SymbolTable_stack = []
+        # self.SymbolTables = ''
         # hold attrs while processing a table entry using the grammar rules
         self.prevToken_buffer = ''
         self.attr_buffer = []
@@ -17,7 +18,7 @@ class SemanticProcessor(object):
                            'ENTRY_TYPE': self.ENTRY_TYPE,
                            'ENTRY_NAME': self.ENTRY_NAME,
 
-                           'ADD_DECL_ARRAY_DIM': self.ADD_DECL_ARRAY_DIM,
+                           'ADD_DECL_ARRAY_or_INDICE_DIM': self.ADD_DECL_ARRAY_or_INDICE_DIM,
                            'VAR_ENTRY': self.VAR_ENTRY,
 
                            'FUNC_ENTRY_TABLE': self.FUNC_ENTRY_TABLE,
@@ -28,7 +29,12 @@ class SemanticProcessor(object):
 
                            # 'END_GLOBAL_TABLE': self.END_GLOBAL_TABLE
 
+                           'ENTRY_NEST': self.ENTRY_NEST,
+                           'CHECK_VAR_EXIST': self.CHECK_VAR_EXIST
+
                            }
+        self.error = ""
+        self.warnings = ""
 
     def __str__(self):
         """String representation of the class instance."""
@@ -44,21 +50,31 @@ class SemanticProcessor(object):
 
     def CREATE_GLOBAL_TABLE(self):
         self.SymbolTable_stack.append(Symbol_Table(self.level, 'global'))
+        # self.SymbolTables = Symbol_Table(self.level, 'global')
 
     ##################################################################
     #                     CLASS SEMANTIC ACTIONS                     #
     ##################################################################
     def CLASS_ENTRY_TABLE(self):
         print "create_classEntryAndTable."
-        # create a table entry and link it to the new class table
-        class_entry = Entry(self.level, self.prevToken_buffer, 'class', '')
-        self.level += 1
-        class_entry.link = Symbol_Table(self.level, class_entry.name)
+        # ensure class name does not already exist in Global Table
+        if self.SymbolTable_stack[0].search(self.prevToken_buffer) is None:
 
-        # append the new entry to the global table and put the reference to the class table on top the stack
-        if self.SymbolTable_stack:
-            self.SymbolTable_stack[-1].addEntry(class_entry)
-        self.SymbolTable_stack.append(class_entry.link)
+            # create a table entry and link it to the new class table
+            class_entry = Entry(self.level, self.prevToken_buffer.value, 'class', '')
+            self.level += 1
+            class_entry.link = Symbol_Table(self.level, class_entry.name)
+
+            # append the new entry to the global table and put the reference to the class table on top the stack
+            if self.SymbolTable_stack:
+                self.SymbolTable_stack[-1].addEntry(class_entry)
+            self.SymbolTable_stack.append(class_entry.link)
+
+        else:
+            # error this class name alreay exists in global table
+            print "Attempting new class entry/table but name " + self.prevToken_buffer.value + " already exists in global table"
+            self.error += "\nError: Duplicate class declaration: " + str(self.prevToken_buffer)
+            print self.error
 
     def END_CLASS(self):
         print 'ending class.'
@@ -75,39 +91,55 @@ class SemanticProcessor(object):
         print "buffering entryName"
         self.attr_buffer.append(self.prevToken_buffer)
 
-    def ADD_DECL_ARRAY_DIM(self):
+    def ADD_DECL_ARRAY_or_INDICE_DIM(self):
         print 'adding an array decl dimension size'
-        self.attr_buffer.append(int(self.prevToken_buffer))
+        self.attr_buffer.append(int(self.prevToken_buffer.value))
 
     def FUNC_ENTRY_TABLE(self):
         print "create_funcEntryAndTable."
-        # create a new global/local table entry and link it to the new class table
+        # ensure function name does not already exist in current scope
         if len(self.attr_buffer) > 1:
-            entry = Entry(self.level, self.attr_buffer.pop(), 'function', self.attr_buffer.pop())
+            func_name = self.attr_buffer.pop()
+            func_type = self.attr_buffer.pop()
+
+        # create a new global/local table entry and link it to the new class table
+        entry = Entry(self.level, func_name.value, 'function', func_type.value)
         self.level += 1
         entry.link = Symbol_Table(self.level, entry.name)
 
-        # append the new entry to the global/class table and put the reference to the class table on top the stack
-        if self.SymbolTable_stack:
-            self.SymbolTable_stack[-1].addEntry(entry)
-        self.SymbolTable_stack.append(entry.link)
+        if self.SymbolTable_stack[-1].search(entry) is None:
+
+            # append the new entry to the global/class table and put the reference to the class table on top the stack
+            if self.SymbolTable_stack:
+                self.SymbolTable_stack[-1].addEntry(entry)
+            self.SymbolTable_stack.append(entry.link)
+        else:
+            # error this function name alreay exists in scope
+            print "Attempting new function but name " + func_name.value + " already exists in scope"
+            self.error += "\nDuplicate function declaration: " + str(func_name)
+            print self.error
 
     def ADD_FUNC_PARAM_ENTRY(self):
         print 'adding a function parameter entry.'
+        type  = 'parameter'
 
         entry = Entry(self.level, '', 'parameter', '')
         while isinstance(self.attr_buffer[-1], int):
             entry.arraySize.append(self.attr_buffer.pop())
         if len(self.attr_buffer) > 1:
-            entry.name = self.attr_buffer.pop()
-            entry.type = self.attr_buffer.pop()
+            nameToken = self.attr_buffer.pop()
+            entry.name = nameToken.value
+            entry.type = self.attr_buffer.pop().value
+
+        # if variable already in scope give warning
+        self.check_var_in_scope(entry, nameToken)
 
         if self.SymbolTable_stack:
             self.SymbolTable_stack[-1].addEntry(entry)
 
         # modify the type of the function entry two layers back
         if len(self.SymbolTable_stack) > 1:
-            self.SymbolTable_stack[-2].append_param_to_func_entry_type(self.SymbolTable_stack[-1].name, entry)
+            self.SymbolTable_stack[-2].append_param_to_func_entry_type(self.SymbolTable_stack[-1], entry)
 
     def END_FUNC(self):
         print 'ending class function'
@@ -122,8 +154,12 @@ class SemanticProcessor(object):
         while isinstance(self.attr_buffer[-1], int):
             entry.arraySize.insert(0, self.attr_buffer.pop())
         if len(self.attr_buffer) > 1:
-            entry.name = self.attr_buffer.pop()
-            entry.type = self.attr_buffer.pop()
+            nameToken = self.attr_buffer.pop()
+            entry.name = nameToken.value
+            entry.type = self.attr_buffer.pop().value
+
+        # if variable already in scope give warning
+        self.check_var_in_scope(entry, nameToken)
 
         # append the new entry to the class table
         if self.SymbolTable_stack:
@@ -145,3 +181,25 @@ class SemanticProcessor(object):
     #     print 'ending global table'
     #     self.SymbolTable_stack.pop()
     #     self.level -= 1
+
+    def ENTRY_NEST(self):
+        print "specifying object nested variable"
+        entry = Entry(self.level, '', 'variable', '')
+        while isinstance(self.attr_buffer[-1], int):
+            entry.arraySize.insert(0, self.attr_buffer.pop())
+        if len(self.attr_buffer) > 1:
+            nameToken = self.attr_buffer.pop()
+            entry.name = nameToken.value
+            entry.type = self.attr_buffer.pop().value
+
+    def CHECK_VAR_EXIST(self):
+        print "Checking if Variable has been declared for use"
+
+    '''''''''''''''''''''' Tools '''''''''''''''''''''''
+
+    def check_var_in_scope(self, entry, nameToken):
+        print self.SymbolTable_stack
+        for table in self.SymbolTable_stack:
+            foundEntry = table.search(entry)
+            if isinstance(foundEntry, Entry):
+                self.warnings += "\nWarning: Variable or Parameter already exists in scope: " + str(nameToken)

@@ -4,6 +4,9 @@ COMP 442 Winter 2017 Assignment 4, Symantic Analysis
 By: Mathieu Rauch
 ID: 26777147
 
+Repository:
+https://github.com/PtrWrangler/Comp442_Interpreter/tree/master
+
 ----------------------------------------------------------------------------
 
 Installation and preparation instructions:
@@ -24,7 +27,9 @@ sample testfiles are in /testing and all outputs and errorlogs are sent to /outp
 ----------------------------------------------------------------------------
 
 --- Important Notes ---
-- I have now upgraded to a Table-Driven Predictive Parser (RDPP).
+- WORK_LOG.txt has been depricated, now refer to see the specific work that was done or navigate to TODO.txt
+    to see tasks that has been accomplished or you can always check the READ_ME.md
+
 - To see the symbol_tables and entries printout your source code must be error free
     a good file to use would be 'test_Utility.txt'
 - The semantic tables and their entries can be found at the bottom of the respective test's output file file
