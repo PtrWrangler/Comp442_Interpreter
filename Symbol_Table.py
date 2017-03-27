@@ -45,10 +45,10 @@ class Symbol_Table(object):
             else:
                 function_entry.type += ' : ' + param_entry.name + arrSize
 
-    def search(self, entry_name):
+    def search(self, entry):
         print "searching " + self.name + " table"
         for e in self.entries:
-            if e.name == entry_name:
+            if e.name == entry.name:
                 return e
 
         print 'entry not found'

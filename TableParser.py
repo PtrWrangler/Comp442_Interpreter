@@ -6,7 +6,8 @@ from SemanticProcessor import SemanticProcessor
 
 """     test input files    """
 # testFile = "test_MEGA_reutersFile.sgm"
-testFile = "test_Utility.txt"
+#testFile = "test_Utility.txt"
+testFile = "test_parameterNameOrType_inScope.txt"
 #testFile = "test_errRecover.txt"
 #testFile = "test_classANDprog.txt"
 #testFile = "test_loopsANDifs.txt"
@@ -154,10 +155,12 @@ class Syntactic_Parser(object):
             print 'SymbolTable_stack length is: ' + \
                   str(len(self.semantic_processor.SymbolTable_stack))
             print str(self.semantic_processor.SymbolTable_stack[0])
+            print self.semantic_processor.warnings
 
             if self.semantic_processor.error == "":
                 # no semantic errors occured
                 self.errs += 'Source Program contained no semantic errors.\n'
+                self.errs += self.semantic_processor.warnings
                 self.output = "\nSYMBOL TABLE STRUCTURE:\n" + (str(self.semantic_processor.SymbolTable_stack[0]))
             else:
                 # semantic errors occured

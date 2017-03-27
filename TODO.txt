@@ -15,6 +15,10 @@ Main objectives & notes:
 
 A4 look over:
     todo:
+    - the local definition overrides the higher-level one
+        but give a warning that its overriding
+    - function calls must match number of arguments required in def
+
     search for name and kind
     varFuncClass ->
 
@@ -40,4 +44,6 @@ A4 look over:
 
     done:
     - catching duplicate class names
+    - duplicate variable or parameter declaration in same scope now registers a warning, with both tokens.
+        but semantic parsing can continue, re-declaring the specified variable
 
