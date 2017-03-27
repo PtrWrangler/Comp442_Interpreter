@@ -16,10 +16,12 @@ class Utility
         };
         return (maxValue);
     };
+
     int findMin(int array[100])
     {
         int minValue;
         int idx;
+        float var2;
         minValue = array[100];
         for( int idx = 1; idx <= 99; idx = ( idx ) + 1)
         {

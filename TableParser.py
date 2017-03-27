@@ -67,15 +67,18 @@ class Syntactic_Parser(object):
         error = False
         while self.parsing_stack[-1] is not EOF and self.lookahead.value is not None:
             top = self.parsing_stack[-1]
-            print "top       = " + top
-            print "lookahead = " + self.lookahead.value
+            # print "top       = " + top
+            # print "lookahead = " + self.lookahead.value
 
             # if top symbol is a semantic action
             if top in self.semantic_processor.dispatcher:
-                print top
-                # dispatches the semantic action then moves on to next symbol on stack
-                self.semantic_processor.dispatcher[top]()
-                self.parsing_stack.pop()
+                if self.semantic_processor.error == "":
+                    print top
+                    # dispatches the semantic action then moves on to next symbol on stack
+                    self.semantic_processor.dispatcher[top]()
+                    self.parsing_stack.pop()
+                else:
+                    self.parsing_stack.pop()
 
             # if top symbol is a terminal
             elif top in self.terminal_list and top != EPSILON:
@@ -83,7 +86,7 @@ class Syntactic_Parser(object):
                     self.format_output()
 
                     self.parsing_stack.pop()
-                    self.semantic_processor.prevToken_buffer = self.lookahead.value
+                    self.semantic_processor.prevToken_buffer = self.lookahead
                     self.lookahead = self.interpreter.scanner()
                 else:
                     print "error, wrong token"
@@ -104,7 +107,7 @@ class Syntactic_Parser(object):
 
                     self.parsing_stack.pop()
                     self.parsing_stack.extend(top.inverse_RHS_multiple_push())
-                    print self.parsing_stack
+                    # print self.parsing_stack
                 else:
                     print "error, table position is -1"
                     self.errs += "table error, Expected {" + top.str_production + "} found " + self.lookahead.__str__() + '\n'
@@ -125,6 +128,9 @@ class Syntactic_Parser(object):
             self.o.flush()
             self.output = ''
 
+        """""""""""""""""""""""""""""""""""""""
+        """""" Parse/Semantic Evaluation """"""
+        """""""""""""""""""""""""""""""""""""""
         # final parse report
         if self.lookahead.type is EOF:
             # if lookeahead i not EOF than should throw a scan error
@@ -141,17 +147,22 @@ class Syntactic_Parser(object):
             print "error is True"
         else:
             print "error is False"
-            self.errs += 'Source Program contains no parsing errors.\n'
+            self.errs += 'Source Program contained no parsing errors.\n'
 
             #del self.semantic_processor.SymbolTable_stack[0].entries[0].link
             self.semantic_processor.SymbolTable_stack[0].delete('Utility')
             print 'SymbolTable_stack length is: ' + \
                   str(len(self.semantic_processor.SymbolTable_stack))
             print str(self.semantic_processor.SymbolTable_stack[0])
-            self.output = "\nSYMBOL TABLE STRUCTURE:\n" + (str(self.semantic_processor.SymbolTable_stack[0]))
 
-            # check for all variable and function usage errors starting from the global table
-            self.semantic_processor.SymbolTable_stack[0].IDUsageErrors([])
+            if self.semantic_processor.error == "":
+                # no semantic errors occured
+                self.errs += 'Source Program contained no semantic errors.\n'
+                self.output = "\nSYMBOL TABLE STRUCTURE:\n" + (str(self.semantic_processor.SymbolTable_stack[0]))
+            else:
+                # semantic errors occured
+                print self.semantic_processor.error
+                self.errs += self.semantic_processor.error
 
         self.o.write(self.errs)
         self.o.write(self.output)

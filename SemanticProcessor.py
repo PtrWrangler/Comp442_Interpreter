@@ -29,6 +29,7 @@ class SemanticProcessor(object):
                            # 'END_GLOBAL_TABLE': self.END_GLOBAL_TABLE
 
                            }
+        self.error = ""
 
     def __str__(self):
         """String representation of the class instance."""
@@ -50,15 +51,24 @@ class SemanticProcessor(object):
     ##################################################################
     def CLASS_ENTRY_TABLE(self):
         print "create_classEntryAndTable."
-        # create a table entry and link it to the new class table
-        class_entry = Entry(self.level, self.prevToken_buffer, 'class', '')
-        self.level += 1
-        class_entry.link = Symbol_Table(self.level, class_entry.name)
+        # ensure class name does not already exist in Global Table
+        if self.SymbolTable_stack[0].search(self.prevToken_buffer.value) is None:
 
-        # append the new entry to the global table and put the reference to the class table on top the stack
-        if self.SymbolTable_stack:
-            self.SymbolTable_stack[-1].addEntry(class_entry)
-        self.SymbolTable_stack.append(class_entry.link)
+            # create a table entry and link it to the new class table
+            class_entry = Entry(self.level, self.prevToken_buffer.value, 'class', '')
+            self.level += 1
+            class_entry.link = Symbol_Table(self.level, class_entry.name)
+
+            # append the new entry to the global table and put the reference to the class table on top the stack
+            if self.SymbolTable_stack:
+                self.SymbolTable_stack[-1].addEntry(class_entry)
+            self.SymbolTable_stack.append(class_entry.link)
+
+        else:
+            # error this class name alreay exists in global table
+            print "Attempting new class entry/table but name " + self.prevToken_buffer.value + " already exists in global table"
+            self.error += "\nDuplicate class declaration: " + str(self.prevToken_buffer)
+            print self.error
 
     def END_CLASS(self):
         print 'ending class.'
@@ -77,20 +87,30 @@ class SemanticProcessor(object):
 
     def ADD_DECL_ARRAY_DIM(self):
         print 'adding an array decl dimension size'
-        self.attr_buffer.append(int(self.prevToken_buffer))
+        self.attr_buffer.append(int(self.prevToken_buffer.value))
 
     def FUNC_ENTRY_TABLE(self):
         print "create_funcEntryAndTable."
-        # create a new global/local table entry and link it to the new class table
-        if len(self.attr_buffer) > 1:
-            entry = Entry(self.level, self.attr_buffer.pop(), 'function', self.attr_buffer.pop())
-        self.level += 1
-        entry.link = Symbol_Table(self.level, entry.name)
+        # ensure function name does not already exist in current scope
+        if len(self.attr_buffer) > 0:
+            func_name = self.attr_buffer.pop()
+        if self.SymbolTable_stack[-1].search(func_name.value) is None:
 
-        # append the new entry to the global/class table and put the reference to the class table on top the stack
-        if self.SymbolTable_stack:
-            self.SymbolTable_stack[-1].addEntry(entry)
-        self.SymbolTable_stack.append(entry.link)
+            # create a new global/local table entry and link it to the new class table
+            if len(self.attr_buffer) > 0:
+                entry = Entry(self.level, func_name.value, 'function', self.attr_buffer.pop().value)
+                self.level += 1
+                entry.link = Symbol_Table(self.level, entry.name)
+
+            # append the new entry to the global/class table and put the reference to the class table on top the stack
+            if self.SymbolTable_stack:
+                self.SymbolTable_stack[-1].addEntry(entry)
+            self.SymbolTable_stack.append(entry.link)
+        else:
+            # error this function name alreay exists in scope
+            print "Attempting new function but name " + func_name.value + " already exists in scope"
+            self.error += "\nDuplicate function declaration: " + str(func_name)
+            print self.error
 
     def ADD_FUNC_PARAM_ENTRY(self):
         print 'adding a function parameter entry.'
@@ -99,8 +119,8 @@ class SemanticProcessor(object):
         while isinstance(self.attr_buffer[-1], int):
             entry.arraySize.append(self.attr_buffer.pop())
         if len(self.attr_buffer) > 1:
-            entry.name = self.attr_buffer.pop()
-            entry.type = self.attr_buffer.pop()
+            entry.name = self.attr_buffer.pop().value
+            entry.type = self.attr_buffer.pop().value
 
         if self.SymbolTable_stack:
             self.SymbolTable_stack[-1].addEntry(entry)
@@ -122,8 +142,8 @@ class SemanticProcessor(object):
         while isinstance(self.attr_buffer[-1], int):
             entry.arraySize.insert(0, self.attr_buffer.pop())
         if len(self.attr_buffer) > 1:
-            entry.name = self.attr_buffer.pop()
-            entry.type = self.attr_buffer.pop()
+            entry.name = self.attr_buffer.pop().value
+            entry.type = self.attr_buffer.pop().value
 
         # append the new entry to the class table
         if self.SymbolTable_stack:

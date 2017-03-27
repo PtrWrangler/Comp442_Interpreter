@@ -24,6 +24,7 @@ class Utility {
     int findMin ( int array [ 100 ] ) {
         int minValue ;
         int idx ;
+        float var2 ;
         minValue = array [ 100 ] ;
         for ( int idx = 1 ;
         idx <= 99 ;
@@ -75,7 +76,8 @@ program {
 ERRORS OF test_Utility.txt:
   -- ! Error locations are accurate to the original input file ! --
 
-Source Program contains no parsing errors.
+Source Program contained no parsing errors.
+Source Program contained no semantic errors.
 
 SYMBOL TABLE STRUCTURE:
 
@@ -95,6 +97,7 @@ Entry  (Utility, 'class', '', link:
         Entry  (array, 'parameter', 'int'[100], link: None ), 
         Entry  (minValue, 'variable', 'int', link: None ), 
         Entry  (idx, 'variable', 'int', link: None ), 
+        Entry  (var2, 'variable', 'float', link: None ), 
         Entry  (idx, 'variable', 'int', link: None )]) )]) ), 
 Entry  (randomize, 'function', 'float', link: 
     Sym_Tbl(name:randomize, entries:[
