@@ -57,6 +57,15 @@ class Symbol_Table(object):
         print 'entry not found'
         return None
 
+    def search_by_nameToken(self, var_name):
+        print "searching " + self.name + " table"
+        for e in self.entries:
+            if e.name == var_name:
+                return e
+
+        print 'entry not found'
+        return None
+
     def delete(self, entry_name):
         print "deleting table"
         # entry = self.search(entry_name)

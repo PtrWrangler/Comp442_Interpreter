@@ -116,23 +116,23 @@ class SemanticProcessor(object):
         else:
             # error this function name alreay exists in scope
             print "Attempting new function but name " + func_name.value + " already exists in scope"
-            self.error += "\nDuplicate function declaration: " + str(func_name)
+            self.error += "\nError: Duplicate function declaration: " + str(func_name)
             print self.error
 
     def ADD_FUNC_PARAM_ENTRY(self):
         print 'adding a function parameter entry.'
-        type  = 'parameter'
 
         entry = Entry(self.level, '', 'parameter', '')
         while isinstance(self.attr_buffer[-1], int):
-            entry.arraySize.append(self.attr_buffer.pop())
+            entry.arraySize.insert(0, self.attr_buffer.pop())
         if len(self.attr_buffer) > 1:
             nameToken = self.attr_buffer.pop()
             entry.name = nameToken.value
             entry.type = self.attr_buffer.pop().value
 
         # if variable already in scope give warning
-        self.check_var_in_scope(entry, nameToken)
+        if self.check_var_in_scope(entry):
+            self.warnings += "\nWarning: Parameter name already exists in scope: " + str(nameToken)
 
         if self.SymbolTable_stack:
             self.SymbolTable_stack[-1].addEntry(entry)
@@ -159,7 +159,8 @@ class SemanticProcessor(object):
             entry.type = self.attr_buffer.pop().value
 
         # if variable already in scope give warning
-        self.check_var_in_scope(entry, nameToken)
+        if self.check_var_in_scope(entry):
+            self.warnings += "\nWarning: Variable name already exists in scope: " + str(nameToken)
 
         # append the new entry to the class table
         if self.SymbolTable_stack:
@@ -184,22 +185,31 @@ class SemanticProcessor(object):
 
     def ENTRY_NEST(self):
         print "specifying object nested variable"
-        entry = Entry(self.level, '', 'variable', '')
-        while isinstance(self.attr_buffer[-1], int):
-            entry.arraySize.insert(0, self.attr_buffer.pop())
-        if len(self.attr_buffer) > 1:
-            nameToken = self.attr_buffer.pop()
-            entry.name = nameToken.value
-            entry.type = self.attr_buffer.pop().value
+        # entry = Entry(self.level, '', 'variable', '')
+        # while isinstance(self.attr_buffer[-1], int):
+        #     entry.arraySize.insert(0, self.attr_buffer.pop())
+        # if len(self.attr_buffer) > 1:
+        #     nameToken = self.attr_buffer.pop()
+        #     entry.name = nameToken.value
+        #     entry.type = self.attr_buffer.pop().value
 
     def CHECK_VAR_EXIST(self):
         print "Checking if Variable has been declared for use"
+        print self.attr_buffer
+
+        if len(self.attr_buffer) > 0:
+            nameToken = self.attr_buffer.pop()
+            temp_entry = Entry(self.level, nameToken.value, 'variable', '')
+            if not self.check_var_in_scope(temp_entry):
+                self.error += "\nError: Variable or Parameter has not been declared: " + str(nameToken)
 
     '''''''''''''''''''''' Tools '''''''''''''''''''''''
 
-    def check_var_in_scope(self, entry, nameToken):
+    def check_var_in_scope(self, entry):
         print self.SymbolTable_stack
-        for table in self.SymbolTable_stack:
+
+        for table in reversed(self.SymbolTable_stack):
             foundEntry = table.search(entry)
             if isinstance(foundEntry, Entry):
-                self.warnings += "\nWarning: Variable or Parameter already exists in scope: " + str(nameToken)
+                return True
+        return False

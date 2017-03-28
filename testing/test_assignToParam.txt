@@ -2,11 +2,11 @@ class Utility
 {
     int var1[4][5][7][8][9][1][0];
     float var2;
-    int findMax(int array[100][5][4], int rr, float yyu_7[4][5][6])
+    int findMax(int array[100][5][4])
     {
         int maxValue;
         int idx;
-        rr = 8;
+        array = 7;
         maxValue = array[100];
         for( int idx = 99; idx > 0; idx = idx - 1 )
         {

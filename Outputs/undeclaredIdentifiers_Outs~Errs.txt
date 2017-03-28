@@ -1,4 +1,4 @@
-OUTPUT OF test_varsInDifferentScopes.txt: 
+OUTPUT OF test_undeclaredIdentifiers.txt: 
 
 class Utility {
     int var1 [ 4 ] [ 5 ] [ 7 ] [ 8 ] [ 9 ] [ 1 ] [ 0 ] ;
@@ -29,7 +29,7 @@ class Utility {
         idx <= 99 ;
         idx = ( idx ) + 1 ) {
             if ( array [ idx ] < maxValue ) then {
-                maxValue = array [ idx ] ;
+                minValue = array [ idx ] ;
                 
             }else {
                 
@@ -53,6 +53,7 @@ program {
     int idx ;
     int maxValue ;
     int minValue ;
+    util = 56 ;
     Utility utility ;
     Utility arrayUtility [ 2 ] [ 3 ] [ 6 ] [ 7 ] ;
     for ( int t = 0 ;
@@ -72,9 +73,9 @@ program {
 };
 
 
-ERRORS OF test_varsInDifferentScopes.txt:
+ERRORS OF test_undeclaredIdentifiers.txt:
   -- ! Error locations are accurate to the original input file ! --
 
 Source Program contained no parsing errors.
 
-Error: Variable or Parameter has not been declared: Token(ID, 'maxValue', Line:Pos=(28, 21))
+Error: Variable or Parameter has not been declared: Token(ID, 'util', Line:Pos=(47, 9))

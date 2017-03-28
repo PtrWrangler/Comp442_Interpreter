@@ -8,7 +8,8 @@ Main objectives & notes:
     - apply table deletions?
         maybe i should be outputting symboltables and entries to a file as i go.
         maybe deletin an entry with link
-
+    - go back and look at comments in lexer
+    - output file should contain original code followed by errors, not my shitty debug program output
 
     - I tried to change my symbol table implementation to a sort of doubly linked list...
         but am putting this plan/idea aside for now...
@@ -25,7 +26,6 @@ A4 look over:
 
     search for name and kind
     varFuncClass ->
-
 
     semantic errors to be caught:
     - circular dependancy of class variables
