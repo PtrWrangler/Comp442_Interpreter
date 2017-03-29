@@ -38,7 +38,7 @@ class Utility
 };
 class testClass {
     int test;
-    BADCLASS u;
+    g u;
 
 };
 class Tool {
@@ -46,7 +46,7 @@ class Tool {
     testClass t;
 };
 class g {
-    int j;
+    Utility j;
 
 };
 

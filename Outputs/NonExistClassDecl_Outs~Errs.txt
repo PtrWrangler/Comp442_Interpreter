@@ -1,4 +1,4 @@
-OUTPUT OF test_Utility.txt: 
+OUTPUT OF test_NonExistClassDecl.txt: 
 
 class Utility {
     int var1 [ 4 ] [ 5 ] [ 7 ] [ 8 ] [ 9 ] [ 1 ] [ 0 ] ;
@@ -98,7 +98,7 @@ program {
 };
 
 
-ERRORS OF test_Utility.txt:
+ERRORS OF test_NonExistClassDecl.txt:
   -- ! Error locations are accurate to the original input file ! --
 
 Source Program contained no parsing errors.

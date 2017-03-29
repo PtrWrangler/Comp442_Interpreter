@@ -12,7 +12,7 @@ varOrFunc        -> ( FUNC_ENTRY_TABLE fParams )  funcBody ; END_FUNC classBody
 [(]
 varOrFunc        -> arraySize ; VAR_ENTRY classBody
 [[, ;]
-progBody         -> program PROGRAM_FUNC_ENTRY_TABLE funcBody ;
+progBody         -> program PROGRAM_FUNC_ENTRY_TABLE funcBody END_PROGRAM ;
 [program]
 funcHead         -> type ENTRY_TYPE ID ENTRY_NAME ( FUNC_ENTRY_TABLE fParams )
 [ID, float, int]
@@ -28,7 +28,7 @@ varDecl          -> ID ENTRY_TYPE createOrAssign
 [ID]
 createOrAssign   -> ID ENTRY_NAME arraySize VAR_ENTRY ;
 [ID]
-createOrAssign   -> indice gen_nest CHECK_VAR_EXIST assign ;
+createOrAssign   -> CHECK_VAR_EXIST indice gen_nest assign ;
 [[, ., =]
 gen_nest         -> . ID indice ENTRY_NEST gen_nest
 [.]

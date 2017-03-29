@@ -2,13 +2,11 @@ class Utility
 {
     int var1[4][5][7][8][9][1][0];
     float var2;
-    Tool tool;
-    Tool l;
-    int findMax(int array[100][5][4], int rr, float yyu_7[4][5][6])
+    int findMax(int array[100][5][4])
     {
         int maxValue;
         int idx;
-        rr = 8;
+        array = 7;
         maxValue = array[100];
         for( int idx = 99; idx > 0; idx = idx - 1 )
         {
@@ -36,35 +34,13 @@ class Utility
         return (minValue);
     };
 };
-class testClass {
-    int test;
-    BADCLASS u;
-
-};
-class Tool {
-    int test;
-    testClass t;
-};
-class g {
-    int j;
-
-};
-
 float randomize()
 {
     float value;
-    Tool tooly;
-    testClass t;
-    Utility u;
-    g gg;
     value = 100 * (2 + 3.0 / 7.0006);
     value = 1.05 + ((2.04 * 2.47) - 3.0) + 7.0006 ;
     return (value);
 };
-int testFunc(int testint[5][4][3000]) {
-    Utility testutil;
-};
-
 program {
     int sample[100];
     int idx;

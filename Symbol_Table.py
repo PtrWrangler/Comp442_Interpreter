@@ -1,4 +1,3 @@
-import re
 
 
 class Symbol_Table(object):
@@ -52,6 +51,15 @@ class Symbol_Table(object):
         print "searching " + self.name + " table"
         for e in self.entries:
             if e.name == entry.name:
+                return e
+
+        print 'entry not found'
+        return None
+
+    def search_by_nameToken(self, var_name):
+        print "searching " + self.name + " table"
+        for e in self.entries:
+            if e.name == var_name:
                 return e
 
         print 'entry not found'
