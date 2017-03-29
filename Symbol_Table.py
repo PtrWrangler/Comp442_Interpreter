@@ -1,4 +1,3 @@
-import re
 
 
 class Symbol_Table(object):

@@ -12,7 +12,7 @@ varOrFunc        -> ( FUNC_ENTRY_TABLE fParams )  funcBody ; END_FUNC classBody
 [(]
 varOrFunc        -> arraySize ; VAR_ENTRY classBody
 [[, ;]
-progBody         -> program PROGRAM_FUNC_ENTRY_TABLE funcBody ;
+progBody         -> program PROGRAM_FUNC_ENTRY_TABLE funcBody END_PROGRAM ;
 [program]
 funcHead         -> type ENTRY_TYPE ID ENTRY_NAME ( FUNC_ENTRY_TABLE fParams )
 [ID, float, int]

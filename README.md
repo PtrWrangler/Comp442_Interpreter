@@ -27,7 +27,7 @@ sample testfiles are in /testing and all outputs and errorlogs are sent to /outp
 ----------------------------------------------------------------------------
 
 --- Important Notes ---
-- WORK_LOG.txt has been depricated, now refer to see the specific work that was done or navigate to TODO.txt
+- WORK_LOG.txt is now obsolete, now refer to the github repo to see the specific history of work that was done or navigate to TODO.txt
     to see tasks that has been accomplished or you can always check the READ_ME.md
 
 - To see the symbol_tables and entries printout your source code must be error free
@@ -79,9 +79,19 @@ END_FUNC
 
 VAR_ENTRY
     pop the attr_stack's migrated attrs for the function and create the function entry
+
+    if type is UserDefined, check if it is really
+
     link this entry to a newly created symbol table for this function.
     Increment the scope level
 
+CHECK_VAR_EXIST
+    check if the identifier has been declared for use in current scope
+
+END_PROGRAM
+    Pops the program function semantic table off the semantic stack
+    starts 'second pass' to check for proper existing UD_Type declaration and
+    circular class dependancy
 
 --- Description/rationale of the overall structure of the solution ---
 TABLE PARSING:

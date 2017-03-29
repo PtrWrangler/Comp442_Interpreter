@@ -1,7 +1,7 @@
 Main objectives & notes:
 	re-read important slides
 
-    - the var usage checking should definitly be rethought...
+    in the classUsageDict, store Tokens to be able to reference line numbers in 'second pass'
     - error handling if a generator production, infinitly produces them on parsing stack
         each production should have a set of recovery tokens?
     - explain all symantic actions and symbols, explanation of organization
@@ -10,6 +10,14 @@ Main objectives & notes:
         maybe deletin an entry with link
     - go back and look at comments in lexer
     - output file should contain original code followed by errors, not my shitty debug program output
+    - idea for any order classOrFunc
+        prog             -> classOrFunc progBody
+        classOrFunc      -> classDecl classOrFunc
+        classOrFunc      -> funcDef classOrFunc
+        classOrFunc      -> EPSILON
+        - you could maybe even add globalVarDecls?
+
+    - possibly make circular reference warnings more descriptive (locations)
 
     - I tried to change my symbol table implementation to a sort of doubly linked list...
         but am putting this plan/idea aside for now...
@@ -20,6 +28,8 @@ Main objectives & notes:
 
 A4 look over:
     todo:
+    - check in second pass? is UDType decl are valid and for circular class defs
+
     - the local definition overrides the higher-level one
         but give a warning that its overriding
     - function calls must match number of arguments required in def
@@ -50,4 +60,8 @@ A4 look over:
     - catching duplicate class names
     - duplicate variable or parameter declaration in same scope now registers a warning, with both tokens.
         but semantic parsing can continue, re-declaring the specified variable
+    - var usage checking reworked.
+
+    - circular class or declarations or functions give warnings
+        a recursive function that is called in the 'second pass' tells you about possible circular references.
 

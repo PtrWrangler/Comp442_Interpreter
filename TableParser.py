@@ -12,6 +12,8 @@ testFile = "test_Utility.txt"
 #testFile = "test_undeclaredIdentifiers.txt"
 #testFile = "test_assignToParam.txt"
 #testFile = "test_reDeclParam.txt"
+#testFile = "test_CircularClassOrFuncReference.txt"
+#testFile = "test_NonExistClassDecl.txt"
 #testFile = "test_errRecover.txt"
 #testFile = "test_classANDprog.txt"
 #testFile = "test_loopsANDifs.txt"
@@ -70,10 +72,10 @@ class Syntactic_Parser(object):
         self.lookahead = self.interpreter.scanner()
 
         error = False
-        while self.parsing_stack[-1] is not EOF and self.lookahead.value is not None:
+        while self.parsing_stack[-1] is not EOF and self.lookahead.termtype is not EOF:
             top = self.parsing_stack[-1]
-            # print "top       = " + top
-            # print "lookahead = " + self.lookahead.value
+            print "top       = " + top
+            print "lookahead = " + self.lookahead.value
 
             # if top symbol is a semantic action
             if top in self.semantic_processor.dispatcher:
