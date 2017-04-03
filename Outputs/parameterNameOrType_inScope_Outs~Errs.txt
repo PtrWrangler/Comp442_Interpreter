@@ -81,4 +81,4 @@ ERRORS OF test_parameterNameOrType_inScope.txt:
 
 Source Program contained no parsing errors.
 
-Duplicate function declaration: Token(ID, 'findMin', Line:Pos=(22, 16))
+Error: Duplicate function declaration: Token(ID, 'findMin', Line:Pos=(22, 16))

@@ -85,33 +85,33 @@ Warning: Variable name already exists in scope: Token(ID, 'var2', Line:Pos=(25, 
 Warning: Variable name already exists in scope: Token(ID, 'idx', Line:Pos=(27, 21))
 SYMBOL TABLE STRUCTURE:
 
-Sym_Tbl(name:global, entries:[
-Entry  (Utility, 'class', '', link: 
-    Sym_Tbl(name:Utility, entries:[
-    Entry  (var1, 'variable', 'int'[4][5][7][8][9][1][0], link: None ), 
-    Entry  (var2, 'variable', 'float', link: None ), 
-    Entry  (findMax, 'function', 'int : array[4][5][100]', link: 
-        Sym_Tbl(name:findMax, entries:[
-        Entry  (array, 'parameter', 'int'[4][5][100], link: None ), 
-        Entry  (maxValue, 'variable', 'int', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None )]) ), 
-    Entry  (findMin, 'function', 'int : array[100]', link: 
-        Sym_Tbl(name:findMin, entries:[
-        Entry  (array, 'parameter', 'int'[100], link: None ), 
-        Entry  (minValue, 'variable', 'int', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None ), 
-        Entry  (var2, 'variable', 'float', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None )]) )]) ), 
-Entry  (randomize, 'function', 'float', link: 
-    Sym_Tbl(name:randomize, entries:[
-    Entry  (value, 'variable', 'float', link: None )]) ), 
-Entry  (program, 'function', '', link: 
-    Sym_Tbl(name:program, entries:[
-    Entry  (sample, 'variable', 'int'[100], link: None ), 
-    Entry  (idx, 'variable', 'int', link: None ), 
-    Entry  (maxValue, 'variable', 'int', link: None ), 
-    Entry  (minValue, 'variable', 'int', link: None ), 
-    Entry  (utility, 'variable', 'Utility', link: None ), 
-    Entry  (arrayUtility, 'variable', 'Utility'[2][3][6][7], link: None ), 
-    Entry  (t, 'variable', 'int', link: None )]) )])
+Sym_Tbl(name:Token(Global_Table, 'global', Line:Pos=(0, 0)), entries:[
+Entry  (Token(ID, 'Utility', Line:Pos=(1, 14)), 'class', '', link: 
+    Sym_Tbl(name:Token(ID, 'Utility', Line:Pos=(1, 14)), entries:[
+    Entry  (Token(ID, 'var1', Line:Pos=(3, 13)), 'variable', KEYWORD int[4][5][7][8][9][1][0], link: None ), 
+    Entry  (Token(ID, 'var2', Line:Pos=(4, 15)), 'variable', KEYWORD float, link: None ), 
+    Entry  (Token(ID, 'findMax', Line:Pos=(5, 16)), 'function', KEYWORD int : array[100][5][4], link: 
+        Sym_Tbl(name:Token(ID, 'findMax', Line:Pos=(5, 16)), entries:[
+        Entry  (Token(ID, 'array', Line:Pos=(5, 26)), 'parameter', KEYWORD int[100][5][4], link: None ), 
+        Entry  (Token(ID, 'maxValue', Line:Pos=(7, 21)), 'variable', KEYWORD int, link: None ), 
+        Entry  (Token(ID, 'idx', Line:Pos=(8, 16)), 'variable', KEYWORD int, link: None ), 
+        Entry  (Token(ID, 'idx', Line:Pos=(11, 21)), 'variable', KEYWORD int, link: None )]) ), 
+    Entry  (Token(ID, 'findMin', Line:Pos=(21, 16)), 'function', KEYWORD int : array[100], link: 
+        Sym_Tbl(name:Token(ID, 'findMin', Line:Pos=(21, 16)), entries:[
+        Entry  (Token(ID, 'array', Line:Pos=(21, 26)), 'parameter', KEYWORD int[100], link: None ), 
+        Entry  (Token(ID, 'minValue', Line:Pos=(23, 21)), 'variable', KEYWORD int, link: None ), 
+        Entry  (Token(ID, 'idx', Line:Pos=(24, 16)), 'variable', KEYWORD int, link: None ), 
+        Entry  (Token(ID, 'var2', Line:Pos=(25, 19)), 'variable', KEYWORD float, link: None ), 
+        Entry  (Token(ID, 'idx', Line:Pos=(27, 21)), 'variable', KEYWORD int, link: None )]) )]) ), 
+Entry  (Token(ID, 'randomize', Line:Pos=(37, 16)), 'function', KEYWORD float, link: 
+    Sym_Tbl(name:Token(ID, 'randomize', Line:Pos=(37, 16)), entries:[
+    Entry  (Token(ID, 'value', Line:Pos=(39, 16)), 'variable', KEYWORD float, link: None )]) ), 
+Entry  (Token(program, 'program', Line:Pos=(44, 8)), 'function', '', link: 
+    Sym_Tbl(name:Token(program, 'program', Line:Pos=(44, 8)), entries:[
+    Entry  (Token(ID, 'sample', Line:Pos=(45, 15)), 'variable', KEYWORD int[100], link: None ), 
+    Entry  (Token(ID, 'idx', Line:Pos=(46, 12)), 'variable', KEYWORD int, link: None ), 
+    Entry  (Token(ID, 'maxValue', Line:Pos=(47, 17)), 'variable', KEYWORD int, link: None ), 
+    Entry  (Token(ID, 'minValue', Line:Pos=(48, 17)), 'variable', KEYWORD int, link: None ), 
+    Entry  (Token(ID, 'utility', Line:Pos=(49, 20)), 'variable', ID Utility, link: None ), 
+    Entry  (Token(ID, 'arrayUtility', Line:Pos=(50, 25)), 'variable', ID Utility[2][3][6][7], link: None ), 
+    Entry  (Token(ID, 't', Line:Pos=(51, 14)), 'variable', KEYWORD int, link: None )]) )])

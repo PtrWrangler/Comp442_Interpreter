@@ -107,59 +107,59 @@ Source Program contained no semantic errors.
 Warning: Variable name already exists in scope: Token(ID, 'idx', Line:Pos=(13, 21))
 Warning: Variable name already exists in scope: Token(ID, 'var2', Line:Pos=(27, 19))
 Warning: Variable name already exists in scope: Token(ID, 'idx', Line:Pos=(29, 21))
-Warning: Possible circular reference through g and testClass
+Warning: Possible circular reference through g and Token(ID, 'testClass', Line:Pos=(46, 14))
 SYMBOL TABLE STRUCTURE:
 
-Sym_Tbl(name:global, entries:[
-Entry  (Utility, 'class', '', link: 
-    Sym_Tbl(name:Utility, entries:[
-    Entry  (var1, 'variable', 'int'[4][5][7][8][9][1][0], link: None ), 
-    Entry  (var2, 'variable', 'float', link: None ), 
-    Entry  (tool, 'variable', 'Tool', link: None ), 
-    Entry  (l, 'variable', 'Tool', link: None ), 
-    Entry  (findMax, 'function', 'int : array[100][5][4], rr, yyu_7[4][5][6]', link: 
-        Sym_Tbl(name:findMax, entries:[
-        Entry  (array, 'parameter', 'int'[100][5][4], link: None ), 
-        Entry  (rr, 'parameter', 'int', link: None ), 
-        Entry  (yyu_7, 'parameter', 'float'[4][5][6], link: None ), 
-        Entry  (maxValue, 'variable', 'int', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None )]) ), 
-    Entry  (findMin, 'function', 'int : array[100]', link: 
-        Sym_Tbl(name:findMin, entries:[
-        Entry  (array, 'parameter', 'int'[100], link: None ), 
-        Entry  (minValue, 'variable', 'int', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None ), 
-        Entry  (var2, 'variable', 'float', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None )]) )]) ), 
-Entry  (testClass, 'class', '', link: 
-    Sym_Tbl(name:testClass, entries:[
-    Entry  (test, 'variable', 'int', link: None ), 
-    Entry  (u, 'variable', 'g', link: None )]) ), 
-Entry  (Tool, 'class', '', link: 
-    Sym_Tbl(name:Tool, entries:[
-    Entry  (test, 'variable', 'int', link: None ), 
-    Entry  (t, 'variable', 'testClass', link: None )]) ), 
-Entry  (g, 'class', '', link: 
-    Sym_Tbl(name:g, entries:[
-    Entry  (j, 'variable', 'Utility', link: None )]) ), 
-Entry  (randomize, 'function', 'float', link: 
-    Sym_Tbl(name:randomize, entries:[
-    Entry  (value, 'variable', 'float', link: None ), 
-    Entry  (tooly, 'variable', 'Tool', link: None ), 
-    Entry  (t, 'variable', 'testClass', link: None ), 
-    Entry  (u, 'variable', 'Utility', link: None ), 
-    Entry  (gg, 'variable', 'g', link: None )]) ), 
-Entry  (testFunc, 'function', 'int : testint[5][4][3000]', link: 
-    Sym_Tbl(name:testFunc, entries:[
-    Entry  (testint, 'parameter', 'int'[5][4][3000], link: None ), 
-    Entry  (testutil, 'variable', 'Utility', link: None )]) ), 
-Entry  (program, 'function', '', link: 
-    Sym_Tbl(name:program, entries:[
-    Entry  (sample, 'variable', 'int'[100], link: None ), 
-    Entry  (idx, 'variable', 'int', link: None ), 
-    Entry  (maxValue, 'variable', 'int', link: None ), 
-    Entry  (minValue, 'variable', 'int', link: None ), 
-    Entry  (utility, 'variable', 'Utility', link: None ), 
-    Entry  (arrayUtility, 'variable', 'Utility'[2][3][6][7], link: None ), 
-    Entry  (t, 'variable', 'int', link: None )]) )])
+Sym_Tbl(name:Token(Global_Table, 'global', Line:Pos=(0, 0)), entries:[
+Entry  (Token(ID, 'Utility', Line:Pos=(1, 14)), 'class', '', link: 
+    Sym_Tbl(name:Token(ID, 'Utility', Line:Pos=(1, 14)), entries:[
+    Entry  (Token(ID, 'var1', Line:Pos=(3, 13)), 'variable', KEYWORD int[4][5][7][8][9][1][0], link: None ), 
+    Entry  (Token(ID, 'var2', Line:Pos=(4, 15)), 'variable', KEYWORD float, link: None ), 
+    Entry  (Token(ID, 'tool', Line:Pos=(5, 14)), 'variable', ID Tool, link: None ), 
+    Entry  (Token(ID, 'l', Line:Pos=(6, 11)), 'variable', ID Tool, link: None ), 
+    Entry  (Token(ID, 'findMax', Line:Pos=(7, 16)), 'function', KEYWORD int : array[100][5][4], rr, yyu_7[4][5][6], link: 
+        Sym_Tbl(name:Token(ID, 'findMax', Line:Pos=(7, 16)), entries:[
+        Entry  (Token(ID, 'array', Line:Pos=(7, 26)), 'parameter', KEYWORD int[100][5][4], link: None ), 
+        Entry  (Token(ID, 'rr', Line:Pos=(7, 45)), 'parameter', KEYWORD int, link: None ), 
+        Entry  (Token(ID, 'yyu_7', Line:Pos=(7, 58)), 'parameter', KEYWORD float[4][5][6], link: None ), 
+        Entry  (Token(ID, 'maxValue', Line:Pos=(9, 21)), 'variable', KEYWORD int, link: None ), 
+        Entry  (Token(ID, 'idx', Line:Pos=(10, 16)), 'variable', KEYWORD int, link: None ), 
+        Entry  (Token(ID, 'idx', Line:Pos=(13, 21)), 'variable', KEYWORD int, link: None )]) ), 
+    Entry  (Token(ID, 'findMin', Line:Pos=(23, 16)), 'function', KEYWORD int : array[100], link: 
+        Sym_Tbl(name:Token(ID, 'findMin', Line:Pos=(23, 16)), entries:[
+        Entry  (Token(ID, 'array', Line:Pos=(23, 26)), 'parameter', KEYWORD int[100], link: None ), 
+        Entry  (Token(ID, 'minValue', Line:Pos=(25, 21)), 'variable', KEYWORD int, link: None ), 
+        Entry  (Token(ID, 'idx', Line:Pos=(26, 16)), 'variable', KEYWORD int, link: None ), 
+        Entry  (Token(ID, 'var2', Line:Pos=(27, 19)), 'variable', KEYWORD float, link: None ), 
+        Entry  (Token(ID, 'idx', Line:Pos=(29, 21)), 'variable', KEYWORD int, link: None )]) )]) ), 
+Entry  (Token(ID, 'testClass', Line:Pos=(39, 16)), 'class', '', link: 
+    Sym_Tbl(name:Token(ID, 'testClass', Line:Pos=(39, 16)), entries:[
+    Entry  (Token(ID, 'test', Line:Pos=(40, 13)), 'variable', KEYWORD int, link: None ), 
+    Entry  (Token(ID, 'u', Line:Pos=(41, 8)), 'variable', ID g, link: None )]) ), 
+Entry  (Token(ID, 'Tool', Line:Pos=(44, 11)), 'class', '', link: 
+    Sym_Tbl(name:Token(ID, 'Tool', Line:Pos=(44, 11)), entries:[
+    Entry  (Token(ID, 'test', Line:Pos=(45, 13)), 'variable', KEYWORD int, link: None ), 
+    Entry  (Token(ID, 't', Line:Pos=(46, 16)), 'variable', ID testClass, link: None )]) ), 
+Entry  (Token(ID, 'g', Line:Pos=(48, 8)), 'class', '', link: 
+    Sym_Tbl(name:Token(ID, 'g', Line:Pos=(48, 8)), entries:[
+    Entry  (Token(ID, 'j', Line:Pos=(49, 14)), 'variable', ID Utility, link: None )]) ), 
+Entry  (Token(ID, 'randomize', Line:Pos=(53, 16)), 'function', KEYWORD float, link: 
+    Sym_Tbl(name:Token(ID, 'randomize', Line:Pos=(53, 16)), entries:[
+    Entry  (Token(ID, 'value', Line:Pos=(55, 16)), 'variable', KEYWORD float, link: None ), 
+    Entry  (Token(ID, 'tooly', Line:Pos=(56, 15)), 'variable', ID Tool, link: None ), 
+    Entry  (Token(ID, 't', Line:Pos=(57, 16)), 'variable', ID testClass, link: None ), 
+    Entry  (Token(ID, 'u', Line:Pos=(58, 14)), 'variable', ID Utility, link: None ), 
+    Entry  (Token(ID, 'gg', Line:Pos=(59, 9)), 'variable', ID g, link: None )]) ), 
+Entry  (Token(ID, 'testFunc', Line:Pos=(64, 13)), 'function', KEYWORD int : testint[5][4][3000], link: 
+    Sym_Tbl(name:Token(ID, 'testFunc', Line:Pos=(64, 13)), entries:[
+    Entry  (Token(ID, 'testint', Line:Pos=(64, 25)), 'parameter', KEYWORD int[5][4][3000], link: None ), 
+    Entry  (Token(ID, 'testutil', Line:Pos=(65, 21)), 'variable', ID Utility, link: None )]) ), 
+Entry  (Token(program, 'program', Line:Pos=(68, 8)), 'function', '', link: 
+    Sym_Tbl(name:Token(program, 'program', Line:Pos=(68, 8)), entries:[
+    Entry  (Token(ID, 'sample', Line:Pos=(69, 15)), 'variable', KEYWORD int[100], link: None ), 
+    Entry  (Token(ID, 'idx', Line:Pos=(70, 12)), 'variable', KEYWORD int, link: None ), 
+    Entry  (Token(ID, 'maxValue', Line:Pos=(71, 17)), 'variable', KEYWORD int, link: None ), 
+    Entry  (Token(ID, 'minValue', Line:Pos=(72, 17)), 'variable', KEYWORD int, link: None ), 
+    Entry  (Token(ID, 'utility', Line:Pos=(73, 20)), 'variable', ID Utility, link: None ), 
+    Entry  (Token(ID, 'arrayUtility', Line:Pos=(74, 25)), 'variable', ID Utility[2][3][6][7], link: None ), 
+    Entry  (Token(ID, 't', Line:Pos=(75, 14)), 'variable', KEYWORD int, link: None )]) )])

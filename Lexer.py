@@ -55,7 +55,19 @@ class Token(object):
         )
 
     def __repr__(self):
-        return self.__str__()
+        # return self.type + " " + self.value
+        return self.value
+
+    def __eq__(self, other):
+        if isinstance(other, Token):
+            return (self.value == other.value)
+        if isinstance(other, str):
+            return (self.value == other)
+        else:
+            return False
+
+    def __ne__(self, other):
+        return (not self.__eq__(other))
 
 
 class Lexical_Analyzer(object):
@@ -102,6 +114,43 @@ class Lexical_Analyzer(object):
     def skip_whitespace(self):
         while self.current_char is not None and self.current_char.isspace():
             self.advance()
+
+    def handle_comments(self, token):
+
+        # handle possible unexpected close comment error
+        if token == '//':
+            first = '/'
+            second = self.current_char
+            inline = True
+        elif token == '/*':
+            first = '*'
+            second = self.current_char
+            inline = False
+        else:
+            # unexpected close comment error
+            print "SCAN_ERROR: Unexpected close comment error: " + token
+            return Token(SCAN_ERROR, SCAN_ERROR, "Unexpected close comment error: " + token, self.line_number,
+                         self.line_pos)
+
+        comment = token
+        if inline:
+            while self.current_char != '\n' and self.current_char is not None:
+                comment += self.current_char
+                self.advance()
+            return Token(COMMENT, token, comment, self.line_number, self.line_pos)
+        else:                   # block comment
+            while self.current_char is not None:
+                comment += self.current_char
+                first = second
+                second = self.current_char
+                self.advance()
+                if first + second == '*/':
+                    return Token(COMMENT, token, comment, self.line_number, self.line_pos)
+
+        print "SCAN_ERROR: Unexpected EOF within block comment: " + token
+        return Token(SCAN_ERROR, SCAN_ERROR, "Unexpected EOF within block comment: " + token, self.line_number,
+                     self.line_pos)
+
 
     def keyword_or_identifier(self):
         # starter is a letter, Could become reserved word or identifier
@@ -193,7 +242,9 @@ class Lexical_Analyzer(object):
                 return Token(ASSIGN_OP, token, token, self.line_number, self.line_pos)
             if token in comments:
                 self.advance()
-                return Token(COMMENT, token, token, self.line_number, self.line_pos)
+                return self.handle_comments(token)
+                # self.advance()
+                # return Token(COMMENT, token, token, self.line_number, self.line_pos)
 
         # if all double puncts or ops have failed try only single char ones
         # print "1char op or punct?:", token[0]

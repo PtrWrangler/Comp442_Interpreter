@@ -78,42 +78,5 @@ ERRORS OF test_reDeclParam.txt:
   -- ! Error locations are accurate to the original input file ! --
 
 Source Program contained no parsing errors.
-Source Program contained no semantic errors.
 
-Warning: Variable name already exists in scope: Token(ID, 'array', Line:Pos=(9, 17))
-Warning: Variable name already exists in scope: Token(ID, 'idx', Line:Pos=(11, 21))
-Warning: Variable name already exists in scope: Token(ID, 'var2', Line:Pos=(25, 19))
-Warning: Variable name already exists in scope: Token(ID, 'idx', Line:Pos=(27, 21))
-SYMBOL TABLE STRUCTURE:
-
-Sym_Tbl(name:global, entries:[
-Entry  (Utility, 'class', '', link: 
-    Sym_Tbl(name:Utility, entries:[
-    Entry  (var1, 'variable', 'int'[4][5][7][8][9][1][0], link: None ), 
-    Entry  (var2, 'variable', 'float', link: None ), 
-    Entry  (findMax, 'function', 'int : array[4][5][100]', link: 
-        Sym_Tbl(name:findMax, entries:[
-        Entry  (array, 'parameter', 'int'[4][5][100], link: None ), 
-        Entry  (maxValue, 'variable', 'int', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None ), 
-        Entry  (array, 'variable', 'in', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None )]) ), 
-    Entry  (findMin, 'function', 'int : array[100]', link: 
-        Sym_Tbl(name:findMin, entries:[
-        Entry  (array, 'parameter', 'int'[100], link: None ), 
-        Entry  (minValue, 'variable', 'int', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None ), 
-        Entry  (var2, 'variable', 'float', link: None ), 
-        Entry  (idx, 'variable', 'int', link: None )]) )]) ), 
-Entry  (randomize, 'function', 'float', link: 
-    Sym_Tbl(name:randomize, entries:[
-    Entry  (value, 'variable', 'float', link: None )]) ), 
-Entry  (program, 'function', '', link: 
-    Sym_Tbl(name:program, entries:[
-    Entry  (sample, 'variable', 'int'[100], link: None ), 
-    Entry  (idx, 'variable', 'int', link: None ), 
-    Entry  (maxValue, 'variable', 'int', link: None ), 
-    Entry  (minValue, 'variable', 'int', link: None ), 
-    Entry  (utility, 'variable', 'Utility', link: None ), 
-    Entry  (arrayUtility, 'variable', 'Utility'[2][3][6][7], link: None ), 
-    Entry  (t, 'variable', 'int', link: None )]) )])
+Error: Class type 'Token(ID, 'in', Line:Pos=(9, 11))' does not exist.

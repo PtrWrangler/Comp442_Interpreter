@@ -2,6 +2,7 @@ OUTPUT OF test_Arith.txt:
 
 program {
     float i ;
+    i = 33 * 5 + 9 - 0 + 55.4 * ( 29 + 9 ) ;
     if ( 45.3 * 44 == 66 ) then {
         
     }else {
@@ -21,7 +22,6 @@ program {
 ERRORS OF test_Arith.txt:
   -- ! Error locations are accurate to the original input file ! --
 
-table error, Expected {arraySize -> [ INT ADD_DECL_ARRAY_DIM ] arraySize | EPSILON} found Token(=, '=', Line:Pos=(3, 14))
-table error, Expected {gen_Term -> multOp term | EPSILON} found Token(not, 'not', Line:Pos=(7, 32))
+table error, Expected {gen_Term -> multOp APPEND_OP term | EPSILON} found Token(not, 'not', Line:Pos=(7, 32))
 error, wrong token. Expected: ] found Token(-, '-', Line:Pos=(9, 14))
-table error, Expected {arraySize -> [ INT ADD_DECL_ARRAY_DIM ] arraySize | EPSILON} found Token(., '.', Line:Pos=(11, 17))
+table error, Expected {arraySize -> [ INT ADD_DECL_ARRAY ] arraySize | EPSILON} found Token(., '.', Line:Pos=(11, 17))

@@ -60,9 +60,10 @@ int findMin ( int array [ 100 ] ) {
 
 
 ERRORS OF test_errRecover.txt:
+  -- ! Error locations are accurate to the original input file ! --
 
 error, wrong token. Expected: ] found Token([, '[', Line:Pos=(3, 19))
-table error, Expected {createOrAssign -> ID arraySize ; | indice gen_nest assign ;} found Token((, '(', Line:Pos=(12, 15))
+table error, Expected {createOrAssign -> ID ENTRY_NAME arraySize VAR_ENTRY ; | indice CHECK_VAR_EXIST gen_nest assign ;} found Token((, '(', Line:Pos=(12, 15))
 error, wrong token. Expected: ; found Token(else, 'else', Line:Pos=(15, 17))
-table error, Expected {classBody -> type ID varOrFunc | EPSILON} found Token(return, 'return', Line:Pos=(17, 15))
-table error, Expected {funcDef -> funcHead funcBody ; funcDef | EPSILON} found Token(}, '}', Line:Pos=(33, 2))
+table error, Expected {classBody -> type ENTRY_TYPE ID ENTRY_NAME varOrFunc | EPSILON} found Token(return, 'return', Line:Pos=(17, 15))
+table error, Expected {funcDef -> funcHead funcBody ; END_FUNC funcDef | EPSILON} found Token(}, '}', Line:Pos=(33, 2))

@@ -1,5 +1,29 @@
 OUTPUT OF test_expr.txt: 
 
+class test {
+    int v ;
+    int findMax ( int i ) {
+        return ( 25 ) ;
+        
+    };
+    
+};
 program {
-    get ( e ) ;
-    put ( 
+    test b [ 2 ] ;
+    test t [ 100 ] [ 50 ] [ 3 ] ;
+    int x [ 1 ] [ 2 ] ;
+    x [ 1 - 2 - 3 - x [ 0 - b [ 1 ] ] [ 0 ] ] [ 99 ] = 6 ;
+    x [ x [ 1 ] [ 2 + x [ 0 ] [ 0 ] + 77 ] ] [ 99 ] = 5 + 6 + 7 + t [ 3 ] [ 4 ] [ 5 - x [ 2 ] ] [ 3 ] ;
+    t [ 2 ] [ 4 - 5 + 3 - t [ 5 ] [ t [ 1 ] [ 2 ] [ 3 ] ] [ 4 ] ] [ 4 ] = 4 ;
+    x [ 0 ] [ 0 ] = 5 + 6 * 7 - t [ 5 ] [ 5 ] [ 1 ] ;
+    int testfunc ;
+    
+};
+
+
+ERRORS OF test_expr.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+Source Program contained no parsing errors.
+
+Error: Incorrect array dimensions for index of: Token(ID, 'x', Line:Pos=(19, 56))

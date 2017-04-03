@@ -15,14 +15,11 @@ class SemanticProcessor(object):
         ''' stores references to class declarations and instantiations for 'second pass' use when checking for:
             undefined class reference and circular class dependancy '''
         self.classUsageDict = {}
-
-        # used for collecting the arithExpr within expressions
-        #   so far it has been implemented in the nested variable indices
-        self.indice_lists = []
-
         # operator and operand stacks use for complex arithmatic expression evaluation.
-        # self.operator_stack = []
-        # self.operand_stack = []
+        self.operator_stack = []
+        self.operand_stack = []
+
+        self.arithExpr_list = []
 
         # the semantic functions dictionary to use when a semantic symbol is poped
         self.dispatcher = {'CREATE_GLOBAL_TABLE': self.CREATE_GLOBAL_TABLE,
@@ -44,23 +41,13 @@ class SemanticProcessor(object):
                            # var assignment checking functions
 
                            'ENTRY_NEST': self.ENTRY_NEST,
-
-                           'FACTOR_ID': self.FACTOR_ID,
-                           'START_IDX_DIM': self.START_IDX_DIM,
-                           'END_IDX_DIM': self.END_IDX_DIM,
-                           'ASSIGNMENT_VAR': self.ASSIGNMENT_VAR,
+                           'ADD_INDICE_DIM': self.ADD_INDICE_DIM,
                            'CHECK_VAR_EXIST': self.CHECK_VAR_EXIST,
 
                            'APPEND_OP': self.APPEND_OP,
-
-
-                           'FUNC_CALL': self.FUNC_CALL,
-                           'END_FUNC_CALL': self.END_FUNC_CALL,
-
-
-                           'FINISH_ASSIGNMENT': self.FINISH_ASSIGNMENT,
-
-
+                           'BEGIN_FUNC_CALL': self.BEGIN_FUNC_CALL,
+                           'END_FACTOR_FUNC': self.END_FACTOR_FUNC,
+                           'END_FACTOR_VAR': self.END_FACTOR_VAR,
 
                            # end program function and first pass, begin second pass
 
@@ -83,7 +70,7 @@ class SemanticProcessor(object):
     ''''''''''''''''''''''''''''''
 
     def CREATE_GLOBAL_TABLE(self):
-        self.SymbolTable_stack.append(Symbol_Table(self.level, Token('Symbol_Table', 'Global_Table', 'global', 0, 0)))
+        self.SymbolTable_stack.append(Symbol_Table(self.level, 'global'))
         # self.SymbolTables = Symbol_Table(self.level, 'global')
 
     ##################################################################
@@ -92,12 +79,12 @@ class SemanticProcessor(object):
     def CLASS_ENTRY_TABLE(self):
         print "create_classEntryAndTable."
         # ensure class name does not already exist in Global Table
-        class_entry = Entry(self.level, self.prevToken_buffer, 'class', '')
+        class_entry = Entry(self.level, self.prevToken_buffer.value, 'class', '')
         if self.SymbolTable_stack[0].search(class_entry) is None:
 
             # log class name in classDict if not there
-            if class_entry.name.value not in self.classUsageDict:
-                self.classUsageDict[class_entry.name.value] = []
+            if class_entry.name not in self.classUsageDict:
+                self.classUsageDict[class_entry.name] = []
 
             # create a table entry and link it to the new class table
             self.level += 1
@@ -123,7 +110,6 @@ class SemanticProcessor(object):
     def ENTRY_TYPE(self):
         print "buffering entryType"
         self.attr_buffer = []
-        self.indice_lists = []
         self.attr_buffer.append(self.prevToken_buffer)
 
     def ENTRY_NAME(self):
@@ -142,7 +128,7 @@ class SemanticProcessor(object):
             func_type = self.attr_buffer.pop()
 
         # create a new global/local table entry and link it to the new class table
-        entry = Entry(self.level, func_name, 'function', func_type)
+        entry = Entry(self.level, func_name.value, 'function', func_type.value)
         self.level += 1
         entry.link = Symbol_Table(self.level, entry.name)
 
@@ -150,8 +136,8 @@ class SemanticProcessor(object):
 
             # check if in class or global table
             if len(self.SymbolTable_stack) <= 1:
-                if entry.name.value not in self.classUsageDict:
-                    self.classUsageDict[entry.name.value] = []
+                if entry.name not in self.classUsageDict:
+                    self.classUsageDict[entry.name] = []
 
             # append the new entry to the global/class table and put the reference to the class table on top the stack
             if self.SymbolTable_stack:
@@ -170,14 +156,13 @@ class SemanticProcessor(object):
         while isinstance(self.attr_buffer[-1], int):
             entry.arraySize.insert(0, self.attr_buffer.pop())
         if len(self.attr_buffer) > 1:
-            entry.name = self.attr_buffer.pop()
-            entry.type = self.attr_buffer.pop()
-
+            nameToken = self.attr_buffer.pop()
+            entry.name = nameToken.value
+            entry.type = self.attr_buffer.pop().value
 
         # if variable already in scope give warning
-        foundEntry = self.check_var_in_scope(entry)
-        if isinstance(foundEntry, Entry):
-            self.warnings += "\nWarning: Parameter " + str(entry.name) + " already exists in scope here: " + str(foundEntry.name)
+        if self.check_var_in_scope(entry):
+            self.warnings += "\nWarning: Parameter name already exists in scope: " + str(nameToken)
 
         if self.SymbolTable_stack:
             self.SymbolTable_stack[-1].addEntry(entry)
@@ -200,22 +185,21 @@ class SemanticProcessor(object):
             entry.arraySize.insert(0, self.attr_buffer.pop())
         if len(self.attr_buffer) > 1:
             nameToken = self.attr_buffer.pop()
-            entry.name = nameToken
+            entry.name = nameToken.value
             typeToken = self.attr_buffer.pop()
-            entry.type = typeToken
+            entry.type = typeToken.value
 
         # if variable already in scope give warning
-        foundEntry = self.check_var_in_scope(entry)
-        if isinstance(foundEntry, Entry):
-            self.warnings += "\nWarning: Variable " + str(nameToken) + " already exists in scope here: " + str(foundEntry.name)
+        if self.check_var_in_scope(entry):
+            self.warnings += "\nWarning: Variable name already exists in scope: " + str(nameToken)
 
         # if type is a UD_Type, put in dict for 'second pass' circular class dependency checking
         if entry.type != 'int' and entry.type != 'float' and len(self.SymbolTable_stack) > 1 and self.SymbolTable_stack[1].name != 'program':
-            if self.SymbolTable_stack[1].name.value in self.classUsageDict:
-                if typeToken not in self.classUsageDict[self.SymbolTable_stack[1].name.value]:
-                    self.classUsageDict[self.SymbolTable_stack[1].name.value].append(typeToken)
+            if self.SymbolTable_stack[1].name in self.classUsageDict:
+                if typeToken not in self.classUsageDict[self.SymbolTable_stack[1].name]:
+                    self.classUsageDict[self.SymbolTable_stack[1].name].append(typeToken)
             else:
-                self.classUsageDict[self.SymbolTable_stack[1].name.value] = []
+                self.classUsageDict[self.SymbolTable_stack[1].name] = []
 
         # append the new entry to the class table
         if self.SymbolTable_stack:
@@ -224,7 +208,7 @@ class SemanticProcessor(object):
     def PROGRAM_FUNC_ENTRY_TABLE(self):
         print 'adding the program function entry and symbol_table.'
         # create a new global table entry and link it to the new main program function table
-        entry = Entry(self.level, self.prevToken_buffer, 'function', '')
+        entry = Entry(self.level, 'program', 'function', '')
         self.level += 1
         entry.link = Symbol_Table(self.level, entry.name)
 
@@ -237,33 +221,12 @@ class SemanticProcessor(object):
 
     def APPEND_OP(self):
         print 'Appending operator/operand'
-        # append this op to the last(deepest current) indice list
-        if len(self.indice_lists) == 0:
-            self.indice_lists.append([self.prevToken_buffer.value])
-        else:
-            self.indice_lists[-1].append(self.prevToken_buffer.value)
+        # self.arithExpr_list.append(self.attr_buffer)
 
-    def FACTOR_ID(self):
-        print 'var or func ID in factor'
-        #self.attr_buffer.append(self.prevToken_buffer)
-        self.indice_lists[-1].append(Entry(self.level, self.prevToken_buffer, 'variable call', ''))
-
-    def START_IDX_DIM(self):
-        print 'starting idx dim'
-        self.indice_lists.append([])
-
-    def END_IDX_DIM(self):
+    def ADD_INDICE_DIM(self):
         print 'add indice dimension (arithExpr)'
-        if len(self.indice_lists) > 1:
-            # inner index variable index processed, append it to the inner index variable call entry
-            index = self.indice_lists.pop()
-            self.indice_lists[-1][-1].index.append(index)
-        elif len(self.indice_lists) == 1:
-            # index finished for final assign var, place the index spec on attr_stack
-            index = self.indice_lists.pop()
-            self.attr_buffer.append(index)
-        # else:
-        #     self.error += 'Error: problem with the factor end_indexes?'
+        # self.attr_buffer.append(self.arithExpr_list)
+        # self.arithExpr_list = []
 
     def ENTRY_NEST(self):
         print "specifying object nested variable"
@@ -275,45 +238,41 @@ class SemanticProcessor(object):
         #     entry.name = nameToken.value
         #     entry.type = self.attr_buffer.pop().value
 
-    # This is for the var you will be assigning to...
-    def ASSIGNMENT_VAR(self):
-        print 'Assign Var'
-        entry = Entry(self.level, '', 'assignment', '')
-
-        # get all arithExpr indices specified and save them in the assignment entry
-        while isinstance(self.attr_buffer[-1], list):
-            entry.index.insert(0, self.attr_buffer.pop())
-        if len(self.attr_buffer) > 0:
-            entry.name = self.attr_buffer.pop()
-
-        entry = self.ensure_var_exist(entry)
-        if entry is not None and len(self.SymbolTable_stack) > 0:
-            self.SymbolTable_stack[-1].addEntry(entry)
-            # self.assignmentEntryBuffer = entry
-
-    def FINISH_ASSIGNMENT(self):
-        print 'finishing assignment expression.'
-        self.SymbolTable_stack[-1].entries[-1].assignment = (self.indice_lists[0])
-        # self.assignmentEntryBuffer.assignment = self.indice_lists
-
-
-    # this is for any far found in an expr or arithExpr e.g. variable call (even inside indice)
     def CHECK_VAR_EXIST(self):
-        print 'checking if (in factor) var exists'
+        print "Checking if Variable has been declared for use"
+        print self.attr_buffer
 
-        entry = self.ensure_var_exist(self.indice_lists[-1][-1])
+        if len(self.attr_buffer) > 0:
+            nameToken = self.attr_buffer.pop()
+            temp_entry = Entry(self.level, nameToken.value, 'variable', '')
+            if not self.check_var_in_scope(temp_entry):
+                self.error += "\nError: Variable or Parameter has not been declared: " + str(nameToken)
+        # print "Checking if Variable has been declared for use"
+        # print self.attr_buffer
+        #
+        # entry = Entry(self.level, '', 'assignment', '')
+        # # get all arithExpr indices specified and save them in the assignment entry
+        # while isinstance(self.attr_buffer[-1], list):
+        #     entry.indice.append(self.attr_buffer.pop())
+        # if len(self.attr_buffer) > 0:
+        #     nameToken = self.attr_buffer.pop()
+        #     entry.name = nameToken.value
+        #
+        # self.check_var_and_indice_in_scope(entry)
 
-        # if entry is not None:
-        #     self.indice_lists.append(entry)
 
-    def FUNC_CALL(self):
-        print 'calling function, preparing to stash func params'
+    def BEGIN_FUNC_CALL(self):
+        print 'Beginning factor func call.'
+        # self.operator_stack = []
+        # self.operand_stack = []
 
-    def END_FUNC_CALL(self):
-        print 'finish function call, Stashing entry for second pass'
+    def END_FACTOR_FUNC(self):
+        print 'Ending factor func call.'
+        # self.operator_stack.append(self.prevToken_buffer)
 
-
-
+    def END_FACTOR_VAR(self):
+        print 'Ending factor variable.'
+        # self.operand_stack.append(self.prevToken_buffer)
 
     '''''''''''''''''''''' END PROGRAM FUNCTION AND FIRST PASS, BEGIN SECOND PASS '''''''''''''''''''''''
 
@@ -353,55 +312,26 @@ class SemanticProcessor(object):
 
     '''''''''''''''''''''' Tools '''''''''''''''''''''''
 
-
     def check_var_in_scope(self, entry):
         print self.SymbolTable_stack
 
         for table in reversed(self.SymbolTable_stack):
             foundEntry = table.search(entry)
             if isinstance(foundEntry, Entry):
-                return foundEntry
-        return None
+                return True
+        return False
 
-    # used for assigning or referencing a variable, checks array dimension correctness
-    def ensure_var_exist(self, entry):
-        print "Checking if Variable has been declared for use"
-        print self.attr_buffer
+    def check_var_and_indice_in_scope(self, entry):
+        print self.SymbolTable_stack
 
-        # find the declaration entry to compare arraySize to specified index size
-        foundEntry = self.check_var_in_scope(entry)
-        if isinstance(foundEntry, Entry):
-            if len(foundEntry.arraySize) != len(entry.index):
-                self.error += "\nError: Incorrect array dimensions for index of: " + str(entry.name)
-            else:
-                return entry
-        else:
-            # if variable or parameter not declared in scope give error
-            self.error += "\nError: Variable or Parameter has not been declared: " + str(entry.name)
-
-        return None
-
-        # print "Checking if Variable has been declared for use"
-        # print self.attr_buffer
-        #
-        # # get all arithExpr indices specified and save them in the assignment entry
-        # while isinstance(self.attr_buffer[-1], list):
-        #     entry.index.insert(0, self.attr_buffer.pop())
-        # if len(self.attr_buffer) > 0:
-        #     entry.name = self.attr_buffer.pop()
-        #
-        # # find the declaration entry to compare arraySize to specified index size
-        # foundEntry = self.check_var_in_scope(entry)
-        # if isinstance(foundEntry, Entry):
-        #     if len(foundEntry.arraySize) != len(entry.index):
-        #         self.error += "\nError: Incorrect array dimensions for index of: " + str(entry.name)
-        #     else:
-        #         return entry
-        # else:
-        #     # if variable or parameter not declared in scope give error
-        #     self.error += "\nError: Variable or Parameter has not been declared: " + str(entry.name)
-        #
-        # return None
+        for table in reversed(self.SymbolTable_stack):
+            foundEntry = table.search(entry)
+            if isinstance(foundEntry, Entry):
+                found = True
+                if len(foundEntry.indice) != len(entry.indice):
+                    self.error += "\nError: Incorrect array dimensions for index of: " + entry.name # str(nameToken)
+        if not found:
+            self.error += "\nError: Variable or Parameter has not been declared: " + entry.name # str(nameToken)
 
     def appendToClassUsageDict(self, classOrGlobFuncName):
         print 'in appendToClassUsageDict()'

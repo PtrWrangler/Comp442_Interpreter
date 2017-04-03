@@ -1,5 +1,5 @@
 from Lexer import Lexical_Analyzer, Token
-from Lexer import SCAN_ERROR, EOF, EPSILON
+from Lexer import SCAN_ERROR, EOF, EPSILON, COMMENT
 from Lexer import all_registered_terminals
 from Grammar import Grammar, Production
 from SemanticProcessor import SemanticProcessor
@@ -20,6 +20,7 @@ testFile = "test_Utility.txt"
 #testFile = "test_Arith.txt"
 #testFile = "test_funcParams.txt"
 #testFile = "test_expr.txt"
+testFile = "test_nestedVarIndiceExpr_saving.txt"
 
 test_dir = "testing/"
 infile = test_dir + testFile
@@ -86,6 +87,10 @@ class Syntactic_Parser(object):
                     self.parsing_stack.pop()
                 else:
                     self.parsing_stack.pop()
+
+            # if lookahead is a comment, disregard for now.
+            elif self.lookahead.type == COMMENT:
+                self.lookahead = self.interpreter.scanner()
 
             # if top symbol is a terminal
             elif top in self.terminal_list and top != EPSILON:

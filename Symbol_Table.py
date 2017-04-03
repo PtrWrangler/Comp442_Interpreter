@@ -25,10 +25,10 @@ class Symbol_Table(object):
         )
 
     def __repr__(self):
-        return self.name
+        return self.name.value
 
     def addEntry(self, entry):
-        print "adding entry to: " + self.name + " table."
+        print "adding entry to: " + self.name.value + " table."
         self.entries.append(entry)
 
     def append_param_to_func_entry_type(self, func_name, param_entry):
@@ -42,24 +42,24 @@ class Symbol_Table(object):
                 for i in param_entry.arraySize:
                     arrSize += '[' + str(i) + ']'
 
-            if ':' in function_entry.type:
-                function_entry.type += ', ' + param_entry.name + arrSize
+            if ':' in function_entry.type.value:
+                function_entry.type.value += ', ' + param_entry.name.value + arrSize
             else:
-                function_entry.type += ' : ' + param_entry.name + arrSize
+                function_entry.type.value += ' : ' + param_entry.name.value + arrSize
 
     def search(self, entry):
-        print "searching " + self.name + " table"
+        print "searching " + self.name.value + " table"
         for e in self.entries:
-            if e.name == entry.name:
+            if e.name.value == entry.name.value:
                 return e
 
         print 'entry not found'
         return None
 
     def search_by_nameToken(self, var_name):
-        print "searching " + self.name + " table"
+        print "searching " + self.name.value + " table"
         for e in self.entries:
-            if e.name == var_name:
+            if e.name.value == var_name:
                 return e
 
         print 'entry not found'
@@ -76,43 +76,6 @@ class Symbol_Table(object):
     def Print(self, table_name):
         print "printing table"
 
-    def IDUsageErrors(self, IDsDeclared):
-        print '\nchecking typing for: ' + self.name + ' symbol table.'
-
-        errors = ''
-        globalIDs = []
-        classIDs = []
-
-        # grab all function and class names from the global table
-        for i in self.entries:
-            if i.kind == 'class':
-                globalIDs.append(('class', i.name))
-            elif i.kind == 'function' and i.name != 'program':
-                globalIDs.append(('function', i.name))
-
-        print globalIDs
-
-        # go through the funcs and vars of each class and func in global table
-        for i in self.entries:
-            classIDs = []
-            for j in i.link.entries:
-                if j.kind == 'variable':
-                    classIDs.append((j.kind, j.name))
-                elif j.kind == 'function':
-                    if j.name in globalIDs:
-                        errors += '\nerror: function name \'' + j.name + '\' already exists in global table.'
-                    else:
-                        classIDs.append((j.kind, j.name))
-
-            for j in i.link.entries:
-                classFuncIds = []
-                if j.link is not None:
-                    for h in j.link.entries:
-                        if h.name not in globalIDs or h.name not in classIDs:
-                            classIDs.append((h.kind, h.name))
-                        else:
-                            errors += '\nerror: var or param name \'' + j.name + '\' already exists in scope.'
-
 
 class Entry(object):
     def __init__(self, level, name, kind, typ):
@@ -122,6 +85,9 @@ class Entry(object):
         self.type = typ
         self.arraySize = []
         self.link = None
+
+        self.index = []
+        self.assignment = []
 
         # to be used in code generation
         self.memory_location = 0
@@ -141,12 +107,21 @@ class Entry(object):
             for i in self.arraySize:
                 arrSize += '[' + str(i) + ']'
 
-        return '\n' + tabs + 'Entry  ({name}, {kind}, {type}{arraySize}, link: {link} )'.format(
+        idx_NL = ''
+        ass_NL = ''
+        # if self.index != []:
+        #     idx_NL = '\n' + tabs + '    '
+        # if self.assignment != []:
+        #     ass_NL = '\n' + tabs + '    '
+
+        return '\n' + tabs + 'Entry  ({name}, {kind}, {type}{arraySize}, IDX:{idx}, ASS:{ass}, link: {link} )'.format(
             # lvl=self.level,
             name=self.name,
             kind=repr(self.kind),
             type=repr(self.type),
             arraySize=arrSize,
+            idx=idx_NL + str(self.index),
+            ass=ass_NL + str(self.assignment),
             link=str(self.link)
         )
 

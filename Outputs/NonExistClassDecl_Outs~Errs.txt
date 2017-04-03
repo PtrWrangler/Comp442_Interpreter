@@ -103,4 +103,4 @@ ERRORS OF test_NonExistClassDecl.txt:
 
 Source Program contained no parsing errors.
 
-Error: Class type 'BADCLASS' does not exist.
+Error: Class type 'Token(ID, 'BADCLASS', Line:Pos=(41, 13))' does not exist.

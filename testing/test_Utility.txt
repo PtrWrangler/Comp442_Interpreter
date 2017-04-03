@@ -4,7 +4,8 @@ class Utility
     float var2;
     Tool tool;
     Tool l;
-    int findMax(int array[100][5][4], int rr, float yyu_7[4][5][6])
+    // test comment
+    int findMax(int array[100][5][4], int rr, float var2[4][5][6])
     {
         int maxValue;
         int idx;
@@ -36,9 +37,12 @@ class Utility
         return (minValue);
     };
 };
+
+/* blktest */
+
 class testClass {
     int test;
-    BADCLASS u;
+    g u;
 
 };
 class Tool {

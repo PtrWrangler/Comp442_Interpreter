@@ -8,7 +8,7 @@ Main objectives & notes:
     - apply table deletions?
         maybe i should be outputting symboltables and entries to a file as i go.
         maybe deletin an entry with link
-    - go back and look at comments in lexer
+    - go back and look at comments in lexer, test more
     - output file should contain original code followed by errors, not my shitty debug program output
     - idea for any order classOrFunc
         prog             -> classOrFunc progBody
@@ -64,4 +64,10 @@ A4 look over:
 
     - circular class or declarations or functions give warnings
         a recursive function that is called in the 'second pass' tells you about possible circular references.
+
+    ATTRIBUTE MIGRATION description for nested variable calls in indices:
+        In the semantic analyser, I use the variable indice_lists a a list of lists. At the start of an indice for a variable assign or variable call, a  new list is appended to the main list. everytime a operand/operator/factor is encountered it appends to the list list and if a variable call is encountered and it has indices, the entry is appended to the tail, then a new list is appended to handle the nested arith expression that could contain more nested variable calls. When an indice finishes, append it to the index section of the last entry of the list below the indice_lists tail (should be the pending variable call entry). when the indices finish for a given variable call, check if the variable exists and the correct number of dimensions were specified.
+
+
+
 

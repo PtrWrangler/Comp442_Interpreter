@@ -17,7 +17,7 @@ program {
             };
             
         }else {
-            int i ;
+            i = 3 ;
             
         };
         
@@ -29,4 +29,13 @@ program {
 ERRORS OF test_loopsANDifs.txt:
   -- ! Error locations are accurate to the original input file ! --
 
-table error, Expected {arraySize -> [ INT ADD_DECL_ARRAY_DIM ] arraySize | EPSILON} found Token(=, '=', Line:Pos=(8, 22))
+Source Program contained no parsing errors.
+Source Program contained no semantic errors.
+
+SYMBOL TABLE STRUCTURE:
+
+Sym_Tbl(name:Token(Global_Table, 'global', Line:Pos=(0, 0)), entries:[
+Entry  (Token(program, 'program', Line:Pos=(1, 8)), 'function', '', link: 
+    Sym_Tbl(name:Token(program, 'program', Line:Pos=(1, 8)), entries:[
+    Entry  (Token(ID, 't', Line:Pos=(2, 10)), 'variable', KEYWORD int, link: None ), 
+    Entry  (Token(ID, 'i', Line:Pos=(6, 23)), 'variable', KEYWORD int, link: None )]) )])
