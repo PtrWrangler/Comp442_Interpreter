@@ -19,6 +19,8 @@ class SemanticProcessor(object):
         # used for collecting the arithExpr within expressions
         #   so far it has been implemented in the nested variable indices
         self.indice_lists = []
+        # hold all the assignment entries for later
+        self.ass_entries = []
 
         # operator and operand stacks use for complex arithmatic expression evaluation.
         # self.operator_stack = []
@@ -43,18 +45,19 @@ class SemanticProcessor(object):
 
                            # var assignment checking functions
 
+                           'APPEND_OP': self.APPEND_OP,
+                           'FACTOR_ID': self.FACTOR_ID,
+
                            'ENTRY_NEST': self.ENTRY_NEST,
 
-                           'FACTOR_ID': self.FACTOR_ID,
                            'START_IDX_DIM': self.START_IDX_DIM,
                            'END_IDX_DIM': self.END_IDX_DIM,
                            'ASSIGNMENT_VAR': self.ASSIGNMENT_VAR,
                            'CHECK_VAR_EXIST': self.CHECK_VAR_EXIST,
 
-                           'APPEND_OP': self.APPEND_OP,
-
-
                            'FUNC_CALL': self.FUNC_CALL,
+                           'ADD_PARAM': self.ADD_PARAM,
+                           'SAVE_PARAM': self.SAVE_PARAM,
                            'END_FUNC_CALL': self.END_FUNC_CALL,
 
 
@@ -245,8 +248,10 @@ class SemanticProcessor(object):
 
     def FACTOR_ID(self):
         print 'var or func ID in factor'
-        #self.attr_buffer.append(self.prevToken_buffer)
-        self.indice_lists[-1].append(Entry(self.level, self.prevToken_buffer, 'variable call', ''))
+        if len(self.indice_lists) == 0:
+            self.indice_lists.append([Entry(self.level, self.prevToken_buffer, '', '')])
+        else:
+            self.indice_lists[-1].append(Entry(self.level, self.prevToken_buffer, '', ''))
 
     def START_IDX_DIM(self):
         print 'starting idx dim'
@@ -257,7 +262,7 @@ class SemanticProcessor(object):
         if len(self.indice_lists) > 1:
             # inner index variable index processed, append it to the inner index variable call entry
             index = self.indice_lists.pop()
-            self.indice_lists[-1][-1].index.append(index)
+            self.indice_lists[-1][-1].IDXorPARAMS.append(index)
         elif len(self.indice_lists) == 1:
             # index finished for final assign var, place the index spec on attr_stack
             index = self.indice_lists.pop()
@@ -275,6 +280,11 @@ class SemanticProcessor(object):
         #     entry.name = nameToken.value
         #     entry.type = self.attr_buffer.pop().value
 
+    def CHECK_VAR_EXIST(self):
+        print 'checking if (in factor) var exists.'
+        self.indice_lists[-1][-1].kind = 'variable call'
+        self.ensure_var_exist(self.indice_lists[-1][-1])
+
     # This is for the var you will be assigning to...
     def ASSIGNMENT_VAR(self):
         print 'Assign Var'
@@ -282,7 +292,7 @@ class SemanticProcessor(object):
 
         # get all arithExpr indices specified and save them in the assignment entry
         while isinstance(self.attr_buffer[-1], list):
-            entry.index.insert(0, self.attr_buffer.pop())
+            entry.IDXorPARAMS.insert(0, self.attr_buffer.pop())
         if len(self.attr_buffer) > 0:
             entry.name = self.attr_buffer.pop()
 
@@ -291,26 +301,35 @@ class SemanticProcessor(object):
             self.SymbolTable_stack[-1].addEntry(entry)
             # self.assignmentEntryBuffer = entry
 
+    # finish the variable assignment
     def FINISH_ASSIGNMENT(self):
         print 'finishing assignment expression.'
         self.SymbolTable_stack[-1].entries[-1].assignment = (self.indice_lists[0])
+        self.ass_entries.append(self.SymbolTable_stack[-1].entries[-1])
+        self.indice_lists = []
         # self.assignmentEntryBuffer.assignment = self.indice_lists
 
-
-    # this is for any far found in an expr or arithExpr e.g. variable call (even inside indice)
-    def CHECK_VAR_EXIST(self):
-        print 'checking if (in factor) var exists'
-
-        entry = self.ensure_var_exist(self.indice_lists[-1][-1])
-
-        # if entry is not None:
-        #     self.indice_lists.append(entry)
+    # this is for any var found in an expr or arithExpr e.g. variable call (even inside indice)
 
     def FUNC_CALL(self):
-        print 'calling function, preparing to stash func params'
+        print 'calling function, preparing to stash func params.'
+        self.indice_lists[-1][-1].kind = 'function call'
+        self.indice_lists.append([])
+
+    def ADD_PARAM(self):
+        print 'Adding function parameter.'
+        self.indice_lists.append([])
+
+    def SAVE_PARAM(self):
+        print 'Saving function parameter.'
+        param = self.indice_lists.pop()
+        if len(param) != 0:
+            self.indice_lists[-1][-1].IDXorPARAMS.append(param)
 
     def END_FUNC_CALL(self):
-        print 'finish function call, Stashing entry for second pass'
+        print 'finish function call, Stashing entry for second pass.'
+        if len(self.indice_lists[-1]) == 0:
+            self.indice_lists.pop()
 
 
 
@@ -326,6 +345,8 @@ class SemanticProcessor(object):
         for i in self.classUsageDict:
             print i, self.classUsageDict[i]
 
+        print self.ass_entries
+
         # Start 'second pass' to check for:
         # UD_Type correctness
         for key in self.classUsageDict:
@@ -335,7 +356,7 @@ class SemanticProcessor(object):
                     self.error += "\nError: Class type \'" + str(val) + "\' does not exist."
                     break
 
-        # circular class function dependency
+        # circular class function dependency checking
         if self.error == "":
             warning = False
             for key in self.classUsageDict:
@@ -350,6 +371,11 @@ class SemanticProcessor(object):
                             break
                 if warning:
                     break
+
+        # Type checking of a complex expression
+        # Type checking of an assignment statement
+        # Type checking the return value of a function
+        # Function calls: right number and types of parameters upon call
 
     '''''''''''''''''''''' Tools '''''''''''''''''''''''
 
@@ -371,7 +397,7 @@ class SemanticProcessor(object):
         # find the declaration entry to compare arraySize to specified index size
         foundEntry = self.check_var_in_scope(entry)
         if isinstance(foundEntry, Entry):
-            if len(foundEntry.arraySize) != len(entry.index):
+            if len(foundEntry.arraySize) != len(entry.IDXorPARAMS):
                 self.error += "\nError: Incorrect array dimensions for index of: " + str(entry.name)
             else:
                 return entry
@@ -380,28 +406,6 @@ class SemanticProcessor(object):
             self.error += "\nError: Variable or Parameter has not been declared: " + str(entry.name)
 
         return None
-
-        # print "Checking if Variable has been declared for use"
-        # print self.attr_buffer
-        #
-        # # get all arithExpr indices specified and save them in the assignment entry
-        # while isinstance(self.attr_buffer[-1], list):
-        #     entry.index.insert(0, self.attr_buffer.pop())
-        # if len(self.attr_buffer) > 0:
-        #     entry.name = self.attr_buffer.pop()
-        #
-        # # find the declaration entry to compare arraySize to specified index size
-        # foundEntry = self.check_var_in_scope(entry)
-        # if isinstance(foundEntry, Entry):
-        #     if len(foundEntry.arraySize) != len(entry.index):
-        #         self.error += "\nError: Incorrect array dimensions for index of: " + str(entry.name)
-        #     else:
-        #         return entry
-        # else:
-        #     # if variable or parameter not declared in scope give error
-        #     self.error += "\nError: Variable or Parameter has not been declared: " + str(entry.name)
-        #
-        # return None
 
     def appendToClassUsageDict(self, classOrGlobFuncName):
         print 'in appendToClassUsageDict()'
@@ -420,4 +424,3 @@ class SemanticProcessor(object):
                     end = True
                     break
         return end
-

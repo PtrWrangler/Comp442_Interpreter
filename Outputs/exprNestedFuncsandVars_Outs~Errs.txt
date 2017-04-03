@@ -1,4 +1,4 @@
-OUTPUT OF test_expr.txt: 
+OUTPUT OF test_exprNestedFuncsandVars.txt: 
 
 class test {
     int v ;
@@ -27,7 +27,7 @@ program {
 };
 
 
-ERRORS OF test_expr.txt:
+ERRORS OF test_exprNestedFuncsandVars.txt:
   -- ! Error locations are accurate to the original input file ! --
 
 Source Program contained no parsing errors.

@@ -10,11 +10,11 @@ class Utility
         int maxValue;
         int idx;
         rr = 8;
-        maxValue = array[100];
+        maxValue = array[100][1][1];
         for( int idx = 99; idx > 0; idx = idx - 1 )
         {
-            if(array[idx] > maxValue) then {
-            maxValue = array[idx];
+            if(array[idx][0][0] > maxValue) then {
+            maxValue = array[idx][0][0];
             }
             else{};
         };
@@ -29,7 +29,7 @@ class Utility
         minValue = array[100];
         for( int idx = 1; idx <= 99; idx = ( idx ) + 1)
         {
-            if(array[idx] < maxValue) then {
+            if(array[idx] < minValue) then {
             minValue = array[idx];
             }
             else{};
@@ -78,11 +78,11 @@ program {
     Utility arrayUtility[2][3][6][7];
     for(int t = 0; t<=100 ; t = t + 1)
     {
-        get(sample[t]);
+        //get(sample[t]);
         sample[t] = (sample[t] * randomize());
     };
-    maxValue = utility.findMax(sample);
-    minValue = utility.findMin(sample);
+    maxValue = utility.findMax(sample[1]);
+    minValue = utility.findMin(sample[1]);
     utility. var1[4][1][0][0][0][0][0] = 10;
     arrayUtility[1][1][1][1].var1[4][1][0][0][0][0][0] = 2;
     put(maxValue);

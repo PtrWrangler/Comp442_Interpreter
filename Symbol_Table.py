@@ -50,7 +50,7 @@ class Symbol_Table(object):
     def search(self, entry):
         print "searching " + self.name.value + " table"
         for e in self.entries:
-            if e.name.value == entry.name.value:
+            if e.name.value == entry.name.value and e.kind != 'assignment':
                 return e
 
         print 'entry not found'
@@ -86,7 +86,7 @@ class Entry(object):
         self.arraySize = []
         self.link = None
 
-        self.index = []
+        self.IDXorPARAMS = []
         self.assignment = []
 
         # to be used in code generation
@@ -107,6 +107,10 @@ class Entry(object):
             for i in self.arraySize:
                 arrSize += '[' + str(i) + ']'
 
+        lbl_IDXorParam = 'IDX'
+        if self.kind == 'function call':
+            lbl_IDXorParam = 'PARAMS'
+
         idx_NL = ''
         ass_NL = ''
         # if self.index != []:
@@ -114,13 +118,14 @@ class Entry(object):
         # if self.assignment != []:
         #     ass_NL = '\n' + tabs + '    '
 
-        return '\n' + tabs + 'Entry  ({name}, {kind}, {type}{arraySize}, IDX:{idx}, ASS:{ass}, link: {link} )'.format(
+        return '\n' + tabs + 'Entry  ({name}, {kind}, {type}{arraySize}, {lbl_IDXorParam}:{idx}, ASS:{ass}, link: {link} )'.format(
             # lvl=self.level,
             name=self.name,
             kind=repr(self.kind),
             type=repr(self.type),
             arraySize=arrSize,
-            idx=idx_NL + str(self.index),
+            lbl_IDXorParam=lbl_IDXorParam,
+            idx=idx_NL + str(self.IDXorPARAMS),
             ass=ass_NL + str(self.assignment),
             link=str(self.link)
         )

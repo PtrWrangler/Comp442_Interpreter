@@ -20,7 +20,8 @@ testFile = "test_Utility.txt"
 #testFile = "test_Arith.txt"
 #testFile = "test_funcParams.txt"
 #testFile = "test_expr.txt"
-testFile = "test_nestedVarIndiceExpr_saving.txt"
+#testFile = "test_nestedVarIndiceExpr_saving.txt"
+#testFile = "test_exprNestedFuncsandVars.txt"
 
 test_dir = "testing/"
 infile = test_dir + testFile
