@@ -1,5 +1,5 @@
 from Symbol_Table import Symbol_Table, Entry
-from Lexer import Token
+from Lexer import Token, math_operators, compare_operators
 
 
 class SemanticProcessor(object):
@@ -19,8 +19,10 @@ class SemanticProcessor(object):
         # used for collecting the arithExpr within expressions
         #   so far it has been implemented in the nested variable indices
         self.indice_lists = []
-        # hold all the assignment entries for later
+
+        # hold all the assignment/function_def entries for later (second pass)
         self.ass_entries = []
+        self.function_defs = []
 
         # operator and operand stacks use for complex arithmatic expression evaluation.
         # self.operator_stack = []
@@ -62,6 +64,8 @@ class SemanticProcessor(object):
 
 
                            'FINISH_ASSIGNMENT': self.FINISH_ASSIGNMENT,
+
+                           'RETURN_EXPR': self.RETURN_EXPR,
 
 
 
@@ -160,6 +164,9 @@ class SemanticProcessor(object):
             if self.SymbolTable_stack:
                 self.SymbolTable_stack[-1].addEntry(entry)
             self.SymbolTable_stack.append(entry.link)
+
+            # save function reference for later type/valid call checking
+            self.function_defs.append(entry)
         else:
             # error this function name alreay exists in scope
             print "Attempting new function but name " + func_name.value + " already exists in scope"
@@ -180,7 +187,7 @@ class SemanticProcessor(object):
         # if variable already in scope give warning
         foundEntry = self.check_var_in_scope(entry)
         if isinstance(foundEntry, Entry):
-            self.warnings += "\nWarning: Parameter " + str(entry.name) + " already exists in scope here: " + str(foundEntry.name)
+            self.warnings += "\nWarning: Parameter " + str(entry.name) + " already exists in scope here: " + str(foundEntry.name) + "OVERWRITING."
 
         if self.SymbolTable_stack:
             self.SymbolTable_stack[-1].addEntry(entry)
@@ -331,6 +338,10 @@ class SemanticProcessor(object):
         if len(self.indice_lists[-1]) == 0:
             self.indice_lists.pop()
 
+    ''''''''''''''''''''''''''''' STATEMENT HANDLING SEMANTIC ACTIONS '''''''''''''''''''''''''''
+
+    def RETURN_EXPR(self):
+        print 'handle function return statement'
 
 
 
@@ -345,7 +356,8 @@ class SemanticProcessor(object):
         for i in self.classUsageDict:
             print i, self.classUsageDict[i]
 
-        print self.ass_entries
+        #print self.ass_entries
+        #print self.function_defs
 
         # Start 'second pass' to check for:
         # UD_Type correctness
@@ -372,9 +384,36 @@ class SemanticProcessor(object):
                 if warning:
                     break
 
+        # Check if all function definitions return a real class object or proper int/float
+        class_names = [entry.name.value for entry in self.SymbolTable_stack[0].entries if entry.kind == 'class']
+        for func_def in self.function_defs:
+            return_type = func_def.type.value.split(' :')[0]
+            if return_type not in ['int', 'float'] and return_type not in class_names:
+                print "Error: Function return type \'" + return_type + "\' not valid at: " + str(func_def.name)
+                self.error += "\nError: Function return type \'" + return_type + "\' not valid at: " + str(func_def.name)
+
+        print 'begin assignment exprs typechecking.'
+        #
+        # process each assignment statement
+        #   check all indices resolve to ints and functions calls are valid, evaluate expr type
+        for ass in self.ass_entries:
+            print ass
+
+            for idx in ass.IDXorPARAMS:
+
+                properIndexType = self.evalIDX_type(idx)
+                if not properIndexType:
+                    print "\nError: Evaluation of indexes is not int/float for: " + str(ass.name)
+                    self.error += "\nError: Evaluation of indexes is not int/float for: " + str(ass.name)
+                    break
+
+            t = self.checkExprType(ass.assignment)
+            print t
+
+
         # Type checking of a complex expression
         # Type checking of an assignment statement
-        # Type checking the return value of a function
+        # Type checking the return value of a function (1st pass)
         # Function calls: right number and types of parameters upon call
 
     '''''''''''''''''''''' Tools '''''''''''''''''''''''
@@ -400,12 +439,59 @@ class SemanticProcessor(object):
             if len(foundEntry.arraySize) != len(entry.IDXorPARAMS):
                 self.error += "\nError: Incorrect array dimensions for index of: " + str(entry.name)
             else:
+                entry.type = foundEntry.type
                 return entry
         else:
             # if variable or parameter not declared in scope give error
             self.error += "\nError: Variable or Parameter has not been declared: " + str(entry.name)
 
         return None
+
+    def ensure_func_exist(self, func_call_entry):
+        print 'Checking if Function has bee declared for use and parameter validity.'
+
+        foundEntry = self.check_var_in_scope(func_call_entry)
+        if isinstance(foundEntry, Entry):
+            # first check if function has been declared
+            if foundEntry.kind == 'function':
+                params = []
+                # collect expected params from found entry
+                for param in [entry for entry in foundEntry.link.entries if entry.kind == 'parameter']:
+                    params.append(param)
+                # next check if you are passing correct number parameters
+                if len(params) == len(func_call_entry.IDXorPARAMS):
+                    for i in range(0, len(params)):
+                        callParam_type = self.checkExprType(func_call_entry.IDXorPARAMS[i])
+                        expected_type = params[i].type.value
+
+                        if callParam_type == expected_type:
+                            continue
+                        else:
+                            # parameter types did not correspond
+                            print '\nError: Incorrect parameter type, sent: ' + str(callParam_type) + ', expecting: \'' + str(expected_type) + '\' called from...'
+                            self.error += '\nError: Incorrect parameter type, sent: ' + str(callParam_type) + ', expecting: \'' + str(expected_type) + '\' called from...'
+                            foundEntry = None
+                            break
+                else:
+                    # incorrect number of passed params
+                    print '\nError: Incorrect number of passed params, sent: ' + str(len(func_call_entry.IDXorPARAMS)) + ', expected: ' + str(len(params))
+                    self.error += '\nError: Incorrect number of passed params, sent: ' + str(len(func_call_entry.IDXorPARAMS)) + ', expected: ' + str(len(params))
+                    foundEntry = None
+            else:
+                # the function by that name does not exist or has been overwritten
+                print '\nError: Not a function or the declaration by that name has been overwritten: '
+                self.error += '\nError: Not a function or the declaration by that name has been overwritten: '
+                foundEntry = None
+        else:
+            # the function by that name does not exist or has been overwritten
+            print '\nError: No (function) declaration exists by that name: '
+            self.error += '\nError: No (function) declaration exists by that name: '
+            foundEntry = None
+
+        return foundEntry
+
+
+
 
     def appendToClassUsageDict(self, classOrGlobFuncName):
         print 'in appendToClassUsageDict()'
@@ -424,3 +510,126 @@ class SemanticProcessor(object):
                     end = True
                     break
         return end
+
+    # This function checks the type correctness of an arithExpr within an index
+    def evalIDX_type(self, index):
+        print 'in evalIDX_type for: ' + str(index)
+        properIndexType = True
+
+        for factor in index:
+            if isinstance(factor, Entry):
+
+                # if instance of a variable call, ensure it is int/float,
+                if factor.kind == 'variable call':
+                    if factor.type in ['int', 'float']:
+                        # if it has indices, check their correctness recursively
+                        for nestedIdx in factor.IDXorPARAMS:
+                            properIndexType = self.evalIDX_type(nestedIdx)
+                            if not properIndexType:
+                                break
+                    else:
+                        # the variable call was not an int/float, error
+                        print 'Error: Type of variable is not int/float: ' + str(factor.name) + 'in...'
+                        self.error += '\nError: Type of variable within index is not int/float: ' + str(factor.name) + ' in...'
+                        properIndexType = False
+                        break
+
+                # if instance of a function call,
+                elif factor.kind == 'function call':
+                    # check if this is a real declared function
+                    foundFunction = self.ensure_func_exist(factor)
+                    if foundFunction is not None:
+                        # then check if the return type is correct for a indice arithExpr
+                        if foundFunction.type.value.split(' :')[0] in ['int', 'float']:
+                            print 'good type'
+                        else:
+                            # the variable call was not an int/float, error
+                            print 'Error: Expected return type of function call is not int/float: ' + str(
+                                factor.name) + ' called from...'
+                            self.error += '\nError: Expected return type of function call is not int/float: ' + str(factor.name) + ' called from...'
+
+                            properIndexType = False
+                            break
+                    else:
+                        # There was a problem in ensure_func_exist(factor)
+                        print str(factor.name)  # + ' called from...'
+                        self.error += '\n' + str(factor.name)   # + ' called from...'
+                else:
+                    print 'Error: not int/float/arithSymbol/variable/function call in arith expr? (evalIDXes())'
+                    self.error += '\nError: not int/float/arithSymbol/variable/function call in arith expr? (evalIDXes())'
+
+            elif RepresentsInt(factor) or RepresentsFloat(factor) or IsFactorSymbol(factor):
+                continue
+            else:
+                properIndexType = False
+                break
+
+        return properIndexType
+
+    def checkExprType(self, expr):
+        print 'Checking type of expression: ' + str(expr)
+        expr_type = None
+
+        if len(expr) == 1 and isinstance(expr[0], Entry):
+            if expr[0].kind == 'variable call':
+                return expr[0].type
+            elif expr[0].kind == 'function call':
+                self.ensure_func_exist(expr[0])
+                return expr[0].type.value.split(' :')[0]
+
+
+        float_present = False
+        force_int = False
+        for factor in expr:
+            if isinstance(factor, Entry):
+
+                if factor.kind == 'variable call':
+                    if factor.type == 'float':
+                        float_present = True
+                    elif factor.type != 'int':
+                        print 'Error: Object mixed with other factors in expression'
+                        self.error += '\nError: Object mixed with other factors in expression'
+                        float_present = None
+                        break
+
+                elif factor in compare_operators:
+                    force_int = True
+
+                elif factor.kind == 'function call':
+                    self.ensure_func_exist(factor)
+
+            elif '.' in factor:
+                float_present = True
+
+        if float_present is None:
+            return float_present
+        elif force_int:
+            return 'int'
+        elif float_present:
+            return 'float'
+        else:
+            return 'int'
+
+
+
+
+
+def RepresentsInt(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
+def RepresentsFloat(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+def IsFactorSymbol(factor):
+    if factor in math_operators or factor in ['(', ')', 'not']:
+        return True
+    else:
+        return False

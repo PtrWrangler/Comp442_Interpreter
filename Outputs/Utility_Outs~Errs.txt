@@ -70,7 +70,7 @@ float randomize ( ) {
     return ( value ) ;
     
 };
-int testFunc ( int testint [ 5 ] [ 4 ] [ 3000 ] ) {
+g testFunc ( int testint [ 5 ] [ 4 ] [ 3000 ] ) {
     Utility testutil ;
     
 };
@@ -80,11 +80,11 @@ program {
     int maxValue ;
     int minValue ;
     Utility utility ;
-    Utility arrayUtility [ 2 ] [ 3 ] [ 6 ] [ 7 ] ;
+    Utility arrayUtility [ 4 ] [ 3 ] [ 6 ] [ 7 ] ;
     for ( int t = 0 ;
     t <= 100 ;
     t = t + 1 ) {
-        sample [ t ] = ( sample [ t ] * randomize ( ) ) ;
+        sample [ 4 + 4 / 3 + idx ] = ( sample [ t ] * randomize ( ) ) ;
         
     };
     maxValue = utility . findMax ( sample [ 1 ] ) ;
@@ -94,105 +94,4 @@ program {
     put ( maxValue ) ;
     put ( minValue ) ;
     
-};
-
-
-ERRORS OF test_Utility.txt:
-  -- ! Error locations are accurate to the original input file ! --
-
-Source Program contained no parsing errors.
-Source Program contained no semantic errors.
-
-Warning: Parameter Token(ID, 'var2', Line:Pos=(8, 57)) already exists in scope here: Token(ID, 'var2', Line:Pos=(4, 15))
-Warning: Variable Token(ID, 'idx', Line:Pos=(14, 21)) already exists in scope here: Token(ID, 'idx', Line:Pos=(11, 16))
-Warning: Variable Token(ID, 'var2', Line:Pos=(28, 19)) already exists in scope here: Token(ID, 'var2', Line:Pos=(4, 15))
-Warning: Variable Token(ID, 'idx', Line:Pos=(30, 21)) already exists in scope here: Token(ID, 'idx', Line:Pos=(27, 16))
-SYMBOL TABLE STRUCTURE:
-
-Sym_Tbl(name:Token(Global_Table, 'global', Line:Pos=(0, 0)), entries:[
-Entry  (Token(ID, 'Utility', Line:Pos=(1, 14)), 'class', '', IDX:[], ASS:[], link: 
-    Sym_Tbl(name:Token(ID, 'Utility', Line:Pos=(1, 14)), entries:[
-    Entry  (Token(ID, 'var1', Line:Pos=(3, 13)), 'variable', int[4][5][7][8][9][1][0], IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'var2', Line:Pos=(4, 15)), 'variable', float, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'tool', Line:Pos=(5, 14)), 'variable', Tool, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'l', Line:Pos=(6, 11)), 'variable', Tool, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'findMax', Line:Pos=(8, 16)), 'function', int : array[100][5][4], rr, var2[4][5][6], IDX:[], ASS:[], link: 
-        Sym_Tbl(name:Token(ID, 'findMax', Line:Pos=(8, 16)), entries:[
-        Entry  (Token(ID, 'array', Line:Pos=(8, 26)), 'parameter', int[100][5][4], IDX:[], ASS:[], link: None ), 
-        Entry  (Token(ID, 'rr', Line:Pos=(8, 45)), 'parameter', int, IDX:[], ASS:[], link: None ), 
-        Entry  (Token(ID, 'var2', Line:Pos=(8, 57)), 'parameter', float[4][5][6], IDX:[], ASS:[], link: None ), 
-        Entry  (Token(ID, 'maxValue', Line:Pos=(10, 21)), 'variable', int, IDX:[], ASS:[], link: None ), 
-        Entry  (Token(ID, 'idx', Line:Pos=(11, 16)), 'variable', int, IDX:[], ASS:[], link: None ), 
-        Entry  (Token(ID, 'rr', Line:Pos=(12, 11)), 'assignment', '', IDX:[], ASS:['8'], link: None ), 
-        Entry  (Token(ID, 'maxValue', Line:Pos=(13, 17)), 'assignment', '', IDX:[], ASS:[
-        Entry  (Token(ID, 'array', Line:Pos=(13, 25)), 'variable call', '', IDX:[['100'], ['1'], ['1']], ASS:[], link: None )], link: None ), 
-        Entry  (Token(ID, 'idx', Line:Pos=(14, 21)), 'variable', int, IDX:[], ASS:[], link: None ), 
-        Entry  (Token(ID, 'idx', Line:Pos=(14, 40)), 'assignment', '', IDX:[], ASS:[
-        Entry  (Token(ID, 'idx', Line:Pos=(14, 46)), 'variable call', '', IDX:[], ASS:[], link: None ), '-', '1'], link: None ), 
-        Entry  (Token(ID, 'maxValue', Line:Pos=(17, 21)), 'assignment', '', IDX:[], ASS:[
-        Entry  (Token(ID, 'array', Line:Pos=(17, 29)), 'variable call', '', IDX:[[
-        Entry  (Token(ID, 'idx', Line:Pos=(17, 33)), 'variable call', '', IDX:[], ASS:[], link: None )], ['0'], ['0']], ASS:[], link: None )], link: None )]) ), 
-    Entry  (Token(ID, 'findMin', Line:Pos=(24, 16)), 'function', int : array[100], IDX:[], ASS:[], link: 
-        Sym_Tbl(name:Token(ID, 'findMin', Line:Pos=(24, 16)), entries:[
-        Entry  (Token(ID, 'array', Line:Pos=(24, 26)), 'parameter', int[100], IDX:[], ASS:[], link: None ), 
-        Entry  (Token(ID, 'minValue', Line:Pos=(26, 21)), 'variable', int, IDX:[], ASS:[], link: None ), 
-        Entry  (Token(ID, 'idx', Line:Pos=(27, 16)), 'variable', int, IDX:[], ASS:[], link: None ), 
-        Entry  (Token(ID, 'var2', Line:Pos=(28, 19)), 'variable', float, IDX:[], ASS:[], link: None ), 
-        Entry  (Token(ID, 'minValue', Line:Pos=(29, 17)), 'assignment', '', IDX:[], ASS:[
-        Entry  (Token(ID, 'array', Line:Pos=(29, 25)), 'variable call', '', IDX:[['100']], ASS:[], link: None )], link: None ), 
-        Entry  (Token(ID, 'idx', Line:Pos=(30, 21)), 'variable', int, IDX:[], ASS:[], link: None ), 
-        Entry  (Token(ID, 'idx', Line:Pos=(30, 41)), 'assignment', '', IDX:[], ASS:['(', 
-        Entry  (Token(ID, 'idx', Line:Pos=(30, 49)), 'variable call', '', IDX:[], ASS:[], link: None ), ')', '+', '1'], link: None ), 
-        Entry  (Token(ID, 'minValue', Line:Pos=(33, 21)), 'assignment', '', IDX:[], ASS:[
-        Entry  (Token(ID, 'array', Line:Pos=(33, 29)), 'variable call', '', IDX:[[
-        Entry  (Token(ID, 'idx', Line:Pos=(33, 33)), 'variable call', '', IDX:[], ASS:[], link: None )]], ASS:[], link: None )], link: None )]) )]) ), 
-Entry  (Token(ID, 'testClass', Line:Pos=(43, 16)), 'class', '', IDX:[], ASS:[], link: 
-    Sym_Tbl(name:Token(ID, 'testClass', Line:Pos=(43, 16)), entries:[
-    Entry  (Token(ID, 'test', Line:Pos=(44, 13)), 'variable', int, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'u', Line:Pos=(45, 8)), 'variable', g, IDX:[], ASS:[], link: None )]) ), 
-Entry  (Token(ID, 'Tool', Line:Pos=(48, 11)), 'class', '', IDX:[], ASS:[], link: 
-    Sym_Tbl(name:Token(ID, 'Tool', Line:Pos=(48, 11)), entries:[
-    Entry  (Token(ID, 'test', Line:Pos=(49, 13)), 'variable', int, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 't', Line:Pos=(50, 16)), 'variable', testClass, IDX:[], ASS:[], link: None )]) ), 
-Entry  (Token(ID, 'g', Line:Pos=(52, 8)), 'class', '', IDX:[], ASS:[], link: 
-    Sym_Tbl(name:Token(ID, 'g', Line:Pos=(52, 8)), entries:[
-    Entry  (Token(ID, 'j', Line:Pos=(53, 10)), 'variable', int, IDX:[], ASS:[], link: None )]) ), 
-Entry  (Token(ID, 'randomize', Line:Pos=(57, 16)), 'function', float, IDX:[], ASS:[], link: 
-    Sym_Tbl(name:Token(ID, 'randomize', Line:Pos=(57, 16)), entries:[
-    Entry  (Token(ID, 'value', Line:Pos=(59, 16)), 'variable', float, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'tooly', Line:Pos=(60, 15)), 'variable', Tool, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 't', Line:Pos=(61, 16)), 'variable', testClass, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'u', Line:Pos=(62, 14)), 'variable', Utility, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'gg', Line:Pos=(63, 9)), 'variable', g, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'value', Line:Pos=(64, 10)), 'assignment', '', IDX:[], ASS:['100', '*', '(', '2', '+', '3.0', '/', '7.0006', ')'], link: None ), 
-    Entry  (Token(ID, 'value', Line:Pos=(65, 10)), 'assignment', '', IDX:[], ASS:['1.05', '+', '(', '(', '2.04', '*', '2.47', ')', '-', '3.0', ')', '+', '7.0006'], link: None )]) ), 
-Entry  (Token(ID, 'testFunc', Line:Pos=(68, 13)), 'function', int : testint[5][4][3000], IDX:[], ASS:[], link: 
-    Sym_Tbl(name:Token(ID, 'testFunc', Line:Pos=(68, 13)), entries:[
-    Entry  (Token(ID, 'testint', Line:Pos=(68, 25)), 'parameter', int[5][4][3000], IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'testutil', Line:Pos=(69, 21)), 'variable', Utility, IDX:[], ASS:[], link: None )]) ), 
-Entry  (Token(program, 'program', Line:Pos=(72, 8)), 'function', '', IDX:[], ASS:[], link: 
-    Sym_Tbl(name:Token(program, 'program', Line:Pos=(72, 8)), entries:[
-    Entry  (Token(ID, 'sample', Line:Pos=(73, 15)), 'variable', int[100], IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'idx', Line:Pos=(74, 12)), 'variable', int, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'maxValue', Line:Pos=(75, 17)), 'variable', int, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'minValue', Line:Pos=(76, 17)), 'variable', int, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'utility', Line:Pos=(77, 20)), 'variable', Utility, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'arrayUtility', Line:Pos=(78, 25)), 'variable', Utility[2][3][6][7], IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 't', Line:Pos=(79, 14)), 'variable', int, IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 't', Line:Pos=(79, 30)), 'assignment', '', IDX:[], ASS:[
-    Entry  (Token(ID, 't', Line:Pos=(79, 34)), 'variable call', '', IDX:[], ASS:[], link: None ), '+', '1'], link: None ), 
-    Entry  (Token(ID, 'sample', Line:Pos=(82, 15)), 'assignment', '', IDX:[[
-    Entry  (Token(ID, 't', Line:Pos=(82, 17)), 'variable call', '', IDX:[], ASS:[], link: None )]], ASS:['(', 
-    Entry  (Token(ID, 'sample', Line:Pos=(82, 28)), 'variable call', '', IDX:[[
-    Entry  (Token(ID, 't', Line:Pos=(82, 30)), 'variable call', '', IDX:[], ASS:[], link: None )]], ASS:[], link: None ), '*', 
-    Entry  (Token(ID, 'randomize', Line:Pos=(82, 43)), 'function call', '', PARAMS:[], ASS:[], link: None ), ')'], link: None ), 
-    Entry  (Token(ID, 'maxValue', Line:Pos=(84, 13)), 'assignment', '', IDX:[], ASS:[
-    Entry  (Token(ID, 'utility', Line:Pos=(84, 23)), 'variable call', '', IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'findMax', Line:Pos=(84, 31)), 'function call', '', PARAMS:[[
-    Entry  (Token(ID, 'sample', Line:Pos=(84, 38)), 'variable call', '', IDX:[['1']], ASS:[], link: None )]], ASS:[], link: None )], link: None ), 
-    Entry  (Token(ID, 'minValue', Line:Pos=(85, 13)), 'assignment', '', IDX:[], ASS:[
-    Entry  (Token(ID, 'utility', Line:Pos=(85, 23)), 'variable call', '', IDX:[], ASS:[], link: None ), 
-    Entry  (Token(ID, 'findMin', Line:Pos=(85, 31)), 'function call', '', PARAMS:[[
-    Entry  (Token(ID, 'sample', Line:Pos=(85, 38)), 'variable call', '', IDX:[['1']], ASS:[], link: None )]], ASS:[], link: None )], link: None ), 
-    Entry  (Token(ID, 'utility', Line:Pos=(86, 12)), 'assignment', '', IDX:[], ASS:['10'], link: None ), 
-    Entry  (Token(ID, 'arrayUtility', Line:Pos=(87, 17)), 'assignment', '', IDX:[['1'], ['1'], ['1'], ['1']], ASS:['2'], link: None )]) )])
+}

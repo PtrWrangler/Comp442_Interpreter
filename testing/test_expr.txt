@@ -1,28 +1,32 @@
 class test{
     int v;
     float rr[20][10][5];
+    test tt;
 
-    int findMax(int i){
+    int findMax(int i, float u[2][2]){
         //i = findMin();
 
-        rr[0][func(22, 5+4)][0] = func() * func(rr[1][rr[0][func()][0]][4]);
+        rr[6][func(5, rr[4][5][4])][0] = findMax() * func(rr[1][rr[0][fun()][0]][4]);
         return (25);
     };
 
 };
 
-int func(){
+class another{};
+
+int func(int i, float j){
     return (1);
 
 };
 
 program{
 
-    test b[2];
-    test t[100][50][3];
+    float b[2];
+    int t[100][50][3];
     int x[1][2];
+    test ttest;
 
-    x[1-2-3-x[0-b[fun(8>9, 999 +9-8-7)]][0]][99] = 6;
+    x[1-not-2-x[0-b[func(8>9 / 999 +9-8-7, b[1])]][0]][99] = 6;
 
     x[x[1][2+x[0][0]+77]][99] = 5 + 6 + 7 + t[3][4][5];
 

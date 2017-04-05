@@ -65,7 +65,7 @@ float randomize()
     value = 1.05 + ((2.04 * 2.47) - 3.0) + 7.0006 ;
     return (value);
 };
-int testFunc(int testint[5][4][3000]) {
+g testFunc(int testint[5][4][3000]) {
     Utility testutil;
 };
 
@@ -75,11 +75,11 @@ program {
     int maxValue;
     int minValue;
     Utility utility;
-    Utility arrayUtility[2][3][6][7];
+    Utility arrayUtility[4][3][6][7];
     for(int t = 0; t<=100 ; t = t + 1)
     {
         //get(sample[t]);
-        sample[t] = (sample[t] * randomize());
+        sample[4+4/3+idx] = (sample[t] * randomize());
     };
     maxValue = utility.findMax(sample[1]);
     minValue = utility.findMin(sample[1]);

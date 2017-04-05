@@ -44,7 +44,7 @@ statement        -> get ( variable ) ;
 [get]
 statement        -> put ( expr ) ; 
 [put]
-statement        -> return ( expr ) ; 
+statement        -> return ( expr RETURN_EXPR ) ;
 [return]
 statement        -> varDecl 
 [float, int, ID]
