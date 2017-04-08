@@ -1,6 +1,8 @@
 from Symbol_Table import Symbol_Table, Entry
 from Lexer import Token, math_operators, compare_operators
 
+IntFloat = ['int', 'float']
+
 
 class SemanticProcessor(object):
     def __init__(self):
@@ -277,16 +279,6 @@ class SemanticProcessor(object):
         # else:
         #     self.error += 'Error: problem with the factor end_indexes?'
 
-    def ENTRY_NEST(self):
-        print "specifying object nested variable"
-        # entry = Entry(self.level, '', 'variable', '')
-        # while isinstance(self.attr_buffer[-1], int):
-        #     entry.arraySize.insert(0, self.attr_buffer.pop())
-        # if len(self.attr_buffer) > 1:
-        #     nameToken = self.attr_buffer.pop()
-        #     entry.name = nameToken.value
-        #     entry.type = self.attr_buffer.pop().value
-
     def CHECK_VAR_EXIST(self):
         print 'checking if (in factor) var exists.'
         self.indice_lists[-1][-1].kind = 'variable call'
@@ -307,6 +299,16 @@ class SemanticProcessor(object):
         if entry is not None and len(self.SymbolTable_stack) > 0:
             self.SymbolTable_stack[-1].addEntry(entry)
             # self.assignmentEntryBuffer = entry
+
+    def ENTRY_NEST(self):
+        print "specifying object nested variable"
+        # entry = Entry(self.level, '', 'variable', '')
+        # while isinstance(self.attr_buffer[-1], int):
+        #     entry.arraySize.insert(0, self.attr_buffer.pop())
+        # if len(self.attr_buffer) > 1:
+        #     nameToken = self.attr_buffer.pop()
+        #     entry.name = nameToken.value
+        #     entry.type = self.attr_buffer.pop().value
 
     # finish the variable assignment
     def FINISH_ASSIGNMENT(self):
@@ -409,6 +411,12 @@ class SemanticProcessor(object):
 
             t = self.checkExprType(ass.assignment)
             print t
+            if t is None:
+                print "\nError: Assignment expression did not evaluate to a proper type: " + str(ass.name)
+                self.error += "\nError: Assignment expression did not evaluate to a proper type: " + str(ass.name)
+            elif t in IntFloat and ass.type.value in IntFloat and t != ass.type.value:
+                print "\nWarning: int/float mismatch assignment, possible loss of data: " + str(ass.name)
+                self.warnings += "\nWarning: int/float mismatch assignment, possible loss of data: " + str(ass.name)
 
 
         # Type checking of a complex expression
@@ -572,7 +580,7 @@ class SemanticProcessor(object):
 
         if len(expr) == 1 and isinstance(expr[0], Entry):
             if expr[0].kind == 'variable call':
-                return expr[0].type
+                return expr[0].type.value
             elif expr[0].kind == 'function call':
                 self.ensure_func_exist(expr[0])
                 return expr[0].type.value.split(' :')[0]
@@ -587,8 +595,6 @@ class SemanticProcessor(object):
                     if factor.type == 'float':
                         float_present = True
                     elif factor.type != 'int':
-                        print 'Error: Object mixed with other factors in expression'
-                        self.error += '\nError: Object mixed with other factors in expression'
                         float_present = None
                         break
 

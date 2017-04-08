@@ -116,6 +116,8 @@ class Lexical_Analyzer(object):
             self.advance()
 
     def handle_comments(self, token):
+        start_line_number = self.line_number
+        start_line_pos = self.line_pos
 
         # handle possible unexpected close comment error
         if token == '//':
@@ -148,8 +150,8 @@ class Lexical_Analyzer(object):
                     return Token(COMMENT, token, comment, self.line_number, self.line_pos)
 
         print "SCAN_ERROR: Unexpected EOF within block comment: " + token
-        return Token(SCAN_ERROR, SCAN_ERROR, "Unexpected EOF within block comment: " + token, self.line_number,
-                     self.line_pos)
+        return Token(EOF, SCAN_ERROR, "Unexpected EOF within block comment: " + token, start_line_number,
+                     start_line_pos)
 
 
     def keyword_or_identifier(self):

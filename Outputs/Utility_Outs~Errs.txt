@@ -94,4 +94,14 @@ program {
     put ( maxValue ) ;
     put ( minValue ) ;
     
-}
+};
+
+
+ERRORS OF test_Utility.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+
+Source Program contained no parsing errors.
+
+Error: Assignment expression did not evaluate to a proper type: Token(ID, 'maxValue', Line:Pos=(84, 13))
+Error: Assignment expression did not evaluate to a proper type: Token(ID, 'minValue', Line:Pos=(85, 13))
