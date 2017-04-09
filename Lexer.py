@@ -88,8 +88,12 @@ class Lexical_Analyzer(object):
         self.line_number = 1
         self.line_pos = 1
 
-    '''def error(self):
-        raise Exception('Error parsing input')'''
+        self.o = open('Outputs/LexerOutputs/LexerOutput.txt', 'w+')
+
+    def printToken(self, token):
+        # debug print token and return it
+        self.o.write('\n' + token.type + ": " + str(token))
+
 
     def advance(self):
         """Advance the 'pos' pointer and set the 'current_char' variable."""
@@ -293,20 +297,30 @@ class Lexical_Analyzer(object):
                 continue
 
             elif self.current_char.isalpha():
-                return self.keyword_or_identifier()
+                t = self.keyword_or_identifier()
+                self.printToken(t)
+                return t
 
             elif self.current_char.isdigit() or self.current_char == '.':
-                return self.integer_or_float()
+                t = self.integer_or_float()
+                self.printToken(t)
+                return t
 
             # catch all punctuation, except period which is part of floats/ints
             elif self.current_char in string.punctuation:
-                return self.operator_or_punctuation()
+                t = self.operator_or_punctuation()
+                self.printToken(t)
+                return t
 
             else:
                 char = self.current_char
                 self.advance()
                 print "SCAN_ERROR: Unregistered Character: " + str(char)
-                return Token(SCAN_ERROR, SCAN_ERROR, "Unregistered Character: " + str(char), self.line_number, self.line_pos)
+                t = Token(SCAN_ERROR, SCAN_ERROR, "Unregistered Character: " + str(char), self.line_number, self.line_pos)
+                self.printToken(t)
+                return t
 
-        return Token(EOF, EOF, None, self.line_number, self.line_pos)
+        t = Token(EOF, EOF, None, self.line_number, self.line_pos)
+        self.printToken(t)
+        return t
 

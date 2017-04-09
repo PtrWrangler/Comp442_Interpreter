@@ -32,7 +32,7 @@ createOrAssign   -> indice ASSIGNMENT_VAR gen_nest assign ;
 [[, ., =]
 gen_nest         -> . ENTRY_NEST ID ENTRY_NAME indice gen_nest
 [.]
-gen_nest         -> EPSILON 
+gen_nest         -> PACK_NEST EPSILON
 [=]
 assign           -> assignOp expr FINISH_ASSIGNMENT
 [=]
@@ -84,10 +84,10 @@ gen_Term         -> multOp APPEND_OP term
 [*, /, and]
 gen_Term         -> EPSILON 
 [;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or]
+factor           -> objectVarOrFunc
+[ID]
 factor           -> ( APPEND_OP arithExpr ) APPEND_OP
 [(]
-factor           -> objectVarOrFunc 
-[ID]
 factor           -> FLOAT APPEND_OP
 [FLOAT]
 factor           -> INT APPEND_OP
@@ -105,7 +105,7 @@ paramsOrIndice   -> indice CHECK_VAR_EXIST is_nest
 [;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
 is_nest          -> . ENTRY_NEST objectVarOrFunc
 [.]
-is_nest          -> EPSILON 
+is_nest          -> PACK_FACTOR_NEST EPSILON
 [;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
 variable         -> ID ENTRY_TYPE indice ASSIGNMENT_VAR
 [ID]

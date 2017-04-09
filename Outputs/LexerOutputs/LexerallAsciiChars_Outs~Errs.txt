@@ -1,0 +1,16 @@
+
+
+ERRORS OF LexerTests/test_allAsciiChars.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+
+Warning (scanner): Token scanning issue: Token(SCAN_ERROR, 'Unregistered punctuation: !', Line:Pos=(1, 2))
+Warning (scanner): Token scanning issue: Token(SCAN_ERROR, 'Unregistered punctuation: "', Line:Pos=(1, 3))
+Warning (scanner): Token scanning issue: Token(SCAN_ERROR, 'Unregistered punctuation: #', Line:Pos=(1, 4))
+Warning (scanner): Token scanning issue: Token(SCAN_ERROR, 'Unregistered punctuation: $', Line:Pos=(1, 5))
+Warning (scanner): Token scanning issue: Token(SCAN_ERROR, 'Unregistered punctuation: %', Line:Pos=(1, 6))
+Warning (scanner): Token scanning issue: Token(SCAN_ERROR, 'Unregistered punctuation: &', Line:Pos=(1, 7))
+Warning (scanner): Token scanning issue: Token(SCAN_ERROR, "Unregistered punctuation: '", Line:Pos=(1, 8))table error, Expected {prog -> CREATE_GLOBAL_TABLE classDecl funcDef progBody} found Token((, '(', Line:Pos=(1, 9))
+
+Warning (scanner): Token scanning issue: Token(SCAN_ERROR, 'Unregistered punctuation: |', Line:Pos=(1, 93))
+Warning (scanner): Token scanning issue: Token(SCAN_ERROR, 'Unregistered punctuation: ~', Line:Pos=(1, 95))error, wrong token. Expected: ; found Token(ID, 'DEL', Line:Pos=(1, 98))

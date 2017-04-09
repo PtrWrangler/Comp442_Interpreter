@@ -1,0 +1,8 @@
+
+
+ERRORS OF LexerTests/test_Operators.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+table error, Expected {prog -> CREATE_GLOBAL_TABLE classDecl funcDef progBody} found Token(+, '+', Line:Pos=(3, 2))
+table error, Expected {gen_statements -> statement gen_statements | EPSILON} found Token(], ']', Line:Pos=(3, 8))
+error, wrong token. Expected: ; found Token([, '[', Line:Pos=(3, 10))

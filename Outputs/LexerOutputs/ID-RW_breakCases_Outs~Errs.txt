@@ -1,0 +1,6 @@
+
+
+ERRORS OF LexerTests/test_ID-RW_breakCases.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+error, wrong token. Expected: ID found Token(*, '*', Line:Pos=(4, 7))

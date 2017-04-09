@@ -89,11 +89,16 @@ class Entry(object):
         self.IDXorPARAMS = []
         self.assignment = []
 
+        self.nest = []
+
         # to be used in code generation
         self.memory_location = 0
         self.assembly_code_alias = ''
 
         self.level = level
+
+        # self.backlink = None
+        # self.belongs_to = ''
 
     def __str__(self):
         """String representation of the class instance."""
@@ -132,43 +137,3 @@ class Entry(object):
 
     def __repr__(self):
         return self.__str__()
-
-
-# class Symbol_Tables(object):
-#     head = None
-#     tail = None
-#
-#     def append(self, level, name):
-#         new_table = Symbol_Table(level, name, None, None)
-#         if self.head is None:
-#             self.head = self.tail = new_table
-#         else:
-#             new_table.prev = self.tail
-#             new_table.next = None
-#             self.tail.next = new_table
-#             self.tail = new_table
-#
-#     def remove(self, table_name):
-#         current_table = self.head
-#
-#         while current_table is not None:
-#             if current_table.name == table_name:
-#                 # if it's not the first element
-#                 if current_table.prev is not None:
-#                     current_table.prev.next = current_table.next
-#                     current_table.next.prev = current_table.prev
-#                 else:
-#                     # otherwise we have no prev (it's None), head is the next one, and prev becomes None
-#                     self.head = current_table.next
-#                     current_table.next.prev = None
-#
-#             current_table = current_table.next
-#
-#     def show(self):
-#         print "Show list data:"
-#         current_table = self.head
-#         while current_table is not None:
-#             print str(current_table)
-#             current_table = current_table.next
-#
-#         print "*" * 50

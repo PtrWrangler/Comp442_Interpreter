@@ -53,6 +53,8 @@ class SemanticProcessor(object):
                            'FACTOR_ID': self.FACTOR_ID,
 
                            'ENTRY_NEST': self.ENTRY_NEST,
+                           'PACK_NEST': self.PACK_NEST,
+                           'PACK_FACTOR_NEST': self.PACK_FACTOR_NEST,
 
                            'START_IDX_DIM': self.START_IDX_DIM,
                            'END_IDX_DIM': self.END_IDX_DIM,
@@ -281,12 +283,14 @@ class SemanticProcessor(object):
 
     def CHECK_VAR_EXIST(self):
         print 'checking if (in factor) var exists.'
+
         self.indice_lists[-1][-1].kind = 'variable call'
         self.ensure_var_exist(self.indice_lists[-1][-1])
 
     # This is for the var you will be assigning to...
     def ASSIGNMENT_VAR(self):
         print 'Assign Var'
+
         entry = Entry(self.level, '', 'assignment', '')
 
         # get all arithExpr indices specified and save them in the assignment entry
@@ -302,17 +306,46 @@ class SemanticProcessor(object):
 
     def ENTRY_NEST(self):
         print "specifying object nested variable"
-        # entry = Entry(self.level, '', 'variable', '')
-        # while isinstance(self.attr_buffer[-1], int):
-        #     entry.arraySize.insert(0, self.attr_buffer.pop())
-        # if len(self.attr_buffer) > 1:
-        #     nameToken = self.attr_buffer.pop()
-        #     entry.name = nameToken.value
-        #     entry.type = self.attr_buffer.pop().value
+        # basically appends a new empty nest to the root entry at hand
+        if len(self.indice_lists) > 0:
+            # self.indice_lists[-1][-1].IDXorPARAMS.append(index)
+            # self.warnings += '\nIn ENTRY_NEST, indice list looks like: ' + str(self.indice_lists)
+            self.indice_lists[-1][-1].nest.append([])
+        elif len(self.indice_lists) == 0:
+            # self.attr_buffer.append(index)
+            # self.warnings += '\nIn ENTRY_NEST, Attr list looks like: ' + str(self.attr_buffer)
+            # self.warnings += '\nIn ENTRY_NEST, test: ' + str(self.SymbolTable_stack[-1].entries[-1])
+            #self.attr_buffer[-1][-1].nest.append([])
+            self.SymbolTable_stack[-1].entries[-1].nest.append([])
+
+    def PACK_NEST(self):
+        print 'packing and saving nest'
+        # self.warnings += '\nin pack_nest, ' + str(self.SymbolTable_stack[-1].entries[-1].nest)
+        if len(self.SymbolTable_stack[-1].entries[-1].nest) > 0 and len(self.SymbolTable_stack[-1].entries[-1].nest[-1]) == 0:
+            entry = Entry(self.level, '', 'nest', '')
+
+            # get all arithExpr indices specified and save them in the assignment entry
+            while isinstance(self.attr_buffer[-1], list):
+                entry.IDXorPARAMS.insert(0, self.attr_buffer.pop())
+            if len(self.attr_buffer) > 0:
+                entry.name = self.attr_buffer.pop()
+
+            # should change to ensure nest variable exist...
+            #entry = self.ensure_var_exist(entry)
+            if entry is not None and len(self.SymbolTable_stack) > 0:
+                self.SymbolTable_stack[-1].entries[-1].nest[-1].append(entry)
+                # self.assignmentEntryBuffer = entry
+        else:
+            print 'no nest to pack'
+
+    def PACK_FACTOR_NEST(self):
+        print 'packing and saving factor nest'
+
 
     # finish the variable assignment
     def FINISH_ASSIGNMENT(self):
         print 'finishing assignment expression.'
+
         self.SymbolTable_stack[-1].entries[-1].assignment = (self.indice_lists[0])
         self.ass_entries.append(self.SymbolTable_stack[-1].entries[-1])
         self.indice_lists = []
@@ -355,8 +388,13 @@ class SemanticProcessor(object):
             self.SymbolTable_stack.pop()
         self.level -= 1
 
-        for i in self.classUsageDict:
-            print i, self.classUsageDict[i]
+        # for i in self.classUsageDict:
+        #     print i, self.classUsageDict[i]
+
+        if self.error == '':
+            self.second_pass
+
+    def second_pass(self):
 
         #print self.ass_entries
         #print self.function_defs
@@ -580,32 +618,42 @@ class SemanticProcessor(object):
 
         if len(expr) == 1 and isinstance(expr[0], Entry):
             if expr[0].kind == 'variable call':
+                for idx in expr[0].IDXorPARAMS:
+                    self.evalIDX_type(idx)
                 return expr[0].type.value
             elif expr[0].kind == 'function call':
-                self.ensure_func_exist(expr[0])
-                return expr[0].type.value.split(' :')[0]
+                foundFunc = self.ensure_func_exist(expr[0])
+                if foundFunc is not None:
+                    return foundFunc.type.value.split(' :')[0]
+                else:
+                    print '...here: ' + str(expr[0].name)
+                    self.error += '\n   ...here: ' + str(expr[0].name)
 
 
         float_present = False
         force_int = False
-        for factor in expr:
-            if isinstance(factor, Entry):
+        if self.error == '':
+            for factor in expr:
+                if isinstance(factor, Entry):
 
-                if factor.kind == 'variable call':
-                    if factor.type == 'float':
-                        float_present = True
-                    elif factor.type != 'int':
-                        float_present = None
-                        break
+                    if factor.kind == 'variable call':
+                        if factor.type == 'float':
+                            float_present = True
+                        elif factor.type != 'int':
+                            float_present = None
+                            break
 
-                elif factor in compare_operators:
-                    force_int = True
+                    elif factor in compare_operators:
+                        force_int = True
 
-                elif factor.kind == 'function call':
-                    self.ensure_func_exist(factor)
+                    elif factor.kind == 'function call':
+                        foundFunc = self.ensure_func_exist(factor)
+                        if foundFunc is None:
+                            print '...here: ' + str(factor.name)
+                            self.error += '\n   ...here: ' + str(factor.name)
 
-            elif '.' in factor:
-                float_present = True
+                elif '.' in factor:
+                    float_present = True
 
         if float_present is None:
             return float_present

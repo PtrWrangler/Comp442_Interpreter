@@ -1,29 +1,10 @@
-OUTPUT OF test_expr.txt: 
 
-class test {
-    int v ;
-    float rr [ 20 ] [ 10 ] [ 5 ] ;
-    float tit ;
-    int findMax ( int i , float u [ 2 ] [ 2 ] ) {
-        rr [ 6 ] [ func ( 5 , rr [ 4 ] [ 5 ] [ 4 ] ) ] [ 0 ] = findMax ( ) * func ( rr [ 1 ] [ rr [ 0 ] [ fun ( ) ] [ 0 ] ] [ 4 ] ) ;
-        return ( 25 ) ;
-        
-    };
-    
-};
-class another {
-    
-};
-int func ( int i , float j ) {
-    return ( 1 ) ;
-    
-};
-program {
-    float b [ 2 ] ;
-    int t [ 100 ] [ 50 ] [ 3 ] ;
-    int x [ 1 ] [ 2 ] ;
-    test tt ;
-    tt . tit = 9.9 ;
-    int testfunc ;
-    
-}
+
+ERRORS OF test_expr.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+
+Source Program contained no parsing errors.
+
+Error: No (function) declaration exists by that name: 
+   ...here: Token(ID, 'dupFunc', Line:Pos=(25, 20))

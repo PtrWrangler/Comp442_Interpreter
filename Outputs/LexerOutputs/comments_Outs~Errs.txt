@@ -1,0 +1,6 @@
+
+
+ERRORS OF LexerTests/test_comments.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+table error, Expected {prog -> CREATE_GLOBAL_TABLE classDecl funcDef progBody} found Token(*, '*', Line:Pos=(7, 2))
