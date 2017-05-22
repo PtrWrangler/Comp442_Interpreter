@@ -26,6 +26,8 @@ class SemanticProcessor(object):
         self.ass_entries = []
         self.function_defs = []
 
+        self.checking_nest = 0
+
         # operator and operand stacks use for complex arithmatic expression evaluation.
         # self.operator_stack = []
         # self.operand_stack = []
@@ -285,8 +287,12 @@ class SemanticProcessor(object):
     def CHECK_VAR_EXIST(self):
         print 'checking if (in factor) var exists.'
 
-        self.indice_lists[-1][-1].kind = 'variable call'
-        self.ensure_var_exist(self.indice_lists[-1][-1])
+        if self.checking_nest > 0:
+            self.indice_lists[-1][-1].kind = 'nest'
+            self.ensure_nest_exist(self.indice_lists[-1][-2].type.value)
+        else:
+            self.indice_lists[-1][-1].kind = 'variable call'
+            self.ensure_var_exist(self.indice_lists[-1][-1])
 
     # This is for the var you will be assigning to...
     def ASSIGNMENT_VAR(self):
@@ -307,6 +313,8 @@ class SemanticProcessor(object):
 
     def ENTRY_NEST(self):
         print "specifying object nested variable"
+        self.checking_nest += 1
+
         # basically appends a new empty nest to the root entry at hand
         if len(self.indice_lists) > 0:
             # self.indice_lists[-1][-1].IDXorPARAMS.append(index)
@@ -321,18 +329,18 @@ class SemanticProcessor(object):
 
     def CHECK_NEST_EXIST(self):
         print 'checking if nest exist'
-        '''if len(self.indice_lists) > 0:
+        if len(self.indice_lists) > 0:
             # self.indice_lists[-1][-1].IDXorPARAMS.append(index)
             self.warnings += '\nIn CHECK_ENTRY_NEST, indice list looks like: ' + str(self.indice_lists[-1][-1].type.value)
             # self.indice_lists[-1][-1].nest.append([])
 
         elif len(self.indice_lists) == 0:
-            print ''
+            self.warnings += '\nIn CHECK_ENTRY_NEST, indice list looks like: ' + str(self.indice_lists[-1][-1].type.value)
             # self.attr_buffer.append(index)
             # self.warnings += '\nIn ENTRY_NEST, Attr list looks like: ' + str(self.attr_buffer)
             # self.warnings += '\nIn ENTRY_NEST, test: ' + str(self.SymbolTable_stack[-1].entries[-1])
             #self.attr_buffer[-1][-1].nest.append([])
-            # self.SymbolTable_stack[-1].entries[-1].nest.append([])'''
+            # self.SymbolTable_stack[-1].entries[-1].nest.append([])
 
     def PACK_NEST(self):
         print 'packing and saving nest'
@@ -407,7 +415,10 @@ class SemanticProcessor(object):
         # for i in self.classUsageDict:
         #     print i, self.classUsageDict[i]
 
+        if self.error == '':
+            self.second_pass
 
+    def second_pass(self):
 
         #print self.ass_entries
         #print self.function_defs
@@ -476,6 +487,16 @@ class SemanticProcessor(object):
         # Function calls: right number and types of parameters upon call
 
     '''''''''''''''''''''' Tools '''''''''''''''''''''''
+
+    def ensure_nest_exist(self, className, varName):
+        print 'checking if nest exists'
+        for rootentries in Symbol_Table[0].entries:
+            if rootentries.name.value == className:
+                for entry in rootentries.link.entries:
+                    if entry.name.value == varName.value:
+                        return entry
+        return None
+
 
 
     def check_var_in_scope(self, entry):

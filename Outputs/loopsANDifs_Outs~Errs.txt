@@ -1,41 +1,9 @@
-OUTPUT OF test_loopsANDifs.txt: 
-
-program {
-    for ( int t = 0 ;
-    t <= 100 ;
-    t = t + 1 ) {
-        if ( i < 3 ) then {
-            
-        }else {
-            
-        };
-        if ( i < 3 ) then {
-            for ( int i = 0 ;
-            i < 2 ;
-            i = i + 1 ) {
-                
-            };
-            
-        }else {
-            i = 3 ;
-            
-        };
-        
-    };
-    
-};
 
 
 ERRORS OF test_loopsANDifs.txt:
   -- ! Error locations are accurate to the original input file ! --
 
+
 Source Program contained no parsing errors.
-Source Program contained no semantic errors.
 
-SYMBOL TABLE STRUCTURE:
-
-Sym_Tbl(name:Token(Global_Table, 'global', Line:Pos=(0, 0)), entries:[
-Entry  (Token(program, 'program', Line:Pos=(1, 8)), 'function', '', link: 
-    Sym_Tbl(name:Token(program, 'program', Line:Pos=(1, 8)), entries:[
-    Entry  (Token(ID, 't', Line:Pos=(2, 10)), 'variable', KEYWORD int, link: None ), 
-    Entry  (Token(ID, 'i', Line:Pos=(6, 23)), 'variable', KEYWORD int, link: None )]) )])
+Error: Variable or Parameter has not been declared: Token(ID, 'i', Line:Pos=(4, 14))

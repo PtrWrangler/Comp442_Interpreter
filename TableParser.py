@@ -17,7 +17,7 @@ from SemanticProcessor import SemanticProcessor
 
 ''' Parser and semantic tests '''
 # testFile = "test_MEGA_reutersFile.sgm"
-testFile = "test_Utility.txt"
+#testFile = "test_Utility.txt"
 #testFile = "test_parameterNameOrType_inScope.txt"
 #testFile = "test_varsInDifferentScopes.txt"
 #testFile = "test_undeclaredIdentifiers.txt"
@@ -38,8 +38,8 @@ test_dir = "testing/"
 infile = test_dir + testFile
 
 outfile_name = testFile.split("_", 1)[1].split('.')[0] + "_Outs~Errs.txt"
-outfile = "Outputs/LexerOutputs/" + outfile_name
-#outfile = "Outputs/" + outfile_name
+# outfile = "Outputs/LexerOutputs/" + outfile_name
+outfile = "Outputs/" + outfile_name
 
 
 class Syntactic_Parser(object):

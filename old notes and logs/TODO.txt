@@ -1,0 +1,21 @@
+todo:
+    in factor it is figuratively a int/float
+    in arithExpr it is figuratively a int/float
+
+    in type it is a litteral 'int'/'float'
+
+    a var decl can have a either float/int or id type. also no type at all listed if youve already created it in memory and are just referencing it... must go back and edit the grammar again...
+
+    added a ; to end of varorfunc?
+
+**  added a followSet to aParams, please check kfgedit and update
+    indice         -> [ arithExpr ] indice
+                  | . indice | EPSILON
+        addded . to vardecltail
+
+    expr first: 'space ,' error
+
+    paramsorindice elif ?
+
+    a func decl can only have 1 level idnest?
+

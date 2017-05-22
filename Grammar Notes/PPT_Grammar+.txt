@@ -32,7 +32,7 @@ createOrAssign   -> indice ASSIGNMENT_VAR gen_nest assign ;
 [[, ., =]
 gen_nest         -> . ENTRY_NEST ID ENTRY_NAME indice gen_nest
 [.]
-gen_nest         -> PACK_NEST EPSILON
+gen_nest         -> EPSILON
 [=]
 assign           -> assignOp expr FINISH_ASSIGNMENT
 [=]
@@ -103,9 +103,9 @@ paramsOrIndice   -> ( FUNC_CALL aParams ) END_FUNC_CALL
 paramsOrIndice   -> indice CHECK_VAR_EXIST is_nest
 [[, EPSILON, .]
 [;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
-is_nest          -> . ENTRY_NEST objectVarOrFunc
+is_nest          -> . ENTRY_NEST objectVarOrFunc CHECK_NEST_EXIST
 [.]
-is_nest          -> PACK_FACTOR_NEST EPSILON
+is_nest          -> EPSILON
 [;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
 variable         -> ID ENTRY_TYPE indice ASSIGNMENT_VAR
 [ID]

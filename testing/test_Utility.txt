@@ -2,6 +2,7 @@ class Utility
 {
     int var1[4][5][7][8][9][1][0];
     float var2;
+    var2 = 00008.80000;
     Tool tool;
     Tool l;
     // test comment
