@@ -1,0 +1,7 @@
+//testing comment tokens //, /*, */,
+
+/***////****////*/
+//ffwefwefwe//few/few//wfew///fewff/////few///**/
+//gregeg
+/*/*/
+*

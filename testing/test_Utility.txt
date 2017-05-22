@@ -2,18 +2,20 @@ class Utility
 {
     int var1[4][5][7][8][9][1][0];
     float var2;
+    var2 = 00008.80000;
     Tool tool;
     Tool l;
-    int findMax(int array[100][5][4], int rr, float yyu_7[4][5][6])
+    // test comment
+    int findMax(int array[100][5][4], int rr, float var2[4][5][6])
     {
         int maxValue;
         int idx;
         rr = 8;
-        maxValue = array[100];
+        maxValue = array[100][1][1];
         for( int idx = 99; idx > 0; idx = idx - 1 )
         {
-            if(array[idx] > maxValue) then {
-            maxValue = array[idx];
+            if(array[idx][0][0] > maxValue) then {
+            maxValue = array[idx][0][0];
             }
             else{};
         };
@@ -28,7 +30,7 @@ class Utility
         minValue = array[100];
         for( int idx = 1; idx <= 99; idx = ( idx ) + 1)
         {
-            if(array[idx] < maxValue) then {
+            if(array[idx] < minValue) then {
             minValue = array[idx];
             }
             else{};
@@ -36,9 +38,12 @@ class Utility
         return (minValue);
     };
 };
+
+/* blktest */
+
 class testClass {
     int test;
-    BADCLASS u;
+    g u;
 
 };
 class Tool {
@@ -61,7 +66,7 @@ float randomize()
     value = 1.05 + ((2.04 * 2.47) - 3.0) + 7.0006 ;
     return (value);
 };
-int testFunc(int testint[5][4][3000]) {
+g testFunc(int testint[5][4][3000]) {
     Utility testutil;
 };
 
@@ -71,14 +76,14 @@ program {
     int maxValue;
     int minValue;
     Utility utility;
-    Utility arrayUtility[2][3][6][7];
+    Utility arrayUtility[4][3][6][7];
     for(int t = 0; t<=100 ; t = t + 1)
     {
-        get(sample[t]);
-        sample[t] = (sample[t] * randomize());
+        //get(sample[t]);
+        sample[4+4/3+idx] = (sample[t] * randomize());
     };
-    maxValue = utility.findMax(sample);
-    minValue = utility.findMin(sample);
+    maxValue = utility.findMax(sample[1]);
+    minValue = utility.findMin(sample[1]);
     utility. var1[4][1][0][0][0][0][0] = 10;
     arrayUtility[1][1][1][1].var1[4][1][0][0][0][0][0] = 2;
     put(maxValue);

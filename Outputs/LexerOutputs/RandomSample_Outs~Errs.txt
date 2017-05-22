@@ -1,0 +1,9 @@
+
+
+ERRORS OF LexerTests/test_RandomSample.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+error, wrong token. Expected: ID found Token(,, ',', Line:Pos=(1, 7))
+error, wrong token. Expected: ; found Token([, '[', Line:Pos=(6, 27))
+
+Warning (scanner): Token scanning issue: Token(SCAN_ERROR, "Unregistered punctuation: '", Line:Pos=(6, 30))table error, Expected {funcDef -> funcHead funcBody ; END_FUNC funcDef | EPSILON} found Token(., '.', Line:Pos=(6, 31))

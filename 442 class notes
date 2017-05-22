@@ -1,0 +1,169 @@
+Just in time compiler (JIT) also known as dynamic translation
+ - compilation done during execution of a program. Continuously analyzing the code being executed. identifies parts of the code where the speedup gained from compilation outweighs the (overhead) cost of compilation.
+
+
+Jan 16:
+	Lexical analysis (lexer, scanner)
+use a tokenizer.
+PARSER asks the SCANNER for the next token
+non-det fin automata then deterministic finite automata?
+
+* if you have nested comments you could have a open comment counter to know when the root comment ends.
+
+Thompson construction:
+NDFA for the regex (a|b)*abb
+
+Rabin construction:
+we want to transf the NDFA const into a DFA
+ - remove epsilon transitions (and states)
+ -
+Basically study NFA to DFA procedures
+
+* scanner-generator?
+
+expecting a DFA like in slide lexical:30
+
+parser generator: takes a grammar and automatically generates a parser
+
+syntax: how valid sentences are formed
+semantics: defines the meaning of valid sentences
+
+backus naur form
+CFG context free grammars
+
+recursive decent predictive parsers
+recursive decent table parsers
+
+
+compiler notes:
+create buffer for reading in from the file
+allowing all types of chars and moving the cursor properly?
+
+---
+- Jan 30th 2017, class
+final questions for A1:
+ is it ok if i used a online program to generate my nfa dfa?
+ elaborate on all puncts?
+
+AtoCC tool
+    first and follow sets
+
+LL1 a predictive grammar: no left recursions, ambiguities
+
+---
+- Feb 6th 2017, class
+Wants us to use panic mode error recovery.
+left recursion and ambiguity removal.
+
+---
+- Feb 13th 2017, class
+    * ask about demo A1 ?
+
+    BOTTOM UP PARSING:
+shift: pushes the lookahead symbol onto the stack and reads another token
+reduce: matches a group of adjacent symbols B on the stack with the right hand side of a production and replaces B with the left hand side of the production.
+Handle: A handle of a string is a substring that matches the right-hand-side of a production, and whose reduction to the non-terminal on the LHS of the prod represents one step along the reverse and rightmost deriv.
+
+...LR parsers...
+
+SLR - SIMPLE LR: easiest to implement, but least powerful. may fail to produce a parsing table for some grammars.
+CLR - Canonical LR: most powerful, general and expensive LR method.
+LALR - lookahead LR: intermediate in power and cost. Will work for most programming language constructs.
+
+All LR parsers are table driven, which is derived from FSA.
+The same algo is used to parse, independent of the parsing method used.
+Only the nature of the method used to generate the table distinguishes the parsing method used.
+All LR methods use a table that has 2 parts:
+- action: dictates whether a shift or reduce operation is used.
+- goto: dictates a state transition after reduce operation.
+
+if you peek into an empty table cell, your algo is wrong.
+
+---
+- Mar 6th 2017, class
+
+Syntax directed translation
+    symantic analysis and translation steps are devided into 2 steps
+- analysis (syntactic, semantic)
+- synthesis (code generation and optimization)
+
+---
+- March 13th 2017, class
+
+Top down table driven syntax directed translation
+    seems that were adding productions to RHS for semantic rules
+
+---
+- March 20th 2017, class
+for adding indices, store a whole arithExpr? or evaluate first?
+
+---
+- March 27th 2017, class
+
+lw r1,x(r0)
+    take x with offset of whatever is in r0 and put in r1
+sw x(r0),r1
+    store word from memory cell in the program
+
+int a[4];  -->
+a  res 4
+
+---
+
+ask about circular class defs
+    - could be inside a func calling a class which calls the func
+        - right now I just have circular class dependancy as a warning, is that ok?
+
+    - multiply defined id: variable, class, function, class member
+        theres a grading criteria that says this...
+        should we be able to have a func and class by the same name?
+
+- April 3rd 2017, class
+
+   OPEN book Exam!!!!
+
+exam Qs examples:
+yypes of lex analysers
+regex to DFA, NFA to DFA
+using rabin scott method to sonstruct DFA
+
+grammar -> design TDP for it
+find first follow sets
+perform parsing trace using table
+
+usign CFG
+    remove laft recurs and ambiguities
+        show steps
+
+how the parser use stacks
+
+bottom up parsers!
+
+build SLR... table?
+
+error recovery techniques
+
+Syntax directed translation
+
+grammar -> generate table, RDPP functions
+        -> CLR... items, then state transitions
+
+executing parse trace
+
+he will give you the rule tables and semantic tables (3 tabes?) and ask you to do trace.
+
+attr migration, whta is, how it works
+intermediate reprs
+
+explain symbol tables and how they relate to scope
+explain tree traversal... to do processing of semantic actions
+
+He wont say generate code.. but will ask about different ways
+
+he will ask you to migrate attrs given grammar+?
+
+no moon machine qs
+
+A4 notes:
+    int goes in one word
+    float is 3 parts, store the int, amount of 0s after decimal, then decimal int part.

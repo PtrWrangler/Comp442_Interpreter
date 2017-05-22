@@ -28,13 +28,13 @@ varDecl          -> ID ENTRY_TYPE createOrAssign
 [ID]
 createOrAssign   -> ID ENTRY_NAME arraySize VAR_ENTRY ;
 [ID]
-createOrAssign   -> CHECK_VAR_EXIST indice gen_nest assign ;
+createOrAssign   -> indice ASSIGNMENT_VAR gen_nest assign ;
 [[, ., =]
-gen_nest         -> . ID indice ENTRY_NEST gen_nest
+gen_nest         -> . ENTRY_NEST ID ENTRY_NAME indice gen_nest
 [.]
-gen_nest         -> EPSILON 
+gen_nest         -> EPSILON
 [=]
-assign           -> assignOp expr 
+assign           -> assignOp expr FINISH_ASSIGNMENT
 [=]
 statement        -> for ( type ENTRY_TYPE ID ENTRY_NAME VAR_ENTRY assignOp expr ; relExpr ; assignStat ) statBlock ;
 [for]
@@ -44,7 +44,7 @@ statement        -> get ( variable ) ;
 [get]
 statement        -> put ( expr ) ; 
 [put]
-statement        -> return ( expr ) ; 
+statement        -> return ( expr RETURN_EXPR ) ;
 [return]
 statement        -> varDecl 
 [float, int, ID]
@@ -52,7 +52,7 @@ gen_statements   -> statement gen_statements
 [for, if, get, put, return, float, int, ID]
 gen_statements   -> EPSILON 
 [}]
-assignStat       -> variable assignOp expr 
+assignStat       -> variable assignOp expr FINISH_ASSIGNMENT
 [ID]
 statBlock        -> { gen_statements } 
 [{]
@@ -60,17 +60,17 @@ statBlock        -> statement
 [for, if, get, put, return, float, int, ID]
 statBlock        -> EPSILON 
 [;, else]
-expr             -> arithExpr gen_relArithExpr 
+expr             -> arithExpr gen_relArithExpr
 [(, FLOAT, ID, INT, not, +, -]
-relExpr          -> arithExpr relOp arithExpr 
+relExpr          -> arithExpr relOp APPEND_OP arithExpr
 [(, FLOAT, ID, INT, not, +, -]
-gen_relArithExpr -> relOp arithExpr 
+gen_relArithExpr -> relOp APPEND_OP arithExpr
 [<, <=, <>, ==, >, >=]
 gen_relArithExpr -> EPSILON 
 [;, ), ,]
 arithExpr        -> term gen_addArithExpr 
 [(, FLOAT, ID, INT, not, +, -]
-gen_addArithExpr -> addOp arithExpr 
+gen_addArithExpr -> addOp APPEND_OP arithExpr
 [+, -, or]
 gen_addArithExpr -> EPSILON 
 [;, ), ,, <, <=, <>, ==, >, >=, ]]
@@ -80,40 +80,40 @@ sign             -> -
 [-]
 term             -> factor gen_Term 
 [(, FLOAT, ID, INT, not, +, -]
-gen_Term         -> multOp term 
+gen_Term         -> multOp APPEND_OP term
 [*, /, and]
 gen_Term         -> EPSILON 
 [;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or]
-factor           -> ( arithExpr ) 
-[(]
-factor           -> objectVarOrFunc 
+factor           -> objectVarOrFunc
 [ID]
-factor           -> FLOAT 
+factor           -> ( APPEND_OP arithExpr ) APPEND_OP
+[(]
+factor           -> FLOAT APPEND_OP
 [FLOAT]
-factor           -> INT 
+factor           -> INT APPEND_OP
 [INT]
-factor           -> not factor 
+factor           -> not APPEND_OP factor
 [not]
-factor           -> sign factor 
+factor           -> sign APPEND_OP factor
 [+, -]
-objectVarOrFunc  -> ID paramsOrIndice
+objectVarOrFunc  -> ID FACTOR_ID paramsOrIndice
 [ID]
-paramsOrIndice   -> ( aParams ) 
+paramsOrIndice   -> ( FUNC_CALL aParams ) END_FUNC_CALL
 [(]
-paramsOrIndice   -> indice is_nest
+paramsOrIndice   -> indice CHECK_VAR_EXIST is_nest
 [[, EPSILON, .]
 [;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
-is_nest          -> . objectVarOrFunc 
+is_nest          -> . ENTRY_NEST objectVarOrFunc CHECK_NEST_EXIST
 [.]
-is_nest          -> EPSILON 
+is_nest          -> EPSILON
 [;, ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
-variable         -> ID indice 
+variable         -> ID ENTRY_TYPE indice ASSIGNMENT_VAR
 [ID]
-indice           -> [ arithExpr ] indice
+indice           -> START_IDX_DIM [ arithExpr END_IDX_DIM ] indice
 [[]
 indice           -> EPSILON 
 [;, =, ., ), ,, <, <=, <>, ==, >, >=, ], +, -, or, *, /, and]
-arraySize        -> [ INT  ADD_DECL_ARRAY_or_INDICE_DIM ] arraySize
+arraySize        -> [ INT ADD_DECL_ARRAY ] arraySize
 [[]
 arraySize        -> EPSILON 
 [;, ), ,]
@@ -129,7 +129,7 @@ fParams          -> type ENTRY_TYPE ID ENTRY_NAME arraySize ADD_FUNC_PARAM_ENTRY
 [ID, float, int]
 fParams          -> EPSILON 
 [)]
-aParams          -> expr aParamsTail 
+aParams          -> expr SAVE_PARAM aParamsTail
 [(, FLOAT, ID, INT, not, +, -]
 aParams          -> EPSILON 
 [)]
@@ -137,7 +137,7 @@ fParamsTail      -> , type ENTRY_TYPE ID ENTRY_NAME arraySize ADD_FUNC_PARAM_ENT
 [,]
 fParamsTail      -> EPSILON 
 [)]
-aParamsTail      -> , expr aParamsTail 
+aParamsTail      -> , ADD_PARAM expr SAVE_PARAM aParamsTail
 [,]
 aParamsTail      -> EPSILON 
 [)]

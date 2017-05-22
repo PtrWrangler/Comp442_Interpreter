@@ -1,5 +1,12 @@
-OUTPUT OF test_expr.txt: 
 
-program {
-    get ( e ) ;
-    put ( 
+
+ERRORS OF test_expr.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+
+Source Program contained no parsing errors.
+
+Error: Incorrect parameter type, sent: float, expecting: 'int' called from...
+   ...here: Token(ID, 'func', Line:Pos=(27, 17))
+Error: Incorrect parameter type, sent: int, expecting: 'float' called from...
+Token(ID, 'func', Line:Pos=(30, 68))

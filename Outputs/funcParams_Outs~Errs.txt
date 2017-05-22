@@ -16,4 +16,6 @@ program {
 ERRORS OF test_funcParams.txt:
   -- ! Error locations are accurate to the original input file ! --
 
-Source Program contains no parsing errors.
+Source Program contained no parsing errors.
+
+Error: Variable or Parameter has not been declared: Token(ID, 'maxValue', Line:Pos=(12, 9))

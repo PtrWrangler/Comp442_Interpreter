@@ -1,0 +1,20 @@
+// identifiers and reserved words testing.
+// general/break cases, special/unknown character handling, unexpected EOF
+
+class*
+class7
+clas5
+_if
+if_
+i6f
+5hello
+onetwo
+for for
+returnreturnreturn
+編float
+float排
+flo編at
+pu  t
+get
+get123_testingID_noRW
+ID_ID*for`class(9eweweww

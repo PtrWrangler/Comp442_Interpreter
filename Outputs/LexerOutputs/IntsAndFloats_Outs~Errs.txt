@@ -1,0 +1,6 @@
+
+
+ERRORS OF LexerTests/test_IntsAndFloats.txt:
+  -- ! Error locations are accurate to the original input file ! --
+
+table error, Expected {prog -> CREATE_GLOBAL_TABLE classDecl funcDef progBody} found Token(INT, '0', Line:Pos=(4, 2))

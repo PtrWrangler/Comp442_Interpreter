@@ -1,0 +1,47 @@
+OUTPUT OF test_expr.txt: 
+
+class test {
+    int v ;
+    float rr [ 20 ] [ 10 ] [ 5 ] ;
+    float tit ;
+    Other one [ 1 ] [ 1 ] ;
+    int dupFunc ( ) {
+        
+    };
+    int findMax ( int i , float u [ 2 ] [ 2 ] ) {
+        one [ 3 ] [ 2 ] . two = 3 ;
+        if ( i == 1 ) then {
+            i = 2 ;
+            
+        }else {
+            i = 3 ;
+            
+        };
+        rr [ 6 ] [ func ( 5 , rr [ 4 ] [ 5 ] [ 4 ] ) ] [ 0 ] = func ( 4 , rr [ 1 ] [ rr [ 0 ] [ 3 + func ( 1 , 1.1 ) ] [ 0 ] ] [ 4 ] ) ;
+        return ( 25 ) ;
+        i = dupFunc ( ) ;
+        
+    };
+    
+};
+class Other {
+    int two ;
+    
+};
+int func ( int i , float j ) {
+    return ( 1 ) ;
+    
+};
+program {
+    float b [ 2 ] ;
+    int t [ 100 ] [ 50 ] [ 3 ] ;
+    int x [ 1 ] [ 2 ] ;
+    test tt ;
+    x [ 0 ] [ 0 ] = b [ 2 ] ;
+    x [ 1 - not - 2 - x [ 0 - b [ func ( 8 > 9 / 999 + 9 - 8 - 7 , b [ 1 ] ) ] ] [ 0 ] ] [ 99 ] = 6 ;
+    x [ x [ 1 ] [ 2 + x [ 0 ] [ 0 ] + 77 ] ] [ 99 ] = 5 + 6 + 7 + t [ 3 ] [ 4 ] [ 5 ] ;
+    t [ 2 ] [ 4 - 5 + 3 - t [ 5 ] [ t [ 1 ] [ 2 ] [ 3 ] ] [ 4 ] ] [ t [ 0 ] [ 0 ] [ 0 ] ] = 4 ;
+    x [ 0 ] [ 0 ] = 5 + 6 * 7 - t [ 5 ] [ 5 ] [ 1 ] ;
+    int testfunc ;
+    
+};

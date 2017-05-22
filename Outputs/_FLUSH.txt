@@ -1,0 +1,41 @@
+OUTPUT OF test_expr.txt: 
+
+class test {
+    int v ;
+    float rr [ 20 ] [ 10 ] [ 5 ] ;
+    float abc ;
+    Other oner [ 1 ] [ 1 ] ;
+    Other one ;
+    int findMax ( int i , float u [ 2 ] [ 2 ] ) {
+        if ( i == 1 ) then if ( i == 3 ) then {
+            i = 3 ;
+            
+        }else {
+            i = 3 ;
+            
+        };
+        else {
+            i = 3 ;
+            
+        };
+        int y ;
+        y = func ( 4.4 , 4.4 ) ;
+        rr [ 6 ] [ func ( 5 , rr [ 4 ] [ 5 ] [ 4 ] ) ] [ 0 ] = func ( 4 , rr [ 1 ] [ rr [ 0 ] [ 3 + func ( 1 , 1.1 ) ] [ 0 ] ] [ 4 ] ) ;
+        return ( 25 ) ;
+        v = 5 + 6 - 8 * 5.5 > 0 and 1 ;
+        
+    };
+    
+};
+class Other {
+    int two ;
+    
+};
+int func ( int i , float j ) {
+    return ( 1 ) ;
+    test t ;
+    
+};
+program {
+    
+};

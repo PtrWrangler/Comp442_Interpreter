@@ -1,10 +1,78 @@
+class test{
+    int v;
+    float rr[20][10][5];
+    float abc;
+
+    Other oner[1][1];
+    Other one;
+
+
+    int findMax(int i, float u[2][2]){
+        //i = findMin();
+
+        //one[3][one].two = 3;
+        //one[3][2 + oner[3][3]].two = 3;
+
+            if (i == 1) then
+                if (i == 3) then {
+                    i = 3;
+                } else {
+                    i = 3;
+                };
+
+            else{
+                i = 3;
+            };
+        int y;
+        y = func(4.4, 4.4);
+
+
+        rr[6][func(5, rr[4][5][4])][0] = func(4, rr[1][rr[0][3+func(1, 1.1)][0]][4]);
+        return (25);
+
+        //int a[2];
+
+        v = 5+6-8*5.5>0 and 1;
+
+        //i = dupFunc();
+    };
+
+};
+
+class Other{
+    int two;
+};
+
+int func(int i, float j){
+    return (1);
+    test t;
+
+};
+
 program{
 
-get(e);
-put(int t);
+    /*
+    float b[2];
+    int t[100][50][3];
+    int x[1][2];
+    test tt;
+    int v;
 
-return (u);
+    x[0][0] = b[v];
 
-put (5-5);
+    //tt.abc = 9.9;
+
+
+    x[1-not-2-x[0-b[func(8>9 / 999 +9-8-7, b[1])]][0]][99] = 6;
+
+    x[x[1][2+x[0][0]+77]][99] = 5 + 6 + 7 + t[3][4][5];
+
+    t[2][4-5+3-t[5][t[1][2][3]][4]][t[0][0][0]] = 4;
+
+    x[0][0] = 5 + 6 * 7 - t[5][5][1];
+
+
+    int testfunc;
+    */
 
 };

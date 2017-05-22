@@ -1,12 +1,23 @@
 from Lexer import Lexical_Analyzer, Token
-from Lexer import SCAN_ERROR, EOF, EPSILON
+from Lexer import SCAN_ERROR, EOF, EPSILON, COMMENT
 from Lexer import all_registered_terminals
 from Grammar import Grammar, Production
 from SemanticProcessor import SemanticProcessor
 
 """     test input files    """
+''' Lexical Analyser tests '''
+# testFile = "LexerTests/test_MEGA_reutersFile.sgm"
+# testFile = "LexerTests/test_allAsciiChars.txt"
+# testFile = "LexerTests/test_comments.txt"
+# testFile = "LexerTests/test_emptyFile.txt"
+# testFile = "LexerTests/test_ID-RW_breakCases.txt"
+# testFile = "LexerTests/test_IntsAndFloats.txt"
+# testFile = "LexerTests/test_Operators.txt"
+# testFile = "LexerTests/test_RandomSample.txt"
+
+''' Parser and semantic tests '''
 # testFile = "test_MEGA_reutersFile.sgm"
-testFile = "test_Utility.txt"
+#testFile = "test_Utility.txt"
 #testFile = "test_parameterNameOrType_inScope.txt"
 #testFile = "test_varsInDifferentScopes.txt"
 #testFile = "test_undeclaredIdentifiers.txt"
@@ -19,12 +30,16 @@ testFile = "test_Utility.txt"
 #testFile = "test_loopsANDifs.txt"
 #testFile = "test_Arith.txt"
 #testFile = "test_funcParams.txt"
-#testFile = "test_expr.txt"
+testFile = "test_expr.txt"
+#testFile = "test_nestedVarIndiceExpr_saving.txt"
+#testFile = "test_exprNestedFuncsandVars.txt"
 
 test_dir = "testing/"
 infile = test_dir + testFile
 
 outfile_name = testFile.split("_", 1)[1].split('.')[0] + "_Outs~Errs.txt"
+# outfile = "Outputs/LexerOutputs/" + outfile_name
+outfile = "Outputs/" + outfile_name
 
 
 class Syntactic_Parser(object):
@@ -32,11 +47,13 @@ class Syntactic_Parser(object):
         print "Syntactical_Parser: in __init__"
 
         # Initialize logs and log messages
-        self.outfile = "Outputs/" + outfile_name
         self.f = open(infile)
-        self.o = open(self.outfile, 'w+')
+        self.o = open(outfile, 'w+')
+        self.debug_flush = open('Outputs/_FLUSH.txt', 'w+')
         self.output = 'OUTPUT OF ' + testFile + ": \n\n"
         self.errs = '\n\nERRORS OF ' + testFile + ":\n  -- ! Error locations are accurate to the original input file ! --\n\n"
+        self.scanner_warnings = ''
+
         # just keeps measure of tabbing for nice output
         self.tabbed_scope = ''
 
@@ -87,6 +104,21 @@ class Syntactic_Parser(object):
                 else:
                     self.parsing_stack.pop()
 
+            # if lookahead is a comment, disregard for now.
+            elif self.lookahead.type == COMMENT:
+                self.lookahead = self.interpreter.scanner()
+            elif self.lookahead.termtype == SCAN_ERROR:
+                if self.lookahead.type == EOF:
+                    print 'Error (Scanner): ' + str(self.lookahead)
+                    self.errs += 'Error (Scanner): ' + str(self.lookahead)
+                    error = True
+                    self.handleError()
+                    break
+                else:
+                    print "\nWarning (scanner): Token scanning issue: " + str(self.lookahead)
+                    self.errs += "\nWarning (scanner): Token scanning issue: " + str(self.lookahead)
+                    self.lookahead = self.interpreter.scanner()
+
             # if top symbol is a terminal
             elif top in self.terminal_list and top != EPSILON:
                 if top == self.lookahead.termtype:
@@ -131,8 +163,8 @@ class Syntactic_Parser(object):
                 error = True
                 break
 
-            self.o.write(self.output)
-            self.o.flush()
+            self.debug_flush.write(self.output)
+            self.debug_flush.flush()
             self.output = ''
 
         """""""""""""""""""""""""""""""""""""""
@@ -154,7 +186,7 @@ class Syntactic_Parser(object):
             print "error is True"
         else:
             print "error is False"
-            self.errs += 'Source Program contained no parsing errors.\n'
+            self.errs += '\nSource Program contained no parsing errors.\n'
 
             #del self.semantic_processor.SymbolTable_stack[0].entries[0].link
             self.semantic_processor.SymbolTable_stack[0].delete('Utility')
@@ -166,6 +198,7 @@ class Syntactic_Parser(object):
             if self.semantic_processor.error == "":
                 # no semantic errors occured
                 self.errs += 'Source Program contained no semantic errors.\n'
+                self.errs += self.scanner_warnings
                 self.errs += self.semantic_processor.warnings
                 self.output = "\nSYMBOL TABLE STRUCTURE:\n" + (str(self.semantic_processor.SymbolTable_stack[0]))
             else:
@@ -176,10 +209,17 @@ class Syntactic_Parser(object):
         self.o.write(self.errs)
         self.o.write(self.output)
 
+        self.debug_flush.close()
         self.o.close()
 
         # for i in self.semantic_processor.SymbolTable_stack:
         #     print str(i) + '\n'
+
+    def newHandleError(self):
+        print 'NEW handling error...'
+        self.lookahead = self.interpreter.scanner()
+
+
 
     # This error recovery technique syncronizes the stack and/or the lookahead to the next ;
     def handleError(self):
@@ -212,10 +252,11 @@ class Syntactic_Parser(object):
 
         sync_token = self.parsing_stack[-1]
 
+        print 'syncing next lookahead'
         # syncronizing the lookahead scanner to next ;
-        while self.lookahead.value != sync_token:
+        while self.lookahead.value != sync_token and self.lookahead.type is not EOF:
             self.lookahead = self.interpreter.scanner()
-            print 'scanning for a ' + sync_token + '... ' + self.lookahead.value
+            print 'scanning for a ' + sync_token + '... ' + str(self.lookahead.value)
 
     def format_output(self):
         if self.lookahead.value == ';':
