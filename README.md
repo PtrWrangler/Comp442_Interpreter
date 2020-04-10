@@ -1,7 +1,7 @@
 # Comp442_Interpreter
 Language: MR--
 
-
+```
      ______  _______        _____
     |      \/       \   ___|\    \
    /          /\     \ |    |\    \
@@ -14,6 +14,7 @@ Language: MR--
  \|____|      |____|/  |____| |____|
     \(          )/       \(     )/
      '          '         '     '
+```
 
 COMP 442 Winter 2017 Assignment 4, Semantic Verification and Code Generation
 By: Mathieu Rauch
